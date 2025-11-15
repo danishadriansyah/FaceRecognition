@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 2: Face Detection - Face Recognition LMS</title>
+    <link rel="stylesheet" href="../assets/css/lms-styles.css">
+    <link rel="stylesheet" href="../assets/css/lesson-styles.css">
+</head>
+<body class="lms-body">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>🎓 Face Recognition LMS</h2>
+            <p class="sidebar-subtitle">Learning Platform</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="../dashboard.html" class="nav-item">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="../learning-path.html" class="nav-item">
+                <span class="icon">🗺️</span>
+                <span>Learning Path</span>
+            </a>
+            <a href="../my-progress.html" class="nav-item">
+                <span class="icon">📈</span>
+                <span>My Progress</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            <p class="nav-label">MINGGU</p>
+            
+            <a href="week-1.html" class="nav-item">
+                <span class="icon">1️⃣</span>
+                <span>Python & OpenCV</span>
+                <span class="badge badge-easy">Easy</span>
+            </a>
+            <a href="week-2.html" class="nav-item active">
+                <span class="icon">2️⃣</span>
+                <span>Face Detection</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="week-3.html" class="nav-item">
+                <span class="icon">3️⃣</span>
+                <span>Face Recognition</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="week-4.html" class="nav-item">
+                <span class="icon">4️⃣</span>
+                <span>Dataset Collection</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="week-5.html" class="nav-item">
+                <span class="icon">5️⃣</span>
+                <span>Recognition System</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="week-6.html" class="nav-item">
+                <span class="icon">6️⃣</span>
+                <span>Database & Attendance</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="week-7.html" class="nav-item">
+                <span class="icon">7️⃣</span>
+                <span>Desktop GUI</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="week-8.html" class="nav-item">
+                <span class="icon">8️⃣</span>
+                <span>Testing & Deploy</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            
+            <a href="../resources.html" class="nav-item">
+                <span class="icon">📚</span>
+                <span>Resources</span>
+            </a>
+            <a href="../community.html" class="nav-item">
+                <span class="icon">👥</span>
+                <span>Community</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="avatar">👤</div>
+                <div class="user-info">
+                    <p class="user-name">Student</p>
+                    <p class="user-role">Learner</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                <div class="breadcrumb">
+                    <a href="../dashboard.html">Home</a>
+                    <span class="separator">›</span>
+                    <span class="current">Week 2</span>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <button class="icon-btn" title="Notifications">🔔</button>
+                <button class="icon-btn" title="Settings">⚙️</button>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <section class="week-header">
+                <div class="week-title">
+                    <h1>Week 2: Face Detection dengan OpenCV</h1>
+                    <span class="badge badge-medium">Medium</span>
+                </div>
+                <p class="week-description">
+                    Pelajari cara detect faces dari images dan webcam menggunakan Haar Cascade Classifier. Build face detection module yang reusable.
+                </p>
+                <div class="week-meta">
+                    <div class="meta-item">
+                        <span class="icon">⏱️</span>
+                        <span>4-5 jam</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="icon">📚</span>
+                        <span>4 Lessons</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="icon">🎯</span>
+                        <span>Intermediate</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>📚 Lessons</h3>
+                <div class="lessons-list">
+                    <!-- Lesson 1 -->
+                    <div class="lesson-card" onclick="openLesson(2, 1)">
+                        <div class="lesson-number">01</div>
+                        <div class="lesson-content">
+                            <h3>Face Detection dari Image</h3>
+                            <p>Haar Cascade Classifier basics, load pre-trained model, detect faces dari gambar statis, draw bounding boxes, understand detectMultiScale() parameters</p>
+                            <div class="lesson-meta">
+                                <span>⏱️ 45-60 min</span>
+                                <span class="lesson-status">Not Started</span>
+                            </div>
+                        </div>
+                        <div class="lesson-action">
+                            <button class="btn-start">Start →</button>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 2 -->
+                    <div class="lesson-card" onclick="openLesson(2, 2)">
+                        <div class="lesson-number">02</div>
+                        <div class="lesson-content">
+                            <h3>Real-time Face Detection</h3>
+                            <p>Access webcam, capture frames, apply face detection real-time, optimize FPS, handle multiple faces, display live bounding boxes</p>
+                            <div class="lesson-meta">
+                                <span>⏱️ 60-75 min</span>
+                                <span class="lesson-status">Not Started</span>
+                            </div>
+                        </div>
+                        <div class="lesson-action">
+                            <button class="btn-start">Start →</button>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 3 -->
+                    <div class="lesson-card" onclick="openLesson(2, 3)">
+                        <div class="lesson-number">03</div>
+                        <div class="lesson-content">
+                            <h3>Parameter Tuning & Optimization</h3>
+                            <p>Deep dive into scaleFactor, minNeighbors, minSize. Experiment dengan different values, optimize for accuracy vs speed, handle false positives</p>
+                            <div class="lesson-meta">
+                                <span>⏱️ 50-65 min</span>
+                                <span class="lesson-status">Not Started</span>
+                            </div>
+                        </div>
+                        <div class="lesson-action">
+                            <button class="btn-start">Start →</button>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 4 -->
+                    <div class="lesson-card" onclick="openLesson(2, 4)">
+                        <div class="lesson-number">04</div>
+                        <div class="lesson-content">
+                            <h3>Building Face Detector Module</h3>
+                            <p>Create FaceDetector class, implement detect_faces(), detect_faces_webcam(), draw_detections(), get_face_regions(), validate_detection(). Production-ready code!</p>
+                            <div class="lesson-meta">
+                                <span>⏱️ 90-120 min</span>
+                                <span class="lesson-status">Not Started</span>
+                            </div>
+                        </div>
+                        <div class="lesson-action">
+                            <button class="btn-start">Start →</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Project Module -->
+            <section class="module-section">
+                <h2>📦 Project Module: face_detector.py</h2>
+                <div class="module-card">
+                    <p class="module-description">Production-ready face detection module yang akan digunakan di semua minggu berikutnya (Week 3-8) sebagai preprocessing step sebelum face recognition.</p>
+                    
+                    <h4>Class & Methods:</h4>
+                    <ul class="function-list">
+                        <li>
+                            <code>class FaceDetector(__init__)</code>
+                            <span>Initialize dengan configurable parameters (scaleFactor, minNeighbors, minSize)</span>
+                        </li>
+                        <li>
+                            <code>detect_faces(image)</code>
+                            <span>Detect faces dari image, return list of (x, y, w, h) coordinates</span>
+                        </li>
+                        <li>
+                            <code>detect_faces_webcam()</code>
+                            <span>Real-time detection dari webcam stream dengan FPS optimization</span>
+                        </li>
+                        <li>
+                            <code>draw_detections(image, faces)</code>
+                            <span>Draw bounding boxes dengan confidence text overlay</span>
+                        </li>
+                        <li>
+                            <code>get_face_regions(image, faces)</code>
+                            <span>Extract ROI (Region of Interest) untuk each detected face</span>
+                        </li>
+                        <li>
+                            <code>validate_detection(face_region)</code>
+                            <span>Quality check: size validation, blur detection, lighting analysis</span>
+                        </li>
+                    </ul>
+
+                    <div class="integration-note">
+                        <strong>📌 Integration dengan Week 1:</strong>
+                        <p>Module ini akan menggunakan <code>image_utils.py</code> dari Week 1 untuk preprocessing (resize, grayscale conversion).</p>
+                    </div>
+
+                    <div class="next-week-preview">
+                        <strong>� Next Week Preview:</strong>
+                        <p>Week 3 akan menggunakan face_detector.py untuk preprocessing sebelum face recognition dengan face_recognition library!</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>🎯 Learning Objectives</h3>
+                <div class="objectives-grid">
+                    <div class="objective-card">
+                        <div class="objective-icon">🔍</div>
+                        <h4>Haar Cascade Classifier</h4>
+                        <p>Understand machine learning-based object detection dengan pre-trained models</p>
+                    </div>
+                    <div class="objective-card">
+                        <div class="objective-icon">📐</div>
+                        <h4>detectMultiScale()</h4>
+                        <p>Master parameters: scaleFactor, minNeighbors, minSize untuk optimal detection</p>
+                    </div>
+                    <div class="objective-card">
+                        <div class="objective-icon">🎥</div>
+                        <h4>Real-time Detection</h4>
+                        <p>Implement face detection dari webcam stream dengan smooth performance</p>
+                    </div>
+                    <div class="objective-card">
+                        <div class="objective-icon">🏗️</div>
+                        <h4>Reusable Module</h4>
+                        <p>Build FaceDetector class yang production-ready untuk main project</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>💡 Key Concepts</h3>
+                <div class="concepts-container">
+                    <div class="concept-card">
+                        <h4>🧠 Haar Cascade</h4>
+                        <p>Machine Learning based object detection yang menggunakan cascade function trained dari ribuan positive dan negative images.</p>
+                        <code style="display: block; margin-top: 0.5rem;">
+cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+                        </code>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>🔧 detectMultiScale Parameters</h4>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                            <li><strong>scaleFactor:</strong> 1.1-1.5 (smaller = more accurate, slower)</li>
+                            <li><strong>minNeighbors:</strong> 3-6 (higher = fewer false positives)</li>
+                            <li><strong>minSize:</strong> (30,30) minimum face size in pixels</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>🎨 ROI (Region of Interest)</h4>
+                        <p>Extract detected face area untuk further processing:</p>
+                        <code style="display: block; margin-top: 0.5rem;">
+for (x, y, w, h) in faces:
+    face_roi = image[y:y+h, x:x+w]
+                        </code>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>⚡ Grayscale Conversion</h4>
+                        <p>Detection lebih cepat di grayscale karena single color channel:</p>
+                        <code style="display: block; margin-top: 0.5rem;">
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+faces = cascade.detectMultiScale(gray, 1.1, 5)
+                        </code>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>📦 Project Deliverable</h3>
+                <div class="deliverable-box">
+                    <h4>face_detector.py Module</h4>
+                    <p>Production-ready face detection module dengan features:</p>
+                    <ul>
+                        <li>✅ <strong>FaceDetector class</strong> - Main detector dengan configurable parameters</li>
+                        <li>✅ <strong>detect_faces()</strong> - Detect faces dari image/frame</li>
+                        <li>✅ <strong>detect_faces_webcam()</strong> - Real-time webcam detection</li>
+                        <li>✅ <strong>draw_detections()</strong> - Draw bounding boxes</li>
+                        <li>✅ <strong>get_face_regions()</strong> - Extract ROIs</li>
+                        <li>✅ <strong>validate_detection()</strong> - Quality validation</li>
+                    </ul>
+                    <p style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color); color: var(--text-secondary);">
+                        Module ini akan digunakan di Week 3-8 untuk preprocessing sebelum face recognition.
+                    </p>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>⚙️ Terminal Commands</h3>
+                <div class="command-box">
+                    <p><strong>Run learning tutorials:</strong></p>
+                    <code>
+cd minggu-2-face-detection/learning<br>
+python 01_face_detection_image.py<br>
+python 02_face_detection_webcam.py<br>
+python 03_detection_parameters.py<br>
+python 04_optimizing_detection.py
+                    </code>
+                </div>
+                <div class="command-box" style="margin-top: 1rem;">
+                    <p><strong>Test face detector module:</strong></p>
+                    <code>
+cd minggu-2-face-detection/project<br>
+python test_detector.py
+                    </code>
+                </div>
+            </section>
+
+            <section class="week-navigation">
+                <a href="week-1.html" class="btn-nav">← Previous: Week 1</a>
+                <a href="week-3.html" class="btn-nav btn-next">Next: Week 3 →</a>
+            </section>
+        </div>
+    </main>
+
+    <script src="../assets/js/lms-main.js"></script>
+</body>
+</html>

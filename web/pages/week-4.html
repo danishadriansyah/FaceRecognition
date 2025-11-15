@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 4: Dataset Collection - Face Recognition LMS</title>
+    <link rel="stylesheet" href="../assets/css/lms-styles.css">
+    <link rel="stylesheet" href="../assets/css/lesson-styles.css">
+</head>
+<body class="lms-body">
+    <!-- Sidebar (same structure) -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>🎓 Face Recognition LMS</h2>
+            <p class="sidebar-subtitle">Learning Platform</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="../dashboard.html" class="nav-item">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="../learning-path.html" class="nav-item">
+                <span class="icon">🗺️</span>
+                <span>Learning Path</span>
+            </a>
+            <a href="../my-progress.html" class="nav-item">
+                <span class="icon">📈</span>
+                <span>My Progress</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            <p class="nav-label">MINGGU</p>
+            
+            <a href="week-1.html" class="nav-item">
+                <span class="icon">1️⃣</span>
+                <span>Python & OpenCV</span>
+                <span class="badge badge-easy">Easy</span>
+            </a>
+            <a href="week-2.html" class="nav-item">
+                <span class="icon">2️⃣</span>
+                <span>Face Detection</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="week-3.html" class="nav-item">
+                <span class="icon">3️⃣</span>
+                <span>Face Recognition</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="week-4.html" class="nav-item active">
+                <span class="icon">4️⃣</span>
+                <span>Dataset Collection</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="week-5.html" class="nav-item">
+                <span class="icon">5️⃣</span>
+                <span>Recognition System</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="week-6.html" class="nav-item">
+                <span class="icon">6️⃣</span>
+                <span>Database & Attendance</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="week-7.html" class="nav-item">
+                <span class="icon">7️⃣</span>
+                <span>Desktop GUI</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="week-8.html" class="nav-item">
+                <span class="icon">8️⃣</span>
+                <span>Testing & Deploy</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            
+            <a href="../resources.html" class="nav-item">
+                <span class="icon">📚</span>
+                <span>Resources</span>
+            </a>
+            <a href="../community.html" class="nav-item">
+                <span class="icon">👥</span>
+                <span>Community</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="avatar">👤</div>
+                <div class="user-info">
+                    <p class="user-name">Student</p>
+                    <p class="user-role">Learner</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                <div class="breadcrumb">
+                    <a href="../dashboard.html">Home</a>
+                    <span class="separator">›</span>
+                    <span class="current">Week 3</span>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <button class="icon-btn" title="Notifications">🔔</button>
+                <button class="icon-btn" title="Settings">⚙️</button>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <section class="week-header">
+                <div class="week-title">
+                    <h1>Week 4: Dataset Collection & Management</h1>
+                    <span class="badge badge-hard">Hard</span>
+                </div>
+                <p class="week-description">
+                    Systematic face data collection dengan multiple angles dan lighting conditions. Build dataset management system untuk organizing dan validating face images.
+                </p>
+                <div class="week-meta">
+                    <div class="meta-item">
+                        <span class="icon">⏱️</span>
+                        <span>5-6 jam</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="icon">📚</span>
+                        <span>3 Lessons</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="icon">🎯</span>
+                        <span>Intermediate</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>📚 Lessons</h3>
+                <div class="lessons-list">
+                    <!-- Lesson 1 -->
+                    <div class="lesson-card" onclick="openLesson(4, 1)">
+                        <div class="lesson-number">01</div>
+                        <div class="lesson-content">
+                            <h3>Systematic Face Capture</h3>
+                            <p>Build automated face capture system, collect 30-50 images per person dengan multiple angles (frontal, left, right), various lighting conditions, different expressions. Guidelines untuk high-quality dataset.</p>
+                            <div class="lesson-meta">
+                                <span>⏱️ 60-75 min</span>
+                                <span class="lesson-status">Not Started</span>
+                            </div>
+                        </div>
+                        <div class="lesson-action">
+                            <button class="btn-start">Start →</button>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 2 -->
+                    <div class="lesson-card" onclick="openLesson(4, 2)">
+                        <div class="lesson-number">02</div>
+                        <div class="lesson-content">
+                            <h3>Quality Control & Validation</h3>
+                            <p>Implement blur detection dengan Laplacian variance, check face detection confidence, validate minimum/maximum face sizes, auto-reject low quality images, generate quality reports</p>
+                            <div class="lesson-meta">
+                                <span>⏱️ 75-90 min</span>
+                                <span class="lesson-status">Not Started</span>
+                            </div>
+                        </div>
+                        <div class="lesson-action">
+                            <button class="btn-start">Start →</button>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 3 -->
+                    <div class="lesson-card" onclick="openLesson(4, 3)">
+                        <div class="lesson-number">03</div>
+                        <div class="lesson-content">
+                            <h3>Dataset Management System</h3>
+                            <p>Create DatasetManager class, organize folders by person name, backup/restore functionality, clean duplicate/corrupted images, generate dataset statistics, export untuk training</p>
+                            <div class="lesson-meta">
+                                <span>⏱️ 90-120 min</span>
+                                <span class="lesson-status">Not Started</span>
+                            </div>
+                        </div>
+                        <div class="lesson-action">
+                            <button class="btn-start">Start →</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>🎯 Learning Objectives</h3>
+                <div class="objectives-grid">
+                    <div class="objective-card">
+                        <div class="objective-icon">�</div>
+                        <h4>Systematic Capture</h4>
+                        <p>Capture face images dengan consistent quality dan validation checks</p>
+                    </div>
+                    <div class="objective-card">
+                        <div class="objective-icon">�</div>
+                        <h4>Multiple Angles</h4>
+                        <p>Capture frontal, left, right angles untuk improved recognition accuracy</p>
+                    </div>
+                    <div class="objective-card">
+                        <div class="objective-icon">�</div>
+                        <h4>Dataset Organization</h4>
+                        <p>Proper folder structure dan file naming conventions</p>
+                    </div>
+                    <div class="objective-card">
+                        <div class="objective-icon">✅</div>
+                        <h4>Quality Validation</h4>
+                        <p>Validate image quality, detect blur, check lighting conditions</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>💡 Key Concepts</h3>
+                <div class="concepts-container">
+                    <div class="concept-card">
+                        <h4>� Dataset Structure</h4>
+                        <p>Organized folder hierarchy untuk dataset management:</p>
+                        <code style="display: block; margin-top: 0.5rem;">
+dataset/
+├── person_1/
+│   ├── frontal_1.jpg
+│   ├── left_angle.jpg
+│   └── right_angle.jpg
+├── person_2/
+└── metadata.json
+                        </code>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>� Multi-Angle Capture</h4>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                            <li><strong>Frontal:</strong> Looking directly at camera (primary)</li>
+                            <li><strong>Left:</strong> Head turned slightly left (~30°)</li>
+                            <li><strong>Right:</strong> Head turned slightly right (~30°)</li>
+                            <li><strong>Variations:</strong> Different lighting, expressions</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>✅ Quality Validation</h4>
+                        <p>Checks untuk ensure high-quality dataset:</p>
+                        <code style="display: block; margin-top: 0.5rem;">
+- Face detected: Yes/No
+- Image size: >= 640x480
+- Face size: >= 200x200 pixels
+- Blur detection: Laplacian variance
+- Lighting: Histogram analysis
+                        </code>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>💾 Metadata Management</h4>
+                        <p>Store metadata untuk each person:</p>
+                        <code style="display: block; margin-top: 0.5rem;">
+{
+    "person_id": "P001",
+    "name": "John Doe",
+    "capture_date": "2024-01-15",
+    "image_count": 20,
+    "encodings_generated": true
+}
+                        </code>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>📦 Project Deliverable</h3>
+                <div class="deliverable-box">
+                    <h4>dataset_manager.py Module</h4>
+                    <p>Production-ready dataset management module dengan features:</p>
+                    <ul>
+                        <li>✅ <strong>DatasetManager class</strong> - Manage face datasets</li>
+                        <li>✅ <strong>capture_face()</strong> - Capture dengan quality validation</li>
+                        <li>✅ <strong>add_person()</strong> - Add new person to dataset</li>
+                        <li>✅ <strong>remove_person()</strong> - Remove person dari dataset</li>
+                        <li>✅ <strong>get_person_images()</strong> - Retrieve all images for person</li>
+                        <li>✅ <strong>validate_dataset()</strong> - Check dataset quality metrics</li>
+                        <li>✅ <strong>export_encodings()</strong> - Generate encodings untuk dataset</li>
+                    </ul>
+                    <p style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color); color: var(--text-secondary);">
+                        Module ini akan supply face data untuk Week 5-8 recognition dan attendance systems.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Project Module -->
+            <section class="module-section">
+                <h2>📦 Project Module: dataset_manager.py</h2>
+                <div class="module-card">
+                    <p class="module-description">Complete dataset management system untuk collect, validate, organize face images dengan quality control.</p>
+                    
+                    <h4>Class & Methods:</h4>
+                    <ul class="function-list">
+                        <li>
+                            <code>class DatasetManager(__init__)</code>
+                            <span>Initialize dengan dataset root directory dan quality thresholds</span>
+                        </li>
+                        <li>
+                            <code>capture_faces(person_name, target_count=50)</code>
+                            <span>Automated capture dengan progress tracking dan angle variations</span>
+                        </li>
+                        <li>
+                            <code>validate_image(image_path)</code>
+                            <span>Check blur, face detection, size requirements. Return quality score.</span>
+                        </li>
+                        <li>
+                            <code>organize_dataset()</code>
+                            <span>Create person folders, move/rename images systematically</span>
+                        </li>
+                        <li>
+                            <code>clean_dataset(min_quality=0.7)</code>
+                            <span>Remove low-quality, duplicate, corrupted images</span>
+                        </li>
+                        <li>
+                            <code>backup_dataset(backup_dir)</code>
+                            <span>Create timestamped backup dengan compression</span>
+                        </li>
+                        <li>
+                            <code>generate_report()</code>
+                            <span>Statistics: total persons, images per person, quality distribution</span>
+                        </li>
+                    </ul>
+
+                    <div class="integration-note">
+                        <strong>📌 Integration dengan Week 2 & 3:</strong>
+                        <p>Uses <code>face_detector.py</code> untuk validate faces dan <code>face_recognizer.py</code> untuk avoid duplicate encodings.</p>
+                    </div>
+
+                    <div class="next-week-preview">
+                        <strong>🔮 Next Week Preview:</strong>
+                        <p>Week 5: Integrate semua modules jadi complete recognition service dengan real-time processing & performance optimization!</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>⚙️ Terminal Commands</h3>
+                <div class="command-box">
+                    <p><strong>Run learning tutorials:</strong></p>
+                    <code>
+cd minggu-4-dataset-collection/learning<br>
+python 01_capture_faces.py<br>
+python 02_quality_control.py<br>
+python 03_dataset_management.py
+                    </code>
+                </div>
+                <div class="command-box" style="margin-top: 1rem;">
+                    <p><strong>Test dataset manager module:</strong></p>
+                    <code>
+cd minggu-4-dataset-collection/project<br>
+python test_dataset.py
+                    </code>
+                </div>
+            </section>
+
+            <section class="week-navigation">
+                <a href="week-3.html" class="btn-nav">← Previous: Week 3</a>
+                <a href="week-5.html" class="btn-nav btn-next">Next: Week 5 →</a>
+            </section>
+        </div>
+    </main>
+
+    <script src="../assets/js/lms-main.js"></script>
+</body>
+</html>

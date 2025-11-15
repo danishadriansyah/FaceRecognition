@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 1: Python & OpenCV - Face Recognition LMS</title>
+    <link rel="stylesheet" href="../assets/css/lms-styles.css">
+    <link rel="stylesheet" href="../assets/css/lesson-styles.css">
+</head>
+<body class="lms-body">
+    <!-- Sidebar (same as dashboard) -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>🎓 Face Recognition LMS</h2>
+            <p class="sidebar-subtitle">Learning Platform</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="../dashboard.html" class="nav-item">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="../learning-path.html" class="nav-item">
+                <span class="icon">🗺️</span>
+                <span>Learning Path</span>
+            </a>
+            <a href="../my-progress.html" class="nav-item">
+                <span class="icon">📈</span>
+                <span>My Progress</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            <p class="nav-label">MINGGU</p>
+            
+            <a href="week-1.html" class="nav-item active">
+                <span class="icon">1️⃣</span>
+                <span>Python & OpenCV</span>
+                <span class="badge badge-easy">Easy</span>
+            </a>
+            <a href="week-2.html" class="nav-item">
+                <span class="icon">2️⃣</span>
+                <span>Face Detection</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="week-3.html" class="nav-item">
+                <span class="icon">3️⃣</span>
+                <span>Face Recognition</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="week-4.html" class="nav-item">
+                <span class="icon">4️⃣</span>
+                <span>Dataset Collection</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="week-5.html" class="nav-item">
+                <span class="icon">5️⃣</span>
+                <span>Recognition System</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="week-6.html" class="nav-item">
+                <span class="icon">6️⃣</span>
+                <span>Database & Attendance</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="week-7.html" class="nav-item">
+                <span class="icon">7️⃣</span>
+                <span>Desktop GUI</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="week-8.html" class="nav-item">
+                <span class="icon">8️⃣</span>
+                <span>Testing & Deploy</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            
+            <a href="../resources.html" class="nav-item">
+                <span class="icon">📚</span>
+                <span>Resources</span>
+            </a>
+            <a href="../community.html" class="nav-item">
+                <span class="icon">👥</span>
+                <span>Community</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="avatar">👤</div>
+                <div class="user-info">
+                    <p class="user-name">Student</p>
+                    <p class="user-role">Learner</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                <div class="breadcrumb">
+                    <a href="../dashboard.html">Dashboard</a>
+                    <span>/</span>
+                    <span>Week 1</span>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <div class="progress-indicator">
+                    <span>Progress: 0/5</span>
+                    <div class="mini-progress">
+                        <div class="mini-progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Week Content -->
+        <div class="content-wrapper">
+            <!-- Week Header -->
+            <section class="week-header-section">
+                <div class="week-title-card">
+                    <div class="week-badge">
+                        <span class="week-number-large">1</span>
+                        <span class="badge badge-easy">Easy</span>
+                    </div>
+                    <div class="week-title-content">
+                        <h1>Minggu 1: Python Basics & OpenCV</h1>
+                        <p class="week-description">Setup development environment, memahami Python fundamentals untuk CV, mengenal OpenCV library, image manipulation & processing, build reusable image utilities</p>
+                        <div class="week-meta-info">
+                            <span>📝 5 Lessons</span>
+                            <span>⏱️ 6-7 hari</span>
+                            <span>🎯 Difficulty: Easy</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Learning Objectives -->
+            <section class="objectives-section">
+                <h2>🎯 Learning Objectives</h2>
+                <div class="objectives-grid">
+                    <div class="objective-card">
+                        <div class="objective-icon">⚙️</div>
+                        <h4>Setup Environment</h4>
+                        <p>Install Python, OpenCV, dan dependencies yang diperlukan</p>
+                    </div>
+                    <div class="objective-card">
+                        <div class="objective-icon">🐍</div>
+                        <h4>Python Fundamentals</h4>
+                        <p>Memahami Python basics untuk Computer Vision</p>
+                    </div>
+                    <div class="objective-card">
+                        <div class="objective-icon">📷</div>
+                        <h4>OpenCV Library</h4>
+                        <p>Mengenal OpenCV untuk image processing</p>
+                    </div>
+                    <div class="objective-card">
+                        <div class="objective-icon">🖼️</div>
+                        <h4>Image Manipulation</h4>
+                        <p>Resize, crop, rotate, flip, color conversion</p>
+                    </div>
+                    <div class="objective-card">
+                        <div class="objective-icon">📦</div>
+                        <h4>Build Utilities</h4>
+                        <p>Buat reusable image_utils.py module</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Lessons List -->
+            <section class="lessons-section">
+                <h2>📚 Lessons</h2>
+                <div class="lessons-container">
+                    <!-- Lesson 1 -->
+                    <div class="lesson-card" onclick="openLesson(1, 1)">
+                        <div class="lesson-number">01</div>
+                        <div class="lesson-content">
+                            <h3>Hello OpenCV</h3>
+                            <p>Installation & setup, reading/displaying/saving images, image as numpy arrays, color spaces (BGR, RGB, Grayscale)</p>
+                            <div class="lesson-meta">
+                                <span>⏱️ 30-45 min</span>
+                                <span class="lesson-status">Not Started</span>
+                            </div>
+                        </div>
+                        <div class="lesson-action">
+                            <button class="btn-start">Start →</button>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 2 -->
+                    <div class="lesson-card" onclick="openLesson(1, 2)">
+                        <div class="lesson-number">02</div>
+                        <div class="lesson-content">
+                            <h3>Image Operations</h3>
+                            <p>Resize, crop, rotate, flip images. Color conversion dan transformasi dasar</p>
+                            <div class="lesson-meta">
+                                <span>⏱️ 45-60 min</span>
+                                <span class="lesson-status locked">🔒 Locked</span>
+                            </div>
+                        </div>
+                        <div class="lesson-action">
+                            <button class="btn-start" disabled>Locked</button>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 3 -->
+                    <div class="lesson-card" onclick="openLesson(1, 3)">
+                        <div class="lesson-number">03</div>
+                        <div class="lesson-content">
+                            <h3>Drawing Shapes</h3>
+                            <p>Draw rectangles, circles, lines, dan text pada images</p>
+                            <div class="lesson-meta">
+                                <span>⏱️ 30-40 min</span>
+                                <span class="lesson-status locked">🔒 Locked</span>
+                            </div>
+                        </div>
+                        <div class="lesson-action">
+                            <button class="btn-start" disabled>Locked</button>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 4 -->
+                    <div class="lesson-card" onclick="openLesson(1, 4)">
+                        <div class="lesson-number">04</div>
+                        <div class="lesson-content">
+                            <h3>Webcam Basics</h3>
+                            <p>Access webcam, capture frames, real-time processing, frame rate optimization</p>
+                            <div class="lesson-meta">
+                                <span>⏱️ 45-60 min</span>
+                                <span class="lesson-status locked">🔒 Locked</span>
+                            </div>
+                        </div>
+                        <div class="lesson-action">
+                            <button class="btn-start" disabled>Locked</button>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 5 -->
+                    <div class="lesson-card" onclick="openLesson(1, 5)">
+                        <div class="lesson-number">05</div>
+                        <div class="lesson-content">
+                            <h3>Latihan: Mini Project</h3>
+                            <p>Mini project kombinasi semua materi week 1</p>
+                            <div class="lesson-meta">
+                                <span>⏱️ 60-90 min</span>
+                                <span class="lesson-status locked">🔒 Locked</span>
+                            </div>
+                        </div>
+                        <div class="lesson-action">
+                            <button class="btn-start" disabled>Locked</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Project Module -->
+            <section class="module-section">
+                <h2>📦 Project Module: image_utils.py</h2>
+                <div class="module-card">
+                    <p class="module-description">Module ini berisi helper functions untuk image processing yang akan digunakan di minggu-minggu berikutnya.</p>
+                    
+                    <h4>Functions to Implement:</h4>
+                    <ul class="function-list">
+                        <li>
+                            <code>load_image(path)</code>
+                            <span>Load dan validate image</span>
+                        </li>
+                        <li>
+                            <code>resize_image(image, width, height)</code>
+                            <span>Resize dengan aspect ratio</span>
+                        </li>
+                        <li>
+                            <code>preprocess_image(image)</code>
+                            <span>Standardize image untuk processing</span>
+                        </li>
+                        <li>
+                            <code>convert_to_grayscale(image)</code>
+                            <span>Convert color space</span>
+                        </li>
+                        <li>
+                            <code>save_image(image, path)</code>
+                            <span>Save dengan compression</span>
+                        </li>
+                        <li>
+                            <code>validate_image_quality(image)</code>
+                            <span>Check blur, brightness, etc</span>
+                        </li>
+                    </ul>
+
+                    <div class="module-integration">
+                        <h4>📌 Integration Plan</h4>
+                        <p>Module ini akan menjadi foundation untuk:</p>
+                        <ul>
+                            <li>Week 2: Face detection preprocessing</li>
+                            <li>Week 3: Face recognition input handling</li>
+                            <li>Week 4: Dataset image validation</li>
+                            <li>Week 8: Desktop app image upload handling</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Key Concepts -->
+            <section class="concepts-section">
+                <h2>💡 Key Concepts</h2>
+                <div class="concepts-grid">
+                    <div class="concept-card">
+                        <h4>Image Representation</h4>
+                        <pre><code>Image = Matrix of Pixels
+- Grayscale: 1 channel (0-255)
+- Color (BGR): 3 channels
+- Coordinate: (x, y) top-left is (0,0)</code></pre>
+                    </div>
+                    <div class="concept-card">
+                        <h4>OpenCV Coordinate System</h4>
+                        <pre><code>(0,0) -----> X (width)
+  |
+  v
+  Y (height)</code></pre>
+                    </div>
+                    <div class="concept-card">
+                        <h4>Color Spaces</h4>
+                        <ul>
+                            <li><strong>BGR:</strong> Default OpenCV (Blue-Green-Red)</li>
+                            <li><strong>RGB:</strong> Standard (Red-Green-Blue)</li>
+                            <li><strong>Grayscale:</strong> 1 channel, 0-255</li>
+                            <li><strong>HSV:</strong> Hue-Saturation-Value</li>
+                        </ul>
+                    </div>
+                    <div class="concept-card">
+                        <h4>Numpy Arrays</h4>
+                        <ul>
+                            <li>Images are numpy arrays</li>
+                            <li>Shape: (height, width, channels)</li>
+                            <li>Fast mathematical operations</li>
+                            <li>Slicing for ROI extraction</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Commands -->
+            <section class="commands-section">
+                <h2>🚀 Commands untuk Menjalankan</h2>
+                <div class="command-card">
+                    <h4>Learning (Tutorial)</h4>
+                    <pre><code>cd minggu-1-python-basics/learning
+
+# Jalankan tutorial secara berurutan
+python 01_hello_opencv.py
+python 02_image_operations.py
+python 03_drawing_shapes.py
+python 04_webcam_basics.py
+
+# Kerjakan latihan
+python latihan.py</code></pre>
+                </div>
+
+                <div class="command-card">
+                    <h4>Project Development</h4>
+                    <pre><code>cd minggu-1-python-basics/project
+
+# Develop image utilities
+python image_utils.py
+
+# Test functions
+python test_utils.py</code></pre>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <section class="lesson-navigation">
+                <a href="../dashboard.html" class="btn-nav btn-back">← Back to Dashboard</a>
+                <a href="week-2.html" class="btn-nav btn-next">Next: Week 2 →</a>
+            </section>
+        </div>
+    </main>
+
+    <script src="../assets/js/lms-main.js"></script>
+</body>
+</html>

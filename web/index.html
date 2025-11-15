@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Recognition Learning - 8 Minggu</title>
+    <meta http-equiv="refresh" content="0; url=dashboard.html">
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+    <p>Redirecting to Dashboard...</p>
+    <script>window.location.href = 'dashboard.html';</script>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <h1>🎓 Face Recognition Attendance System</h1>
+            <p class="subtitle">Progressive Learning - 8 Week Development</p>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="container">
+            <ul class="nav-list">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#overview" class="nav-link">Overview</a></li>
+                <li><a href="#weeks" class="nav-link">Learning Path</a></li>
+                <li><a href="#tech-stack" class="nav-link">Tech Stack</a></li>
+                <li><a href="#quick-start" class="nav-link">Quick Start</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <h2>Bangun Sistem Absensi Face Recognition dari Nol!</h2>
+            <p>Pelajari Computer Vision, AI Face Recognition, Database, dan Desktop Development dalam 8 minggu terstruktur.</p>
+            <div class="hero-buttons">
+                <a href="#weeks" class="btn btn-primary">Mulai Belajar</a>
+                <a href="#quick-start" class="btn btn-secondary">Quick Start</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Overview Section -->
+    <section id="overview" class="section">
+        <div class="container">
+            <h2>📋 Overview Project</h2>
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-icon">🎯</div>
+                    <h3>Tujuan</h3>
+                    <p>Membangun sistem absensi berbasis face recognition yang production-ready dengan desktop GUI.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">⏱️</div>
+                    <h3>Durasi</h3>
+                    <p>8 minggu pembelajaran progresif (2-3 jam/hari) atau fast-track 2-3 minggu intensif.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">💻</div>
+                    <h3>Output</h3>
+                    <p>Desktop application dengan GUI Tkinter, MySQL database, dan executable file (.exe).</p>
+                </div>
+            </div>
+
+            <div class="features">
+                <h3>✨ Fitur Utama</h3>
+                <ul>
+                    <li>✅ Face Detection menggunakan Haar Cascade</li>
+                    <li>✅ Face Recognition dengan akurasi 95%+</li>
+                    <li>✅ Database MySQL (robust & scalable)</li>
+                    <li>✅ Real-time attendance tracking dari webcam</li>
+                    <li>✅ Desktop GUI dengan Tkinter</li>
+                    <li>✅ Export laporan ke Excel/CSV</li>
+                    <li>✅ Support 200+ persons</li>
+                    <li>✅ Berjalan di komputer lokal</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack Section -->
+    <section id="tech-stack" class="section bg-light">
+        <div class="container">
+            <h2>🛠️ Tech Stack</h2>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <h4>Core</h4>
+                    <p>Python 3.8+<br>OpenCV 4.8+<br>face_recognition 1.3+</p>
+                </div>
+                <div class="tech-item">
+                    <h4>GUI</h4>
+                    <p>Tkinter<br>(built-in Python)</p>
+                </div>
+                <div class="tech-item">
+                    <h4>Database</h4>
+                    <p>MySQL 8.0+<br>SQLAlchemy ORM</p>
+                </div>
+                <div class="tech-item">
+                    <h4>Data Processing</h4>
+                    <p>NumPy<br>Pandas</p>
+                </div>
+                <div class="tech-item">
+                    <h4>Export</h4>
+                    <p>openpyxl<br>xlsxwriter</p>
+                </div>
+                <div class="tech-item">
+                    <h4>Distribution</h4>
+                    <p>PyInstaller<br>(create .exe)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Learning Path - Weekly Cards -->
+    <section id="weeks" class="section">
+        <div class="container">
+            <h2>📚 Learning Path - 8 Minggu</h2>
+            <p class="section-subtitle">Klik setiap minggu untuk detail materi pembelajaran</p>
+            
+            <div class="weeks-grid">
+                <!-- Week 1 -->
+                <div class="week-card" data-week="1">
+                    <div class="week-header">
+                        <span class="week-number">Minggu 1</span>
+                        <span class="week-difficulty easy">🟢 Easy</span>
+                    </div>
+                    <h3>Python Basics & OpenCV</h3>
+                    <p>Setup environment, image operations, webcam basics</p>
+                    <div class="week-meta">
+                        <span>📝 5 tutorials</span>
+                        <span>⏱️ 6-7 hari</span>
+                    </div>
+                    <button class="btn-week" onclick="showWeekDetail(1)">Lihat Detail →</button>
+                </div>
+
+                <!-- Week 2 -->
+                <div class="week-card" data-week="2">
+                    <div class="week-header">
+                        <span class="week-number">Minggu 2</span>
+                        <span class="week-difficulty medium">🟡 Medium</span>
+                    </div>
+                    <h3>Face Detection</h3>
+                    <p>Haar Cascade, detect faces, real-time detection</p>
+                    <div class="week-meta">
+                        <span>📝 4 tutorials</span>
+                        <span>⏱️ 6-7 hari</span>
+                    </div>
+                    <button class="btn-week" onclick="showWeekDetail(2)">Lihat Detail →</button>
+                </div>
+
+                <!-- Week 3 -->
+                <div class="week-card" data-week="3">
+                    <div class="week-header">
+                        <span class="week-number">Minggu 3</span>
+                        <span class="week-difficulty medium">🟠 Medium</span>
+                    </div>
+                    <h3>Face Recognition</h3>
+                    <p>Face encodings, comparison, recognition system</p>
+                    <div class="week-meta">
+                        <span>📝 3 tutorials</span>
+                        <span>⏱️ 7-8 hari</span>
+                    </div>
+                    <button class="btn-week" onclick="showWeekDetail(3)">Lihat Detail →</button>
+                </div>
+
+                <!-- Week 4 -->
+                <div class="week-card" data-week="4">
+                    <div class="week-header">
+                        <span class="week-number">Minggu 4</span>
+                        <span class="week-difficulty hard">🔴 Medium-Hard</span>
+                    </div>
+                    <h3>Dataset Collection</h3>
+                    <p>Capture faces, quality validation, dataset management</p>
+                    <div class="week-meta">
+                        <span>📝 3 tutorials</span>
+                        <span>⏱️ 6-7 hari</span>
+                    </div>
+                    <button class="btn-week" onclick="showWeekDetail(4)">Lihat Detail →</button>
+                </div>
+
+                <!-- Week 5 -->
+                <div class="week-card" data-week="5">
+                    <div class="week-header">
+                        <span class="week-number">Minggu 5</span>
+                        <span class="week-difficulty hard">🟣 Hard</span>
+                    </div>
+                    <h3>Recognition System</h3>
+                    <p>Integration, pipeline, performance optimization</p>
+                    <div class="week-meta">
+                        <span>📝 2 tutorials</span>
+                        <span>⏱️ 6-7 hari</span>
+                    </div>
+                    <button class="btn-week" onclick="showWeekDetail(5)">Lihat Detail →</button>
+                </div>
+
+                <!-- Week 6 -->
+                <div class="week-card" data-week="6">
+                    <div class="week-header">
+                        <span class="week-number">Minggu 6</span>
+                        <span class="week-difficulty hard">🔵 Hard</span>
+                    </div>
+                    <h3>Database & Attendance</h3>
+                    <p>MySQL setup, SQLAlchemy, attendance logic</p>
+                    <div class="week-meta">
+                        <span>📝 3 tutorials</span>
+                        <span>⏱️ 7-8 hari</span>
+                    </div>
+                    <button class="btn-week" onclick="showWeekDetail(6)">Lihat Detail →</button>
+                </div>
+
+                <!-- Week 7 -->
+                <div class="week-card" data-week="7">
+                    <div class="week-header">
+                        <span class="week-number">Minggu 7</span>
+                        <span class="week-difficulty medium">🟤 Medium</span>
+                    </div>
+                    <h3>Desktop GUI</h3>
+                    <p>Tkinter, multi-window, webcam preview, UI/UX</p>
+                    <div class="week-meta">
+                        <span>📝 2 tutorials</span>
+                        <span>⏱️ 5-6 hari</span>
+                    </div>
+                    <button class="btn-week" onclick="showWeekDetail(7)">Lihat Detail →</button>
+                </div>
+
+                <!-- Week 8 -->
+                <div class="week-card" data-week="8">
+                    <div class="week-header">
+                        <span class="week-number">Minggu 8</span>
+                        <span class="week-difficulty medium">⚫ Medium</span>
+                    </div>
+                    <h3>Final Testing & Distribution</h3>
+                    <p>Unit tests, PyInstaller, executable, deployment</p>
+                    <div class="week-meta">
+                        <span>📝 3 tutorials</span>
+                        <span>⏱️ 5-6 hari</span>
+                    </div>
+                    <button class="btn-week" onclick="showWeekDetail(8)">Lihat Detail →</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Start Section -->
+    <section id="quick-start" class="section bg-light">
+        <div class="container">
+            <h2>🚀 Quick Start</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Path 1: Complete Beginner (8 Minggu)</h3>
+                    <p>Cocok untuk pemula yang belum pernah belajar face recognition</p>
+                    <pre><code># 1. Clone & setup
+git clone &lt;repository-url&gt;
+cd ExtraQueensya
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+
+# 2. Mulai dari week 1
+cd minggu-1-python-basics/learning
+python 01_hello_opencv.py</code></pre>
+                    <p><strong>Timeline:</strong> 1 minggu per modul = 8 minggu total (2-3 jam/hari)</p>
+                </div>
+
+                <div class="card">
+                    <h3>Path 2: Fast Track (2-3 Minggu)</h3>
+                    <p>Cocok untuk yang sudah punya dasar Python</p>
+                    <pre><code># Week 1-2: Skim tutorial, fokus ke project
+# Week 3-5: Face recognition + dataset
+# Week 6-7: Database + Desktop GUI
+# Week 8: Final app + testing</code></pre>
+                    <p><strong>Timeline:</strong> 2-3 minggu intensif (4-5 jam/hari)</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Prerequisites</h3>
+                <ul>
+                    <li>✅ Python 3.8+ installed</li>
+                    <li>✅ MySQL 8.0+ installed</li>
+                    <li>✅ Visual Studio Build Tools (Windows only - untuk dlib)</li>
+                    <li>✅ Git (optional)</li>
+                    <li>✅ Basic Python knowledge (recommended)</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>🎓 AI-Based Face Recognition Attendance System - Progressive Learning</p>
+            <p>Last Updated: November 14, 2025 | Version 2.0</p>
+            <p>Educational purposes - 8 Week Development Program</p>
+        </div>
+    </footer>
+
+    <!-- Week Detail Modal -->
+    <div id="weekModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="weekDetailContent">
+                <!-- Content will be loaded dynamically by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/script.js"></script>
+</body>
+</html>

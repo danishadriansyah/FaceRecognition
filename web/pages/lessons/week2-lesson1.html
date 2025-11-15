@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 1.1: Hello OpenCV - Face Recognition LMS</title>
+    <link rel="stylesheet" href="../../assets/css/lms-styles.css">
+    <link rel="stylesheet" href="../../assets/css/lesson-styles.css">
+</head>
+<body class="lms-body">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>🎓 Face Recognition LMS</h2>
+            <p class="sidebar-subtitle">Learning Platform</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="../../dashboard.html" class="nav-item">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="../../learning-path.html" class="nav-item">
+                <span class="icon">🗺️</span>
+                <span>Learning Path</span>
+            </a>
+            <a href="../../my-progress.html" class="nav-item">
+                <span class="icon">📈</span>
+                <span>My Progress</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            <p class="nav-label">MINGGU</p>
+            
+            <a href="../week-1.html" class="nav-item active">
+                <span class="icon">1️⃣</span>
+                <span>Python & OpenCV</span>
+                <span class="badge badge-easy">Easy</span>
+            </a>
+            <a href="../week-2.html" class="nav-item">
+                <span class="icon">2️⃣</span>
+                <span>Face Detection</span>
+            </a>
+            <a href="../week-3.html" class="nav-item">
+                <span class="icon">3️⃣</span>
+                <span>Face Recognition</span>
+            </a>
+            <a href="../week-4.html" class="nav-item">
+                <span class="icon">4️⃣</span>
+                <span>Dataset Collection</span>
+            </a>
+            <a href="../week-5.html" class="nav-item">
+                <span class="icon">5️⃣</span>
+                <span>Recognition System</span>
+            </a>
+            <a href="../week-6.html" class="nav-item">
+                <span class="icon">6️⃣</span>
+                <span>Database & Attendance</span>
+            </a>
+            <a href="../week-7.html" class="nav-item">
+                <span class="icon">7️⃣</span>
+                <span>Desktop GUI</span>
+            </a>
+            <a href="../week-8.html" class="nav-item">
+                <span class="icon">8️⃣</span>
+                <span>Testing & Deploy</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            
+            <a href="../../resources.html" class="nav-item">
+                <span class="icon">📚</span>
+                <span>Resources</span>
+            </a>
+            <a href="../../community.html" class="nav-item">
+                <span class="icon">👥</span>
+                <span>Community</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="avatar">👤</div>
+                <div class="user-info">
+                    <p class="user-name">Student</p>
+                    <p class="user-role">Learner</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                <div class="breadcrumb">
+                    <a href="../../dashboard.html">Home</a>
+                    <span class="separator">›</span>
+                    <a href="../week-1.html">Week 1</a>
+                    <span class="separator">›</span>
+                    <span class="current">Lesson 1</span>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <button class="icon-btn" title="Notifications">🔔</button>
+                <button class="icon-btn" title="Settings">⚙️</button>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <div class="lesson-header">
+                <h1>👁️ Lesson 2.1: Face Detection Basics</h1>
+                <p>Understand Haar Cascade, load classifier, detect faces in static images</p>
+            </div>
+            
+            <section class="lesson-content-section">
+                <h2>🎯 Learning Objectives</h2>
+                <ul>
+                    <li>Understand Haar Cascade algorithm untuk face detection</li>
+                    <li>Load pre-trained classifier dari OpenCV</li>
+                    <li>Detect faces dalam static images</li>
+                    <li>Draw bounding boxes around detected faces</li>
+                </ul>
+
+                <h2>� Tutorial</h2>
+                <div class="concept-card">
+                    <h4>Step 1: Load Haar Cascade Classifier</h4>
+                    <pre><code>import cv2
+
+# Load pre-trained face cascade
+face_cascade = cv2.CascadeClassifier(
+    cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
+)
+
+# Verify cascade loaded
+if face_cascade.empty():
+    print("Error: Could not load cascade")
+else:
+    print("Face cascade loaded successfully!")</code></pre>
+                    <p>Haar Cascade classifier adalah pre-trained model yang bisa detect faces, eyes, dan objects lainnya.</p>
+                </div>
+
+                <div class="concept-card">
+                    <h4>Step 2: Load & Prepare Image</h4>
+                    <pre><code># Load image
+img = cv2.imread('test_face.jpg')
+
+# Convert to grayscale (required for cascade)
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)</code></pre>
+                    <p>Haar Cascade bekerja pada grayscale images untuk better performance.</p>
+                </div>
+
+                <div class="concept-card">
+                    <h4>Step 3: Detect Faces</h4>
+                    <pre><code># Detect faces
+faces = face_cascade.detectMultiScale(
+    gray,
+    scaleFactor=1.1,    # Image pyramid scale
+    minNeighbors=5,     # Minimum neighbors for detection
+    minSize=(30, 30)    # Minimum face size
+)
+
+print(f"Found {len(faces)} faces!")</code></pre>
+                    <p><code>detectMultiScale()</code> returns list of rectangles (x, y, width, height) untuk setiap face detected.</p>
+                </div>
+
+                <div class="concept-card">
+                    <h4>Step 4: Draw Rectangles</h4>
+                    <pre><code># Draw rectangles around faces
+for (x, y, w, h) in faces:
+    cv2.rectangle(img, (x, y), (x+w, y+h), (0, 255, 0), 2)
+    cv2.putText(img, 'Face', (x, y-10), 
+                cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+
+# Display result
+cv2.imshow('Face Detection', img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()</code></pre>
+                </div>
+
+                <h2>✅ Exercises</h2>
+                <div class="concept-card">
+                    <ol>
+                        <li>Find an image dengan multiple faces dan detect semuanya</li>
+                        <li>Change rectangle color dan thickness</li>
+                        <li>Print coordinates (x, y, w, h) untuk setiap face detected</li>
+                        <li>Save result image dengan cv2.imwrite()</li>
+                    </ol>
+                </div>
+
+                <p><strong>📁 Reference:</strong> <code>minggu-2-face-detection/learning/01_face_detection_image.py</code></p>
+
+                <div class="lesson-actions">
+                    <button onclick="window.location.href='../week-2.html'" class="btn-secondary">← Back to Week 2</button>
+                    <button onclick="markLessonCompleted(2, 1)" class="btn-primary">✅ Mark Complete</button>
+                    <button onclick="window.location.href='week2-lesson2.html'" class="btn-secondary">Next Lesson →</button>
+                </div>
+            </section>
+
+            <section class="week-navigation">
+                <a href="../week-2.html" class="btn-nav">← Back to Week 2</a>
+                <a href="week2-lesson2.html" class="btn-nav btn-next">Next: Real-time Detection →</a>
+            </section>
+        </div>
+    </main>
+
+    <script src="../../assets/js/lms-main.js"></script>
+</body>
+</html>

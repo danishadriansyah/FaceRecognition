@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 8: Testing & Distribution - Face Recognition LMS</title>
+    <link rel="stylesheet" href="../assets/css/lms-styles.css">
+    <link rel="stylesheet" href="../assets/css/lesson-styles.css">
+</head>
+<body class="lms-body">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>🎓 Face Recognition LMS</h2>
+            <p class="sidebar-subtitle">Learning Platform</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="../dashboard.html" class="nav-item">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="../learning-path.html" class="nav-item">
+                <span class="icon">🗺️</span>
+                <span>Learning Path</span>
+            </a>
+            <a href="../my-progress.html" class="nav-item">
+                <span class="icon">📈</span>
+                <span>My Progress</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            <p class="nav-label">MINGGU</p>
+            
+            <a href="week-1.html" class="nav-item">
+                <span class="icon">1️⃣</span>
+                <span>Python & OpenCV</span>
+                <span class="badge badge-easy">Easy</span>
+            </a>
+            <a href="week-2.html" class="nav-item">
+                <span class="icon">2️⃣</span>
+                <span>Face Detection</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="week-3.html" class="nav-item">
+                <span class="icon">3️⃣</span>
+                <span>Face Recognition</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="week-4.html" class="nav-item">
+                <span class="icon">4️⃣</span>
+                <span>Dataset Collection</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="week-5.html" class="nav-item">
+                <span class="icon">5️⃣</span>
+                <span>Recognition System</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="week-6.html" class="nav-item">
+                <span class="icon">6️⃣</span>
+                <span>Database & Attendance</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="week-7.html" class="nav-item">
+                <span class="icon">7️⃣</span>
+                <span>Desktop GUI</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="week-8.html" class="nav-item active">
+                <span class="icon">8️⃣</span>
+                <span>Testing & Deploy</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            
+            <a href="../resources.html" class="nav-item">
+                <span class="icon">📚</span>
+                <span>Resources</span>
+            </a>
+            <a href="../community.html" class="nav-item">
+                <span class="icon">👥</span>
+                <span>Community</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="avatar">👤</div>
+                <div class="user-info">
+                    <p class="user-name">Student</p>
+                    <p class="user-role">Learner</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                <div class="breadcrumb">
+                    <a href="../dashboard.html">Home</a>
+                    <span class="separator">›</span>
+                    <span class="current">Week 8</span>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <button class="icon-btn" title="Notifications">🔔</button>
+                <button class="icon-btn" title="Settings">⚙️</button>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <section class="week-header">
+                <div class="week-title">
+                    <h1>Week 8: Final Testing & Distribution</h1>
+                    <span class="badge badge-medium">Medium</span>
+                </div>
+                <p class="week-description">
+                    Polish UI/UX, write unit tests dengan pytest, create executable dengan PyInstaller. Complete documentation dan user manual. READY TO DISTRIBUTE!
+                </p>
+                <div class="week-meta">
+                    <div class="meta-item">
+                        <span class="icon">⏱️</span>
+                        <span>5-6 jam</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="icon">📚</span>
+                        <span>3 Lessons</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="icon">🎯</span>
+                        <span>Medium</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>📚 Lessons</h3>
+                <div class="lessons-list">
+                    <!-- Lesson 1 -->
+                    <div class="lesson-card" onclick="openLesson(8, 1)">
+                        <div class="lesson-number">01</div>
+                        <div class="lesson-content">
+                            <h3>Final Application Polish & Testing</h3>
+                            <p>UI/UX improvements (colors, icons, fonts), robust error handling dengan try-except, user-friendly error messages, loading indicators, confirmation dialogs, comprehensive manual testing (all features, edge cases, error scenarios)</p>
+                            <div class="lesson-meta">
+                                <span>⏱️ 90-120 min</span>
+                                <span class="lesson-status">Not Started</span>
+                            </div>
+                        </div>
+                        <div class="lesson-action">
+                            <button class="btn-start">Start →</button>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 2 -->
+                    <div class="lesson-card" onclick="openLesson(8, 2)">
+                        <div class="lesson-number">02</div>
+                        <div class="lesson-content">
+                            <h3>Automated Testing Strategy</h3>
+                            <p>Write unit tests dengan pytest untuk semua modules (detector, recognizer, dataset_manager, attendance_system). Test fixtures, mocking external dependencies, integration tests, achieve >70% code coverage dengan pytest-cov</p>
+                            <div class="lesson-meta">
+                                <span>⏱️ 105-135 min</span>
+                                <span class="lesson-status">Not Started</span>
+                            </div>
+                        </div>
+                        <div class="lesson-action">
+                            <button class="btn-start">Start →</button>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 3 -->
+                    <div class="lesson-card" onclick="openLesson(8, 3)">
+                        <div class="lesson-number">03</div>
+                        <div class="lesson-content">
+                            <h3>Deployment & Documentation</h3>
+                            <p>Create standalone executable dengan PyInstaller (--onedir/--onefile), bundle dependencies & assets, icon & metadata, installer dengan Inno Setup, user manual (PDF), developer guide, README.md, test on clean machine</p>
+                            <div class="lesson-meta">
+                                <span>⏱️ 90-120 min</span>
+                                <span class="lesson-status">Not Started</span>
+                            </div>
+                        </div>
+                        <div class="lesson-action">
+                            <button class="btn-start">Start →</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Project Module -->
+            <section class="module-section">
+                <h2>🎉 Final Deliverables</h2>
+                <div class="module-card">
+                    <p class="module-description">Complete production-ready face recognition attendance system dengan semua components tested dan documented.</p>
+                    
+                    <h4>Testing Files:</h4>
+                    <ul class="function-list">
+                        <li>
+                            <code>tests/test_face_detector.py</code>
+                            <span>Unit tests untuk FaceDetector class (detect accuracy, parameters)</span>
+                        </li>
+                        <li>
+                            <code>tests/test_face_recognizer.py</code>
+                            <span>Tests untuk encoding generation, recognition accuracy, confidence scores</span>
+                        </li>
+                        <li>
+                            <code>tests/test_dataset_manager.py</code>
+                            <span>Tests untuk dataset operations, quality validation, backup/restore</span>
+                        </li>
+                        <li>
+                            <code>tests/test_attendance_system.py</code>
+                            <span>Integration tests untuk attendance logic, database operations, reports</span>
+                        </li>
+                        <li>
+                            <code>pytest.ini & conftest.py</code>
+                            <span>Pytest configuration, shared fixtures, test database setup</span>
+                        </li>
+                    </ul>
+
+                    <h4 style="margin-top: 1.5rem;">Distribution Package:</h4>
+                    <ul class="function-list">
+                        <li>
+                            <code>dist/AttendanceSystem.exe</code>
+                            <span>Standalone executable dengan all dependencies bundled</span>
+                        </li>
+                        <li>
+                            <code>docs/UserManual.pdf</code>
+                            <span>Step-by-step guide untuk end users (installation, registration, attendance)</span>
+                        </li>
+                        <li>
+                            <code>docs/DeveloperGuide.md</code>
+                            <span>Technical documentation untuk developers (architecture, API reference)</span>
+                        </li>
+                        <li>
+                            <code>README.md</code>
+                            <span>Project overview, features, installation, usage examples</span>
+                        </li>
+                        <li>
+                            <code>requirements.txt</code>
+                            <span>All Python dependencies dengan specific versions</span>
+                        </li>
+                    </ul>
+
+                    <div class="integration-note">
+                        <strong>🏆 Achievement Unlocked:</strong>
+                        <p>Completed full-stack face recognition attendance system dari scratch! From basic Python & OpenCV to production-ready desktop application.</p>
+                    </div>
+
+                    <div class="next-week-preview" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <strong>🎓 Congratulations!</strong>
+                        <p>Kamu sudah menyelesaikan 8-week journey! Next steps: deploy to real users, gather feedback, iterate & improve!</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>🎯 Learning Objectives</h3>
+                <div class="objectives-grid">
+                    <div class="objective-card">
+                        <div class="objective-icon">🎨</div>
+                        <h4>UI/UX Polish</h4>
+                        <p>Colors, fonts, icons, ttk themes untuk professional look</p>
+                    </div>
+                    <div class="objective-card">
+                        <div class="objective-icon">✅</div>
+                        <h4>Unit Testing</h4>
+                        <p>Pytest framework, test fixtures, mocking, coverage &gt;70%</p>
+                    </div>
+                    <div class="objective-card">
+                        <div class="objective-icon">📦</div>
+                        <h4>PyInstaller</h4>
+                        <p>Create standalone .exe, bundle dependencies, icon & metadata</p>
+                    </div>
+                    <div class="objective-card">
+                        <div class="objective-icon">📝</div>
+                        <h4>Documentation</h4>
+                        <p>User manual, developer guide, installation instructions</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>🚀 Distribution Checklist</h3>
+                <div class="concepts-container">
+                    <div class="concept-card">
+                        <h4>✅ Pre-Distribution</h4>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                            <li>All tests passing (pytest)</li>
+                            <li>Test coverage &gt; 70%</li>
+                            <li>UI polished & tested</li>
+                            <li>Error messages user-friendly</li>
+                            <li>Database backup working</li>
+                        </ul>
+                    </div>
+                    <div class="concept-card">
+                        <h4>📦 PyInstaller Build</h4>
+                        <code style="display: block; margin-top: 0.5rem;">
+# Create executable
+pyinstaller --onedir --windowed \
+  --icon=icon.ico \
+  --name="AttendanceSystem" \
+  main_app.py
+
+# Test executable
+cd dist/AttendanceSystem/
+./AttendanceSystem.exe
+                        </code>
+                    </div>
+                    <div class="concept-card">
+                        <h4>📝 Documentation</h4>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                            <li>USER_MANUAL.md - End user guide</li>
+                            <li>DEVELOPER_GUIDE.md - Code architecture</li>
+                            <li>README.md - Installation & setup</li>
+                        </ul>
+                    </div>
+                    <div class="concept-card">
+                        <h4>✨ Final Package</h4>
+                        <p>Distributable folder structure:</p>
+                        <code style="display: block; margin-top: 0.5rem;">
+AttendanceSystem/
+├── AttendanceSystem.exe
+├── data/
+├── models/
+├── README.txt
+└── USER_MANUAL.pdf
+                        </code>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>🎉 Congratulations!</h3>
+                <div class="deliverable-box" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
+                    <h4 style="color: white;">🏆 Project Complete!</h4>
+                    <p style="color: rgba(255,255,255,0.9);">Setelah menyelesaikan Week 8, kamu telah:</p>
+                    <ul style="color: rgba(255,255,255,0.9);">
+                        <li>✅ Built complete desktop face recognition system</li>
+                        <li>✅ Polished UI/UX dengan professional design</li>
+                        <li>✅ Written comprehensive unit tests</li>
+                        <li>✅ Created distributable .exe application</li>
+                        <li>✅ Documented everything dengan user manual</li>
+                    </ul>
+                    <p style="margin-top: 1rem; font-size: 1.1rem; color: white;"><strong>READY TO DISTRIBUTE & PRESENT!</strong> 🚀</p>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>⚙️ Terminal Commands</h3>
+                <div class="command-box">
+                    <code>
+pip install pytest pytest-cov pyinstaller<br><br>
+# Run tests
+pytest --cov=. --cov-report=html<br><br>
+# Create executable
+pyinstaller build_exe.spec<br><br>
+cd minggu-8-final-testing/learning<br>
+python 01_final_app.py<br>
+python 02_testing_strategies.py<br>
+python 03_deployment_guide.py
+                    </code>
+                </div>
+            </section>
+
+            <section class="week-navigation">
+                <a href="week-7.html" class="btn-nav">← Previous: Week 7</a>
+                <a href="../dashboard.html" class="btn-nav btn-next">Back to Dashboard →</a>
+            </section>
+        </div>
+    </main>
+
+    <script src="../assets/js/lms-main.js"></script>
+</body>
+</html>

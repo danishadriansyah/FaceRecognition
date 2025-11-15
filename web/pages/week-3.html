@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 3: Face Recognition - Face Recognition LMS</title>
+    <link rel="stylesheet" href="../assets/css/lms-styles.css">
+    <link rel="stylesheet" href="../assets/css/lesson-styles.css">
+</head>
+<body class="lms-body">
+    <!-- Sidebar (same structure) -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>🎓 Face Recognition LMS</h2>
+            <p class="sidebar-subtitle">Learning Platform</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="../dashboard.html" class="nav-item">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="../learning-path.html" class="nav-item">
+                <span class="icon">🗺️</span>
+                <span>Learning Path</span>
+            </a>
+            <a href="../my-progress.html" class="nav-item">
+                <span class="icon">📈</span>
+                <span>My Progress</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            <p class="nav-label">MINGGU</p>
+            
+            <a href="week-1.html" class="nav-item">
+                <span class="icon">1️⃣</span>
+                <span>Python & OpenCV</span>
+                <span class="badge badge-easy">Easy</span>
+            </a>
+            <a href="week-2.html" class="nav-item">
+                <span class="icon">2️⃣</span>
+                <span>Face Detection</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="week-3.html" class="nav-item active">
+                <span class="icon">3️⃣</span>
+                <span>Face Recognition</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="week-4.html" class="nav-item">
+                <span class="icon">4️⃣</span>
+                <span>Dataset Collection</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="week-5.html" class="nav-item">
+                <span class="icon">5️⃣</span>
+                <span>Recognition System</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="week-6.html" class="nav-item">
+                <span class="icon">6️⃣</span>
+                <span>Database & Attendance</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="week-7.html" class="nav-item">
+                <span class="icon">7️⃣</span>
+                <span>Desktop GUI</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="week-8.html" class="nav-item">
+                <span class="icon">8️⃣</span>
+                <span>Testing & Deploy</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            
+            <a href="../resources.html" class="nav-item">
+                <span class="icon">📚</span>
+                <span>Resources</span>
+            </a>
+            <a href="../community.html" class="nav-item">
+                <span class="icon">👥</span>
+                <span>Community</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="avatar">👤</div>
+                <div class="user-info">
+                    <p class="user-name">Student</p>
+                    <p class="user-role">Learner</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                <div class="breadcrumb">
+                    <a href="../dashboard.html">Home</a>
+                    <span class="separator">›</span>
+                    <span class="current">Week 3</span>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <button class="icon-btn" title="Notifications">🔔</button>
+                <button class="icon-btn" title="Settings">⚙️</button>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <section class="week-header">
+                <div class="week-title">
+                    <h1>Week 3: Face Recognition Fundamentals</h1>
+                    <span class="badge badge-medium">Medium</span>
+                </div>
+                <p class="week-description">
+                    Pelajari face recognition dengan face_recognition library. Understand face encodings, comparison, dan build recognition system dari known faces database.
+                </p>
+                <div class="week-meta">
+                    <div class="meta-item">
+                        <span class="icon">⏱️</span>
+                        <span>5-6 jam</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="icon">📚</span>
+                        <span>3 Lessons</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="icon">🎯</span>
+                        <span>Intermediate</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>📚 Lessons</h3>
+                <div class="lessons-list">
+                    <!-- Lesson 1 -->
+                    <div class="lesson-card" onclick="openLesson(3, 1)">
+                        <div class="lesson-number">01</div>
+                        <div class="lesson-content">
+                            <h3>Face Encodings Basics</h3>
+                            <p>Install face_recognition library, understand 128-dimensional vectors, generate face encodings dari detected faces, save/load encodings dengan pickle</p>
+                            <div class="lesson-meta">
+                                <span>⏱️ 60-75 min</span>
+                                <span class="lesson-status">Not Started</span>
+                            </div>
+                        </div>
+                        <div class="lesson-action">
+                            <button class="btn-start">Start →</button>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 2 -->
+                    <div class="lesson-card" onclick="openLesson(3, 2)">
+                        <div class="lesson-number">02</div>
+                        <div class="lesson-content">
+                            <h3>Face Comparison & Recognition</h3>
+                            <p>face_distance() vs face_compare(), understand tolerance levels (0.4-0.8), build known faces database, match unknown faces, calculate confidence scores</p>
+                            <div class="lesson-meta">
+                                <span>⏱️ 90-105 min</span>
+                                <span class="lesson-status">Not Started</span>
+                            </div>
+                        </div>
+                        <div class="lesson-action">
+                            <button class="btn-start">Start →</button>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 3 -->
+                    <div class="lesson-card" onclick="openLesson(3, 3)">
+                        <div class="lesson-number">03</div>
+                        <div class="lesson-content">
+                            <h3>Building Face Recognizer Module</h3>
+                            <p>Create FaceRecognizer class, implement encode_face(), recognize_face(), add_known_face(), calculate_confidence(). Real-time recognition dari webcam with name labels!</p>
+                            <div class="lesson-meta">
+                                <span>⏱️ 120-150 min</span>
+                                <span class="lesson-status">Not Started</span>
+                            </div>
+                        </div>
+                        <div class="lesson-action">
+                            <button class="btn-start">Start →</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Project Module -->
+            <section class="module-section">
+                <h2>📦 Project Module: face_recognizer.py</h2>
+                <div class="module-card">
+                    <p class="module-description">Core recognition engine yang menggunakan face_recognition library untuk identify people dari face encodings.</p>
+                    
+                    <h4>Class & Methods:</h4>
+                    <ul class="function-list">
+                        <li>
+                            <code>class FaceRecognizer(__init__)</code>
+                            <span>Initialize dengan tolerance level (default: 0.6) dan known faces database</span>
+                        </li>
+                        <li>
+                            <code>encode_face(image, face_location)</code>
+                            <span>Generate 128-D encoding dari face region</span>
+                        </li>
+                        <li>
+                            <code>recognize_face(unknown_encoding)</code>
+                            <span>Compare dengan known faces database, return best match dengan confidence</span>
+                        </li>
+                        <li>
+                            <code>add_known_face(name, encoding)</code>
+                            <span>Add new person ke known faces database</span>
+                        </li>
+                        <li>
+                            <code>load_known_faces(directory)</code>
+                            <span>Load semua known face encodings dari folder</span>
+                        </li>
+                        <li>
+                            <code>calculate_confidence(distance)</code>
+                            <span>Convert face distance to confidence percentage (0-100%)</span>
+                        </li>
+                    </ul>
+
+                    <div class="integration-note">
+                        <strong>📌 Integration dengan Week 2:</strong>
+                        <p>Module ini akan menggunakan <code>face_detector.py</code> untuk detect faces dulu sebelum generate encodings.</p>
+                    </div>
+
+                    <div class="next-week-preview">
+                        <strong>� Next Week Preview:</strong>
+                        <p>Week 4: Systematic dataset collection dengan multiple angles & lighting variations untuk improve recognition accuracy!</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>🎯 Learning Objectives</h3>
+                <div class="objectives-grid">
+                    <div class="objective-card">
+                        <div class="objective-icon">🔢</div>
+                        <h4>Face Encodings</h4>
+                        <p>Understand 128-dimensional vector representation yang unik untuk setiap wajah</p>
+                    </div>
+                    <div class="objective-card">
+                        <div class="objective-icon">📏</div>
+                        <h4>Face Distance</h4>
+                        <p>Calculate similarity between faces menggunakan Euclidean distance</p>
+                    </div>
+                    <div class="objective-card">
+                        <div class="objective-icon">👥</div>
+                        <h4>Known Faces Database</h4>
+                        <p>Build dan manage database of known faces dengan encodings</p>
+                    </div>
+                    <div class="objective-card">
+                        <div class="objective-icon">🎯</div>
+                        <h4>Recognition Confidence</h4>
+                        <p>Calculate confidence scores dan set optimal tolerance levels</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>💡 Key Concepts</h3>
+                <div class="concepts-container">
+                    <div class="concept-card">
+                        <h4>🔢 Face Encodings (128-D Vector)</h4>
+                        <p>Setiap wajah di-convert menjadi 128-dimensional numeric vector yang unique:</p>
+                        <code style="display: block; margin-top: 0.5rem;">
+import face_recognition
+encodings = face_recognition.face_encodings(image)
+# Output: array of 128 float numbers
+                        </code>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>📏 Face Distance & Comparison</h4>
+                        <p>Lower distance = more similar. Typical threshold = 0.6:</p>
+                        <code style="display: block; margin-top: 0.5rem;">
+distance = face_recognition.face_distance(known_encodings, unknown_encoding)
+matches = face_recognition.compare_faces(known_encodings, unknown_encoding, tolerance=0.6)
+                        </code>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>👤 Known Faces Database</h4>
+                        <p>Store known encodings dengan labels:</p>
+                        <code style="display: block; margin-top: 0.5rem;">
+known_faces = {
+    "John": [encoding1, encoding2],
+    "Jane": [encoding3, encoding4]
+}
+                        </code>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>🎯 Tolerance Level</h4>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                            <li><strong>0.4:</strong> Very strict (few false positives)</li>
+                            <li><strong>0.6:</strong> Default (balanced)</li>
+                            <li><strong>0.8:</strong> More lenient (may have false positives)</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>📦 Project Deliverable</h3>
+                <div class="deliverable-box">
+                    <h4>face_recognizer.py Module</h4>
+                    <p>Production-ready face recognition module dengan features:</p>
+                    <ul>
+                        <li>✅ <strong>FaceRecognizer class</strong> - Main recognition engine</li>
+                        <li>✅ <strong>encode_face()</strong> - Generate face encoding dari image</li>
+                        <li>✅ <strong>recognize_face()</strong> - Identify person dari encoding</li>
+                        <li>✅ <strong>add_known_face()</strong> - Add person to known faces database</li>
+                        <li>✅ <strong>get_all_encodings()</strong> - Export all encodings</li>
+                        <li>✅ <strong>calculate_confidence()</strong> - Compute recognition confidence score</li>
+                    </ul>
+                    <p style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color); color: var(--text-secondary);">
+                        Module ini akan diintegrasikan dengan face_detector.py dari Week 2.
+                    </p>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>⚙️ Terminal Commands</h3>
+                <div class="command-box">
+                    <p><strong>Install face_recognition library:</strong></p>
+                    <code>pip install face-recognition</code>
+                </div>
+                <div class="command-box" style="margin-top: 1rem;">
+                    <p><strong>Run learning tutorials:</strong></p>
+                    <code>
+cd minggu-3-face-recognition/learning<br>
+python 01_face_recognition_basic.py<br>
+python 02_recognition_concepts.py<br>
+python 03_building_database.py
+                    </code>
+                </div>
+                <div class="command-box" style="margin-top: 1rem;">
+                    <p><strong>Test face recognizer module:</strong></p>
+                    <code>
+cd minggu-3-face-recognition/project<br>
+python test_recognizer.py
+                    </code>
+                </div>
+            </section>
+
+            <section class="week-navigation">
+                <a href="week-2.html" class="btn-nav">← Previous: Week 2</a>
+                <a href="week-4.html" class="btn-nav btn-next">Next: Week 4 →</a>
+            </section>
+        </div>
+    </main>
+
+    <script src="../assets/js/lms-main.js"></script>
+</body>
+</html>

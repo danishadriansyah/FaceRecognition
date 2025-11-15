@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 2.4: Building Face Detector Module</title>
+    <link rel="stylesheet" href="../../assets/css/lms-styles.css">
+    <link rel="stylesheet" href="../../assets/css/lesson-styles.css">
+</head>
+<body class="lms-body">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>🎓 Face Recognition LMS</h2>
+            <p class="sidebar-subtitle">Learning Platform</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="../../dashboard.html" class="nav-item">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="../../learning-path.html" class="nav-item">
+                <span class="icon">🗺️</span>
+                <span>Learning Path</span>
+            </a>
+            <a href="../../my-progress.html" class="nav-item">
+                <span class="icon">📈</span>
+                <span>My Progress</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            <p class="nav-label">MINGGU</p>
+            
+            <a href="../week-1.html" class="nav-item">
+                <span class="icon">1️⃣</span>
+                <span>Python & OpenCV</span>
+                <span class="badge badge-easy">Easy</span>
+            </a>
+            <a href="../week-2.html" class="nav-item active">
+                <span class="icon">2️⃣</span>
+                <span>Face Detection</span>
+            </a>
+            <a href="../week-3.html" class="nav-item">
+                <span class="icon">3️⃣</span>
+                <span>Face Recognition</span>
+            </a>
+            <a href="../week-4.html" class="nav-item">
+                <span class="icon">4️⃣</span>
+                <span>Dataset Collection</span>
+            </a>
+            <a href="../week-5.html" class="nav-item">
+                <span class="icon">5️⃣</span>
+                <span>Recognition System</span>
+            </a>
+            <a href="../week-6.html" class="nav-item">
+                <span class="icon">6️⃣</span>
+                <span>Database & Attendance</span>
+            </a>
+            <a href="../week-7.html" class="nav-item">
+                <span class="icon">7️⃣</span>
+                <span>Desktop GUI</span>
+            </a>
+            <a href="../week-8.html" class="nav-item">
+                <span class="icon">8️⃣</span>
+                <span>Testing & Deploy</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            
+            <a href="../../resources.html" class="nav-item">
+                <span class="icon">📚</span>
+                <span>Resources</span>
+            </a>
+            <a href="../../community.html" class="nav-item">
+                <span class="icon">👥</span>
+                <span>Community</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="avatar">👤</div>
+                <div class="user-info">
+                    <p class="user-name">Student</p>
+                    <p class="user-role">Learner</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                <div class="breadcrumb">
+                    <a href="../../dashboard.html">Home</a>
+                    <span class="separator">›</span>
+                    <a href="../week-2.html">Week 2</a>
+                    <span class="separator">›</span>
+                    <span class="current">Lesson 4</span>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <button class="icon-btn" title="Notifications">🔔</button>
+                <button class="icon-btn" title="Settings">⚙️</button>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <div class="lesson-header">
+                <h1>🏗️ Lesson 2.4: Building Face Detector Module</h1>
+                <p>Create production-ready FaceDetector class dengan reusable methods</p>
+            </div>
+
+            <section class="lesson-content-section">
+                <h2>🎯 Learning Objectives</h2>
+                <ul>
+                    <li>Create FaceDetector class untuk encapsulate detection logic</li>
+                    <li>Implement detect_faces() method</li>
+                    <li>Implement draw_detections() untuk visualization</li>
+                    <li>Add get_face_regions() untuk extract face images</li>
+                </ul>
+
+                <h2>📝 Complete Tutorial</h2>
+                <p>Lihat file project: <code>minggu-2-face-detection/project/face_detector.py</code></p>
+                
+                <h2>✅ Exercises</h2>
+                <ol>
+                    <li>Test FaceDetector class dengan berbagai images</li>
+                    <li>Run <code>test_detector.py</code> untuk verify functionality</li>
+                    <li>Experiment dengan different parameters</li>
+                </ol>
+
+                <div class="lesson-actions">
+                    <button onclick="window.location.href='week2-lesson3.html'" class="btn-secondary">← Previous Lesson</button>
+                    <button onclick="markLessonCompleted(2, 4)" class="btn-primary">✅ Mark Complete</button>
+                    <button onclick="window.location.href='../week-3.html'" class="btn-secondary">Next Week →</button>
+                </div>
+            </section>
+
+            <section class="week-navigation">
+                <a href="../week-2.html" class="btn-nav">← Back to Week 2</a>
+                <a href="../week-3.html" class="btn-nav btn-next">Next Week: Face Recognition →</a>
+            </section>
+        </div>
+    </main>
+
+    <script src="../../assets/js/lms-main.js"></script>
+</body>
+</html>

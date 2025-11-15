@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 5: Recognition System - Face Recognition LMS</title>
+    <link rel="stylesheet" href="../assets/css/lms-styles.css">
+    <link rel="stylesheet" href="../assets/css/lesson-styles.css">
+</head>
+<body class="lms-body">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>🎓 Face Recognition LMS</h2>
+            <p class="sidebar-subtitle">Learning Platform</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="../dashboard.html" class="nav-item">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="../learning-path.html" class="nav-item">
+                <span class="icon">🗺️</span>
+                <span>Learning Path</span>
+            </a>
+            <a href="../my-progress.html" class="nav-item">
+                <span class="icon">📈</span>
+                <span>My Progress</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            <p class="nav-label">MINGGU</p>
+            
+            <a href="week-1.html" class="nav-item">
+                <span class="icon">1️⃣</span>
+                <span>Python & OpenCV</span>
+                <span class="badge badge-easy">Easy</span>
+            </a>
+            <a href="week-2.html" class="nav-item">
+                <span class="icon">2️⃣</span>
+                <span>Face Detection</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="week-3.html" class="nav-item">
+                <span class="icon">3️⃣</span>
+                <span>Face Recognition</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="week-4.html" class="nav-item">
+                <span class="icon">4️⃣</span>
+                <span>Dataset Collection</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="week-5.html" class="nav-item active">
+                <span class="icon">5️⃣</span>
+                <span>Recognition System</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="week-6.html" class="nav-item">
+                <span class="icon">6️⃣</span>
+                <span>Database & Attendance</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="week-7.html" class="nav-item">
+                <span class="icon">7️⃣</span>
+                <span>Desktop GUI</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="week-8.html" class="nav-item">
+                <span class="icon">8️⃣</span>
+                <span>Testing & Deploy</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            
+            <a href="../resources.html" class="nav-item">
+                <span class="icon">📚</span>
+                <span>Resources</span>
+            </a>
+            <a href="../community.html" class="nav-item">
+                <span class="icon">👥</span>
+                <span>Community</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="avatar">👤</div>
+                <div class="user-info">
+                    <p class="user-name">Student</p>
+                    <p class="user-role">Learner</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                <div class="breadcrumb">
+                    <a href="../dashboard.html">Home</a>
+                    <span class="separator">›</span>
+                    <span class="current">Week 5</span>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <button class="icon-btn" title="Notifications">🔔</button>
+                <button class="icon-btn" title="Settings">⚙️</button>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <!-- Week Header -->
+            <section class="week-header">
+                <div class="week-number">5</div>
+                <div class="week-info">
+                    <h1>Minggu 5: Recognition System Integration</h1>
+                    <p class="week-description">Integrasikan semua modules (detector, recognizer, dataset manager) jadi satu recognition service dengan real-time processing, performance optimization, dan error handling yang robust!</p>
+                </div>
+                <div class="week-meta">
+                    <div class="meta-item">
+                        <span class="icon">⏱️</span>
+                        <span>4-5 hari</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="icon">📚</span>
+                        <span>2 Lessons</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="icon">🎯</span>
+                        <span>Hard</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>📚 Lessons</h3>
+                <div class="lessons-list">
+                    <!-- Lesson 1 -->
+                    <div class="lesson-card" onclick="openLesson(5, 1)">
+                        <div class="lesson-number">01</div>
+                        <div class="lesson-content">
+                            <h3>System Integration & Architecture</h3>
+                            <p>Design RecognitionService class yang integrate FaceDetector + FaceRecognizer + DatasetManager. Implement pipeline: load dataset → detect faces → recognize → return results dengan error handling dan logging</p>
+                            <div class="lesson-meta">
+                                <span>⏱️ 120-150 min</span>
+                                <span class="lesson-status">Not Started</span>
+                            </div>
+                        </div>
+                        <div class="lesson-action">
+                            <button class="btn-start">Start →</button>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 2 -->
+                    <div class="lesson-card" onclick="openLesson(5, 2)">
+                        <div class="lesson-number">02</div>
+                        <div class="lesson-content">
+                            <h3>Performance Optimization</h3>
+                            <p>Multi-threading untuk video processing, caching face encodings, reduce detection frequency (skip frames), GPU acceleration jika available, benchmark performance metrics (FPS, latency, accuracy)</p>
+                            <div class="lesson-meta">
+                                <span>⏱️ 90-120 min</span>
+                                <span class="lesson-status">Not Started</span>
+                            </div>
+                        </div>
+                        <div class="lesson-action">
+                            <button class="btn-start">Start →</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Project Module -->
+            <section class="module-section">
+                <h2>📦 Project Module: recognition_service.py</h2>
+                <div class="module-card">
+                    <p class="module-description">High-level service yang orchestrate semua modules dengan optimized pipeline untuk real-time face recognition.</p>
+                    
+                    <h4>Class & Methods:</h4>
+                    <ul class="function-list">
+                        <li>
+                            <code>class RecognitionService(__init__)</code>
+                            <span>Initialize detector, recognizer, dataset manager dengan config options</span>
+                        </li>
+                        <li>
+                            <code>load_dataset(dataset_path)</code>
+                            <span>Load dan cache semua known face encodings untuk fast lookup</span>
+                        </li>
+                        <li>
+                            <code>recognize_from_image(image_path)</code>
+                            <span>Full pipeline: detect → encode → recognize untuk single image</span>
+                        </li>
+                        <li>
+                            <code>recognize_from_webcam(camera_id=0)</code>
+                            <span>Real-time recognition dengan optimized frame processing</span>
+                        </li>
+                        <li>
+                            <code>process_frame(frame, skip_frames=3)</code>
+                            <span>Process video frame dengan frame skipping untuk performance</span>
+                        </li>
+                        <li>
+                            <code>get_recognition_stats()</code>
+                            <span>Return performance metrics: FPS, total recognized, accuracy rate</span>
+                        </li>
+                        <li>
+                            <code>update_dataset()</code>
+                            <span>Hot reload dataset tanpa restart service</span>
+                        </li>
+                    </ul>
+
+                    <div class="integration-note">
+                        <strong>📌 Integration dengan Week 1-4:</strong>
+                        <p>Service ini uses <code>face_detector.py</code> (Week 2), <code>face_recognizer.py</code> (Week 3), <code>dataset_manager.py</code> (Week 4), dan <code>image_utils.py</code> (Week 1).</p>
+                    </div>
+
+                    <div class="next-week-preview">
+                        <strong>🔮 Next Week Preview:</strong>
+                        <p>Week 6: Connect ke MySQL database untuk attendance system dengan timestamp tracking, report generation, dan persistent storage!</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>🎯 Learning Objectives</h3>
+                <div class="objectives-grid">
+                    <div class="objective-card">
+                        <div class="objective-icon">🔗</div>
+                        <h4>Module Integration</h4>
+                        <p>Combine detector, recognizer, dataset manager jadi cohesive service</p>
+                    </div>
+                    <div class="objective-card">
+                        <div class="objective-icon">⚡</div>
+                        <h4>Performance Optimization</h4>
+                        <p>Multi-threading, caching, frame skipping untuk real-time processing</p>
+                    </div>
+                    <div class="objective-card">
+                        <div class="objective-icon">🎥</div>
+                        <h4>Video Processing</h4>
+                        <p>Handle webcam streams dengan consistent FPS dan low latency</p>
+                    </div>
+                    <div class="objective-card">
+                        <div class="objective-icon">📊</div>
+                        <h4>Metrics & Monitoring</h4>
+                        <p>Track performance metrics, log errors, generate statistics</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>💡 Key Concepts</h3>
+                <div class="concepts-container">
+                    <div class="concept-card">
+                        <h4>🏗️ Service Architecture</h4>
+                        <p>Recognition pipeline flow:</p>
+                        <code style="display: block; margin-top: 0.5rem;">
+Input (Image/Frame) 
+    → FaceDetector.detect_faces()
+    → FaceRecognizer.encode_face()
+    → FaceRecognizer.recognize_face()
+    → Return: [(name, confidence, bbox)]
+                        </code>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>⚡ Optimization Techniques</h4>
+                        <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                            <li><strong>Frame Skipping:</strong> Process every Nth frame (3-5)</li>
+                            <li><strong>Encoding Cache:</strong> Load encodings once at startup</li>
+                            <li><strong>Multi-threading:</strong> Separate threads untuk capture & process</li>
+                            <li><strong>Resize Frames:</strong> Scale down untuk faster detection (640x480)</li>
+                        </ul>
+                    </div>
+
+                    <div class="concept-card">
+                        <h4>📊 Performance Metrics</h4>
+                        <p>Monitor system health:</p>
+                        <code style="display: block; margin-top: 0.5rem;">
+{
+    "fps": 28.5,
+    "avg_latency_ms": 35,
+    "total_recognized": 127,
+    "accuracy_rate": 94.3,
+    "cache_hits": 89
+}
+                        </code>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>⚙️ Terminal Commands</h3>
+                <div class="command-box">
+                    <p><strong>Run learning tutorials:</strong></p>
+                    <code>
+cd minggu-5-recognition-system/learning<br>
+python 02_system_integration.py<br>
+python 03_performance_optimization.py
+                    </code>
+                    
+                    <p style="margin-top: 1rem;"><strong>Test recognition service:</strong></p>
+                    <code>
+cd minggu-5-recognition-system/project<br>
+python test_recognition.py
+                    </code>
+                    
+                    <p style="margin-top: 1rem;"><strong>Benchmark performance:</strong></p>
+                    <code>
+python -m pytest test_recognition.py --benchmark
+                    </code>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="../assets/js/lms-main.js"></script>
+</body>
+</html>

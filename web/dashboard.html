@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Face Recognition LMS</title>
+    <link rel="stylesheet" href="assets/css/lms-styles.css">
+</head>
+<body class="lms-body">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>🎓 Face Recognition LMS</h2>
+            <p class="sidebar-subtitle">Learning Platform</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item active">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="learning-path.html" class="nav-item">
+                <span class="icon">🗺️</span>
+                <span>Learning Path</span>
+            </a>
+            <a href="my-progress.html" class="nav-item">
+                <span class="icon">📈</span>
+                <span>My Progress</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            <p class="nav-label">MINGGU</p>
+            
+            <a href="pages/week-1.html" class="nav-item">
+                <span class="icon">1️⃣</span>
+                <span>Python & OpenCV</span>
+                <span class="badge badge-easy">Easy</span>
+            </a>
+            <a href="pages/week-2.html" class="nav-item">
+                <span class="icon">2️⃣</span>
+                <span>Face Detection</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="pages/week-3.html" class="nav-item">
+                <span class="icon">3️⃣</span>
+                <span>Face Recognition</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="pages/week-4.html" class="nav-item">
+                <span class="icon">4️⃣</span>
+                <span>Dataset Collection</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="pages/week-5.html" class="nav-item">
+                <span class="icon">5️⃣</span>
+                <span>Recognition System</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="pages/week-6.html" class="nav-item">
+                <span class="icon">6️⃣</span>
+                <span>Database & Attendance</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="pages/week-7.html" class="nav-item">
+                <span class="icon">7️⃣</span>
+                <span>Desktop GUI</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="pages/week-8.html" class="nav-item">
+                <span class="icon">8️⃣</span>
+                <span>Testing & Deploy</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            
+            <a href="resources.html" class="nav-item">
+                <span class="icon">📚</span>
+                <span>Resources</span>
+            </a>
+            <a href="community.html" class="nav-item">
+                <span class="icon">👥</span>
+                <span>Community</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="avatar">👤</div>
+                <div class="user-info">
+                    <p class="user-name">Student</p>
+                    <p class="user-role">Learner</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                <h1>Dashboard</h1>
+            </div>
+            <div class="topbar-right">
+                <button class="icon-btn" title="Notifications">🔔</button>
+                <button class="icon-btn" title="Settings">⚙️</button>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="content-wrapper">
+            <!-- Welcome Section -->
+            <section class="welcome-section">
+                <div class="welcome-card">
+                    <h2>👋 Selamat Datang di Face Recognition Learning Platform!</h2>
+                    <p>Platform pembelajaran interaktif untuk membangun sistem absensi berbasis Face Recognition dalam 8 minggu.</p>
+                    <div class="welcome-stats">
+                        <div class="stat-item">
+                            <div class="stat-icon">📚</div>
+                            <div class="stat-info">
+                                <h3>25</h3>
+                                <p>Total Lessons</p>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">⏱️</div>
+                            <div class="stat-info">
+                                <h3>8</h3>
+                                <p>Weeks</p>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">🎯</div>
+                            <div class="stat-info">
+                                <h3>0%</h3>
+                                <p>Progress</p>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">🏆</div>
+                            <div class="stat-info">
+                                <h3>0</h3>
+                                <p>Badges</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Actions -->
+            <section class="quick-actions">
+                <h3>🚀 Quick Actions</h3>
+                <div class="action-grid">
+                    <a href="pages/week-1.html" class="action-card">
+                        <div class="action-icon">▶️</div>
+                        <h4>Start Learning</h4>
+                        <p>Begin Week 1: Python Basics</p>
+                    </a>
+                    <a href="learning-path.html" class="action-card">
+                        <div class="action-icon">🗺️</div>
+                        <h4>View Learning Path</h4>
+                        <p>See full curriculum</p>
+                    </a>
+                    <a href="my-progress.html" class="action-card">
+                        <div class="action-icon">📊</div>
+                        <h4>Track Progress</h4>
+                        <p>Check your achievements</p>
+                    </a>
+                    <a href="resources.html" class="action-card">
+                        <div class="action-icon">📖</div>
+                        <h4>Resources</h4>
+                        <p>Documentation & guides</p>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Learning Progress -->
+            <section class="dashboard-section">
+                <h3>📈 Your Learning Progress</h3>
+                <div class="progress-overview">
+                    <div class="week-progress-card">
+                        <div class="week-header">
+                            <h4>Minggu 1: Python & OpenCV</h4>
+                            <span class="badge badge-easy">Easy</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-info">
+                            <span>0/5 Lessons Completed</span>
+                            <span>0%</span>
+                        </div>
+                        <a href="pages/week-1.html" class="btn-small">Continue →</a>
+                    </div>
+
+                    <div class="week-progress-card locked">
+                        <div class="week-header">
+                            <h4>Minggu 2: Face Detection</h4>
+                            <span class="badge badge-medium">Medium</span>
+                            <span class="lock-icon">🔒</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-info">
+                            <span>0/4 Lessons</span>
+                            <span>Locked</span>
+                        </div>
+                        <p class="lock-msg">Complete Week 1 to unlock</p>
+                    </div>
+
+                    <div class="week-progress-card locked">
+                        <div class="week-header">
+                            <h4>Minggu 3: Face Recognition</h4>
+                            <span class="badge badge-medium">Medium</span>
+                            <span class="lock-icon">🔒</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-info">
+                            <span>0/3 Lessons</span>
+                            <span>Locked</span>
+                        </div>
+                        <p class="lock-msg">Complete Week 2 to unlock</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recent Activity -->
+            <section class="dashboard-section">
+                <h3>🕒 Recent Activity</h3>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-icon new">🎉</div>
+                        <div class="activity-content">
+                            <h4>Welcome to Face Recognition LMS!</h4>
+                            <p>Start your journey by exploring Week 1: Python & OpenCV Basics</p>
+                            <span class="activity-time">Just now</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Next Steps -->
+            <section class="dashboard-section">
+                <h3>📝 Recommended Next Steps</h3>
+                <div class="steps-container">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Setup Environment</h4>
+                            <p>Install Python, OpenCV, and required dependencies</p>
+                            <a href="resources.html#setup" class="link-btn">Setup Guide →</a>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Start Week 1</h4>
+                            <p>Begin with Python basics and OpenCV fundamentals</p>
+                            <a href="pages/week-1.html" class="link-btn">Start Learning →</a>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Join Community</h4>
+                            <p>Connect with other learners and get help</p>
+                            <a href="community.html" class="link-btn">Join Now →</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="assets/js/lms-main.js"></script>
+</body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 1.1: Hello OpenCV - Face Recognition LMS</title>
+    <link rel="stylesheet" href="../../assets/css/lms-styles.css">
+    <link rel="stylesheet" href="../../assets/css/lesson-styles.css">
+</head>
+<body class="lms-body">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>🎓 Face Recognition LMS</h2>
+            <p class="sidebar-subtitle">Learning Platform</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="../../dashboard.html" class="nav-item">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="../../learning-path.html" class="nav-item">
+                <span class="icon">🗺️</span>
+                <span>Learning Path</span>
+            </a>
+            <a href="../../my-progress.html" class="nav-item">
+                <span class="icon">📈</span>
+                <span>My Progress</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            <p class="nav-label">MINGGU</p>
+            
+            <a href="../week-1.html" class="nav-item active">
+                <span class="icon">1️⃣</span>
+                <span>Python & OpenCV</span>
+                <span class="badge badge-easy">Easy</span>
+            </a>
+            <a href="../week-2.html" class="nav-item">
+                <span class="icon">2️⃣</span>
+                <span>Face Detection</span>
+            </a>
+            <a href="../week-3.html" class="nav-item">
+                <span class="icon">3️⃣</span>
+                <span>Face Recognition</span>
+            </a>
+            <a href="../week-4.html" class="nav-item">
+                <span class="icon">4️⃣</span>
+                <span>Dataset Collection</span>
+            </a>
+            <a href="../week-5.html" class="nav-item">
+                <span class="icon">5️⃣</span>
+                <span>Recognition System</span>
+            </a>
+            <a href="../week-6.html" class="nav-item">
+                <span class="icon">6️⃣</span>
+                <span>Database & Attendance</span>
+            </a>
+            <a href="../week-7.html" class="nav-item">
+                <span class="icon">7️⃣</span>
+                <span>Desktop GUI</span>
+            </a>
+            <a href="../week-8.html" class="nav-item">
+                <span class="icon">8️⃣</span>
+                <span>Testing & Deploy</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            
+            <a href="../../resources.html" class="nav-item">
+                <span class="icon">📚</span>
+                <span>Resources</span>
+            </a>
+            <a href="../../community.html" class="nav-item">
+                <span class="icon">👥</span>
+                <span>Community</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="avatar">👤</div>
+                <div class="user-info">
+                    <p class="user-name">Student</p>
+                    <p class="user-role">Learner</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                <div class="breadcrumb">
+                    <a href="../../dashboard.html">Home</a>
+                    <span class="separator">›</span>
+                    <a href="../week-1.html">Week 1</a>
+                    <span class="separator">›</span>
+                    <span class="current">Lesson 1</span>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <button class="icon-btn" title="Notifications">🔔</button>
+                <button class="icon-btn" title="Settings">⚙️</button>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <div class="lesson-header">
+                <h1>🖼️ Lesson 1.2: Image Operations</h1>
+                <p>Learn image manipulation: read, write, resize, crop, rotate, flip, dan color space conversion</p>
+            </div>
+
+            <section class="lesson-content-section">
+                <h2>🎯 Learning Objectives</h2>
+                <ul>
+                    <li>Read dan write images menggunakan cv2.imread() dan cv2.imwrite()</li>
+                    <li>Resize images dengan cv2.resize() dan berbagai interpolation methods</li>
+                    <li>Crop images menggunakan array slicing</li>
+                    <li>Rotate dan flip images</li>
+                    <li>Convert color spaces (BGR ↔ RGB ↔ Grayscale ↔ HSV)</li>
+                </ul>
+
+                <h2>� Tutorial</h2>
+                
+                <div class="concept-card">
+                    <h4>Step 1: Read & Write Images</h4>
+                    <p>Load image, modify, dan save ke file baru:</p>
+                    <pre><code>import cv2
+
+# Read image
+img = cv2.imread('input.jpg')
+
+# Write/save image
+cv2.imwrite('output.jpg', img)
+
+# Read as grayscale directly
+gray = cv2.imread('input.jpg', cv2.IMREAD_GRAYSCALE)</code></pre>
+                </div>
+
+                <div class="concept-card">
+                    <h4>Step 2: Resize Images</h4>
+                    <p>Resize image ke dimensions tertentu:</p>
+                    <pre><code># Resize to specific width & height
+resized = cv2.resize(img, (640, 480))
+
+# Resize by scale factor (50%)
+small = cv2.resize(img, None, fx=0.5, fy=0.5)
+
+# Resize with interpolation
+resized_smooth = cv2.resize(img, (800, 600), 
+                            interpolation=cv2.INTER_LINEAR)</code></pre>
+                </div>
+
+                <div class="concept-card">
+                    <h4>Step 3: Crop Images</h4>
+                    <p>Crop region menggunakan array slicing:</p>
+                    <pre><code># Crop region: [y1:y2, x1:x2]
+cropped = img[100:400, 200:500]
+
+# Get image dimensions
+height, width = img.shape[:2]
+
+# Crop center region
+center_crop = img[height//4:3*height//4, 
+                  width//4:3*width//4]</code></pre>
+                </div>
+
+                <div class="concept-card">
+                    <h4>Step 4: Rotate & Flip</h4>
+                    <p>Transform images dengan rotation dan flipping:</p>
+                    <pre><code># Rotate 90 degrees clockwise
+rotated = cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)
+
+# Flip horizontal
+flipped_h = cv2.flip(img, 1)
+
+# Flip vertical
+flipped_v = cv2.flip(img, 0)
+
+# Flip both axes
+flipped_both = cv2.flip(img, -1)</code></pre>
+                </div>
+
+                <div class="concept-card">
+                    <h4>Step 5: Color Space Conversion</h4>
+                    <p>Convert between different color spaces:</p>
+                    <pre><code># BGR to RGB
+rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+# BGR to Grayscale
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+# BGR to HSV
+hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+
+# Grayscale to BGR (3-channel)
+bgr_from_gray = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)</code></pre>
+                </div>
+
+                <h2>✅ Exercises</h2>
+                <div class="concept-card">
+                    <ol>
+                        <li>Load image, resize to 800x600, dan save</li>
+                        <li>Crop face region dari photo (manual coordinates)</li>
+                        <li>Create thumbnail (resize to 150x150)</li>
+                        <li>Convert image to grayscale dan save</li>
+                        <li>Flip image horizontally (mirror effect)</li>
+                    </ol>
+                </div>
+
+                <p><strong>📁 Reference Code:</strong> <code>minggu-1-python-basics/learning/02_image_operations.py</code></p>
+
+                <div class="lesson-actions">
+                    <button onclick="window.location.href='week1-lesson1.html'" class="btn-secondary">← Previous Lesson</button>
+                    <button onclick="markLessonCompleted(1, 2)" class="btn-primary">✅ Mark Complete</button>
+                    <button onclick="window.location.href='week1-lesson3.html'" class="btn-secondary">Next Lesson →</button>
+                </div>
+            </section>
+
+            <section class="week-navigation">
+                <a href="../week-1.html" class="btn-nav">← Back to Week 1</a>
+                <a href="week1-lesson3.html" class="btn-nav btn-next">Next: Drawing Shapes →</a>
+            </section>
+        </div>
+    </main>
+
+    <script src="../../assets/js/lms-main.js"></script>
+</body>
+</html>

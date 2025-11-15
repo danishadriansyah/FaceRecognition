@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resources - Face Recognition LMS</title>
+    <link rel="stylesheet" href="assets/css/lms-styles.css">
+</head>
+<body class="lms-body">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>🎓 Face Recognition LMS</h2>
+            <p class="sidebar-subtitle">Learning Platform</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="learning-path.html" class="nav-item">
+                <span class="icon">🗺️</span>
+                <span>Learning Path</span>
+            </a>
+            <a href="my-progress.html" class="nav-item">
+                <span class="icon">📈</span>
+                <span>My Progress</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            <p class="nav-label">MINGGU</p>
+            
+            <a href="pages/week-1.html" class="nav-item">
+                <span class="icon">1️⃣</span>
+                <span>Python & OpenCV</span>
+                <span class="badge badge-easy">Easy</span>
+            </a>
+            <a href="pages/week-2.html" class="nav-item">
+                <span class="icon">2️⃣</span>
+                <span>Face Detection</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="pages/week-3.html" class="nav-item">
+                <span class="icon">3️⃣</span>
+                <span>Face Recognition</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="pages/week-4.html" class="nav-item">
+                <span class="icon">4️⃣</span>
+                <span>Dataset Collection</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="pages/week-5.html" class="nav-item">
+                <span class="icon">5️⃣</span>
+                <span>Recognition System</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="pages/week-6.html" class="nav-item">
+                <span class="icon">6️⃣</span>
+                <span>Database & Attendance</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="pages/week-7.html" class="nav-item">
+                <span class="icon">7️⃣</span>
+                <span>Desktop GUI</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="pages/week-8.html" class="nav-item">
+                <span class="icon">8️⃣</span>
+                <span>Testing & Deploy</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            
+            <a href="resources.html" class="nav-item active">
+                <span class="icon">📚</span>
+                <span>Resources</span>
+            </a>
+            <a href="community.html" class="nav-item">
+                <span class="icon">👥</span>
+                <span>Community</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="avatar">👤</div>
+                <div class="user-info">
+                    <p class="user-name">Student</p>
+                    <p class="user-role">Learner</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                <h1>Resources</h1>
+            </div>
+            <div class="topbar-right">
+                <button class="icon-btn" title="Notifications">🔔</button>
+                <button class="icon-btn" title="Settings">⚙️</button>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <section class="welcome-section">
+                <div class="welcome-card">
+                    <h2>📚 Learning Resources</h2>
+                    <p>Documentation, downloads, dan helpful links untuk learning journey kamu!</p>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>🔧 Setup & Installation</h3>
+                <div class="action-grid">
+                    <div class="action-card">
+                        <div class="action-icon">🐍</div>
+                        <h4>Python 3.8+</h4>
+                        <p>Download dan install Python (pastikan add to PATH)</p>
+                        <a href="https://www.python.org/downloads/" target="_blank" class="btn-small">Download →</a>
+                    </div>
+                    <div class="action-card">
+                        <div class="action-icon">💻</div>
+                        <h4>VS Code</h4>
+                        <p>Code editor yang kami rekomendasikan</p>
+                        <a href="https://code.visualstudio.com/" target="_blank" class="btn-small">Download →</a>
+                    </div>
+                    <div class="action-card">
+                        <div class="action-icon">🎥</div>
+                        <h4>OpenCV</h4>
+                        <p>Install via pip: opencv-python</p>
+                        <code style="display:block; margin-top:0.5rem; padding: 0.5rem; background: var(--dark-bg); border-radius: 4px;">pip install opencv-python</code>
+                    </div>
+                    <div class="action-card">
+                        <div class="action-icon">👤</div>
+                        <h4>Face Recognition</h4>
+                        <p>Install face_recognition library</p>
+                        <code style="display:block; margin-top:0.5rem; padding: 0.5rem; background: var(--dark-bg); border-radius: 4px;">pip install face-recognition</code>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>📦 Required Packages</h3>
+                <div style="background: var(--card-bg); padding: 2rem; border-radius: 12px; border: 1px solid var(--border-color);">
+                    <p style="margin-bottom: 1rem;">Install semua dependencies dengan satu command:</p>
+                    <code style="display:block; padding: 1rem; background: var(--dark-bg); border-radius: 8px; font-size: 0.9rem; white-space: pre;">
+pip install numpy
+pip install opencv-python
+pip install face-recognition
+pip install Pillow
+pip install mysql-connector-python
+pip install sqlalchemy
+                    </code>
+                    <p style="margin-top: 1rem; color: var(--text-secondary); font-size: 0.875rem;">Atau gunakan requirements.txt dari repository</p>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>📖 Official Documentation</h3>
+                <div class="action-grid">
+                    <div class="action-card">
+                        <div class="action-icon">🔵</div>
+                        <h4>OpenCV Docs</h4>
+                        <p>Official OpenCV documentation</p>
+                        <a href="https://docs.opencv.org/" target="_blank" class="btn-small">Visit →</a>
+                    </div>
+                    <div class="action-card">
+                        <div class="action-icon">👤</div>
+                        <h4>Face Recognition</h4>
+                        <p>Library documentation & examples</p>
+                        <a href="https://face-recognition.readthedocs.io/" target="_blank" class="btn-small">Visit →</a>
+                    </div>
+                    <div class="action-card">
+                        <div class="action-icon">🐍</div>
+                        <h4>Python Docs</h4>
+                        <p>Python official documentation</p>
+                        <a href="https://docs.python.org/3/" target="_blank" class="btn-small">Visit →</a>
+                    </div>
+                    <div class="action-card">
+                        <div class="action-icon">🗄️</div>
+                        <h4>SQLAlchemy</h4>
+                        <p>Database ORM documentation</p>
+                        <a href="https://docs.sqlalchemy.org/" target="_blank" class="btn-small">Visit →</a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>🎓 Additional Resources</h3>
+                <div class="action-grid">
+                    <div class="action-card">
+                        <div class="action-icon">📹</div>
+                        <h4>Video Tutorials</h4>
+                        <p>YouTube playlists untuk face recognition</p>
+                        <span class="btn-small" style="cursor: pointer;">Coming Soon</span>
+                    </div>
+                    <div class="action-card">
+                        <div class="action-icon">📝</div>
+                        <h4>Cheat Sheets</h4>
+                        <p>Quick reference guides</p>
+                        <span class="btn-small" style="cursor: pointer;">Coming Soon</span>
+                    </div>
+                    <div class="action-card">
+                        <div class="action-icon">💡</div>
+                        <h4>Code Examples</h4>
+                        <p>Sample projects & templates</p>
+                        <span class="btn-small" style="cursor: pointer;">In Repository</span>
+                    </div>
+                    <div class="action-card">
+                        <div class="action-icon">❓</div>
+                        <h4>FAQ</h4>
+                        <p>Frequently asked questions</p>
+                        <span class="btn-small" style="cursor: pointer;">Coming Soon</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>🔗 Useful Links</h3>
+                <div style="background: var(--card-bg); padding: 2rem; border-radius: 12px; border: 1px solid var(--border-color);">
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="padding: 0.75rem 0; border-bottom: 1px solid var(--border-color);">
+                            <strong>📦 PyPI - opencv-python:</strong> <a href="https://pypi.org/project/opencv-python/" target="_blank" style="color: var(--primary-color);">https://pypi.org/project/opencv-python/</a>
+                        </li>
+                        <li style="padding: 0.75rem 0; border-bottom: 1px solid var(--border-color);">
+                            <strong>📦 PyPI - face-recognition:</strong> <a href="https://pypi.org/project/face-recognition/" target="_blank" style="color: var(--primary-color);">https://pypi.org/project/face-recognition/</a>
+                        </li>
+                        <li style="padding: 0.75rem 0; border-bottom: 1px solid var(--border-color);">
+                            <strong>🐙 GitHub - ageitgey/face_recognition:</strong> <a href="https://github.com/ageitgey/face_recognition" target="_blank" style="color: var(--primary-color);">https://github.com/ageitgey/face_recognition</a>
+                        </li>
+                        <li style="padding: 0.75rem 0;">
+                            <strong>📚 OpenCV Tutorials:</strong> <a href="https://docs.opencv.org/master/d9/df8/tutorial_root.html" target="_blank" style="color: var(--primary-color);">https://docs.opencv.org/master/d9/df8/tutorial_root.html</a>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="assets/js/lms-main.js"></script>
+</body>
+</html>

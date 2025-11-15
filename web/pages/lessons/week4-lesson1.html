@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 1.1: Hello OpenCV - Face Recognition LMS</title>
+    <link rel="stylesheet" href="../../assets/css/lms-styles.css">
+    <link rel="stylesheet" href="../../assets/css/lesson-styles.css">
+</head>
+<body class="lms-body">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>🎓 Face Recognition LMS</h2>
+            <p class="sidebar-subtitle">Learning Platform</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="../../dashboard.html" class="nav-item">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="../../learning-path.html" class="nav-item">
+                <span class="icon">🗺️</span>
+                <span>Learning Path</span>
+            </a>
+            <a href="../../my-progress.html" class="nav-item">
+                <span class="icon">📈</span>
+                <span>My Progress</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            <p class="nav-label">MINGGU</p>
+            
+            <a href="../week-1.html" class="nav-item active">
+                <span class="icon">1️⃣</span>
+                <span>Python & OpenCV</span>
+                <span class="badge badge-easy">Easy</span>
+            </a>
+            <a href="../week-2.html" class="nav-item">
+                <span class="icon">2️⃣</span>
+                <span>Face Detection</span>
+            </a>
+            <a href="../week-3.html" class="nav-item">
+                <span class="icon">3️⃣</span>
+                <span>Face Recognition</span>
+            </a>
+            <a href="../week-4.html" class="nav-item">
+                <span class="icon">4️⃣</span>
+                <span>Dataset Collection</span>
+            </a>
+            <a href="../week-5.html" class="nav-item">
+                <span class="icon">5️⃣</span>
+                <span>Recognition System</span>
+            </a>
+            <a href="../week-6.html" class="nav-item">
+                <span class="icon">6️⃣</span>
+                <span>Database & Attendance</span>
+            </a>
+            <a href="../week-7.html" class="nav-item">
+                <span class="icon">7️⃣</span>
+                <span>Desktop GUI</span>
+            </a>
+            <a href="../week-8.html" class="nav-item">
+                <span class="icon">8️⃣</span>
+                <span>Testing & Deploy</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            
+            <a href="../../resources.html" class="nav-item">
+                <span class="icon">📚</span>
+                <span>Resources</span>
+            </a>
+            <a href="../../community.html" class="nav-item">
+                <span class="icon">👥</span>
+                <span>Community</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="avatar">👤</div>
+                <div class="user-info">
+                    <p class="user-name">Student</p>
+                    <p class="user-role">Learner</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                <div class="breadcrumb">
+                    <a href="../../dashboard.html">Home</a>
+                    <span class="separator">›</span>
+                    <a href="../week-1.html">Week 1</a>
+                    <span class="separator">›</span>
+                    <span class="current">Lesson 1</span>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <button class="icon-btn" title="Notifications">🔔</button>
+                <button class="icon-btn" title="Settings">⚙️</button>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <div class="lesson-header">
+                <h1>📸 Lesson 4.1: Systematic Face Capture</h1>
+                <p>Build automated face capture system dengan multiple angles & lighting conditions</p>
+            </div>
+
+            <section class="lesson-content-section">
+                <h2>🎯 Learning Objectives</h2>
+                <ul>
+                    <li>Build automated face capture system dari webcam</li>
+                    <li>Collect 30-50 images per person dengan variasi angles</li>
+                    <li>Implement multiple lighting conditions capture</li>
+                    <li>Guidelines untuk high-quality dataset creation</li>
+                </ul>
+
+                <h2>� Tutorial</h2>
+                <div class="concept-card">
+                    <h4>Step 1: Design Capture System</h4>
+                    <pre><code>import cv2
+import os
+from datetime import datetime
+
+def capture_dataset(person_name, num_images=50):
+    # Create folder untuk person
+    folder = f"dataset/{person_name}"
+    os.makedirs(folder, exist_ok=True)
+    
+    cap = cv2.VideoCapture(0)
+    count = 0
+    
+    print(f"Capturing {num_images} images untuk {person_name}")
+    print("Press SPACE untuk capture, ESC untuk quit")
+    
+    while count < num_images:
+        ret, frame = cap.read()
+        if not ret:
+            break
+            
+        # Display frame dengan counter
+        cv2.putText(frame, f"Captured: {count}/{num_images}", 
+                   (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 
+                   1, (0, 255, 0), 2)
+        cv2.imshow('Capture Dataset', frame)
+        
+        key = cv2.waitKey(1)
+        if key == 32:  # SPACE
+            filename = f"{folder}/{person_name}_{count+1}.jpg"
+            cv2.imwrite(filename, frame)
+            count += 1
+        elif key == 27:  # ESC
+            break
+    
+    cap.release()
+    cv2.destroyAllWindows()
+    print(f"Captured {count} images!")</code></pre>
+                </div>
+
+                <h2>💡 Best Practices</h2>
+                <div class="concept-card">
+                    <ul>
+                        <li>Capture dengan multiple angles: frontal, left 45°, right 45°</li>
+                        <li>Different lighting: normal, bright, dim</li>
+                        <li>Various expressions: neutral, smile, serious</li>
+                        <li>Consistent background (avoid clutter)</li>
+                        <li>Minimum 30 images per person</li>
+                    </ul>
+                </div>
+
+                <h2>✅ Exercises</h2>
+                <div class="concept-card">
+                    <ol>
+                        <li>Capture dataset untuk 2-3 different people</li>
+                        <li>Ensure variasi angles dan lighting</li>
+                        <li>Check semua images (should be clear & well-lit)</li>
+                        <li>Count files per person folder</li>
+                    </ol>
+                </div>
+
+                <p><strong>📁 Reference:</strong> <code>minggu-4-dataset-collection/learning/01_capture_faces.py</code></p>
+
+                <div class="lesson-actions">
+                    <button onclick="window.location.href='../week-4.html'" class="btn-secondary">← Back to Week 4</button>
+                    <button onclick="markLessonCompleted(4, 1)" class="btn-primary">✅ Mark Complete</button>
+                    <button onclick="window.location.href='week4-lesson2.html'" class="btn-secondary">Next Lesson →</button>
+                </div>
+            </section>
+
+            <section class="week-navigation">
+                <a href="../week-4.html" class="btn-nav">← Back to Week 4</a>
+                <a href="week4-lesson2.html" class="btn-nav btn-next">Next: Quality Control →</a>
+            </section>
+        </div>
+    </main>
+
+    <script src="../../assets/js/lms-main.js"></script>
+</body>
+</html>

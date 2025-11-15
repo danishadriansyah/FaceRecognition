@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Path - Face Recognition LMS</title>
+    <link rel="stylesheet" href="assets/css/lms-styles.css">
+    <link rel="stylesheet" href="assets/css/lesson-styles.css">
+</head>
+<body class="lms-body">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>🎓 Face Recognition LMS</h2>
+            <p class="sidebar-subtitle">Learning Platform</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="learning-path.html" class="nav-item active">
+                <span class="icon">🗺️</span>
+                <span>Learning Path</span>
+            </a>
+            <a href="my-progress.html" class="nav-item">
+                <span class="icon">📈</span>
+                <span>My Progress</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            <p class="nav-label">MINGGU</p>
+            
+            <a href="pages/week-1.html" class="nav-item">
+                <span class="icon">1️⃣</span>
+                <span>Python & OpenCV</span>
+                <span class="badge badge-easy">Easy</span>
+            </a>
+            <a href="pages/week-2.html" class="nav-item">
+                <span class="icon">2️⃣</span>
+                <span>Face Detection</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="pages/week-3.html" class="nav-item">
+                <span class="icon">3️⃣</span>
+                <span>Face Recognition</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="pages/week-4.html" class="nav-item">
+                <span class="icon">4️⃣</span>
+                <span>Dataset Collection</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="pages/week-5.html" class="nav-item">
+                <span class="icon">5️⃣</span>
+                <span>Recognition System</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="pages/week-6.html" class="nav-item">
+                <span class="icon">6️⃣</span>
+                <span>Database & Attendance</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="pages/week-7.html" class="nav-item">
+                <span class="icon">7️⃣</span>
+                <span>Desktop GUI</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="pages/week-8.html" class="nav-item">
+                <span class="icon">8️⃣</span>
+                <span>Testing & Deploy</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            
+            <a href="resources.html" class="nav-item">
+                <span class="icon">📚</span>
+                <span>Resources</span>
+            </a>
+            <a href="community.html" class="nav-item">
+                <span class="icon">👥</span>
+                <span>Community</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="avatar">👤</div>
+                <div class="user-info">
+                    <p class="user-name">Student</p>
+                    <p class="user-role">Learner</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                <h1>Learning Path</h1>
+            </div>
+            <div class="topbar-right">
+                <button class="icon-btn" title="Notifications">🔔</button>
+                <button class="icon-btn" title="Settings">⚙️</button>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <section class="welcome-section">
+                <div class="welcome-card">
+                    <h2>🗺️ Complete Learning Roadmap</h2>
+                    <p>Visual curriculum untuk 8 minggu pembelajaran Face Recognition. Follow the path step-by-step untuk master semua skills!</p>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>📚 Full Curriculum Overview</h3>
+                <div class="progress-overview">
+                    <div class="week-progress-card" data-week="1">
+                        <div class="week-header">
+                            <h4>Week 1: Python Basics & OpenCV</h4>
+                            <span class="badge badge-easy">Easy</span>
+                        </div>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">Setup environment, Python fundamentals, OpenCV basics, image operations, webcam handling</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-info">
+                            <span>0/5 Lessons</span>
+                            <span>0%</span>
+                        </div>
+                        <a href="pages/week-1.html" class="btn-small">Start Week 1 →</a>
+                    </div>
+
+                    <div class="week-progress-card locked" data-week="2">
+                        <div class="week-header">
+                            <h4>Week 2: Face Detection</h4>
+                            <span class="badge badge-medium">Medium</span>
+                            <span class="lock-icon">🔒</span>
+                        </div>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">Haar Cascade, detect faces from images & webcam, multiple face detection, parameter tuning</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-info">
+                            <span>0/4 Lessons</span>
+                            <span>Locked</span>
+                        </div>
+                        <p class="lock-msg">Complete Week 1 to unlock</p>
+                    </div>
+
+                    <div class="week-progress-card locked" data-week="3">
+                        <div class="week-header">
+                            <h4>Week 3: Face Recognition</h4>
+                            <span class="badge badge-medium">Medium</span>
+                            <span class="lock-icon">🔒</span>
+                        </div>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">Face encodings, face comparison, recognition from webcam, known faces database</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-info">
+                            <span>0/3 Lessons</span>
+                            <span>Locked</span>
+                        </div>
+                        <p class="lock-msg">Complete Week 2 to unlock</p>
+                    </div>
+
+                    <div class="week-progress-card locked" data-week="4">
+                        <div class="week-header">
+                            <h4>Week 4: Dataset Collection</h4>
+                            <span class="badge badge-hard">Hard</span>
+                            <span class="lock-icon">🔒</span>
+                        </div>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">Systematic face capture, multiple angles, quality validation, dataset management</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-info">
+                            <span>0/3 Lessons</span>
+                            <span>Locked</span>
+                        </div>
+                        <p class="lock-msg">Complete Week 3 to unlock</p>
+                    </div>
+
+                    <div class="week-progress-card locked" data-week="5">
+                        <div class="week-header">
+                            <h4>Week 5: Recognition System</h4>
+                            <span class="badge badge-hard">Hard</span>
+                            <span class="lock-icon">🔒</span>
+                        </div>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">Integration semua modules, recognition pipeline, performance optimization, error handling</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-info">
+                            <span>0/2 Lessons</span>
+                            <span>Locked</span>
+                        </div>
+                        <p class="lock-msg">Complete Week 4 to unlock</p>
+                    </div>
+
+                    <div class="week-progress-card locked" data-week="6">
+                        <div class="week-header">
+                            <h4>Week 6: Database & Attendance</h4>
+                            <span class="badge badge-hard">Hard</span>
+                            <span class="lock-icon">🔒</span>
+                        </div>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">MySQL setup, SQLAlchemy models, CRUD operations, attendance logic, reporting</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-info">
+                            <span>0/3 Lessons</span>
+                            <span>Locked</span>
+                        </div>
+                        <p class="lock-msg">Complete Week 5 to unlock</p>
+                    </div>
+
+                    <div class="week-progress-card locked" data-week="7">
+                        <div class="week-header">
+                            <h4>Week 7: Desktop GUI</h4>
+                            <span class="badge badge-medium">Medium</span>
+                            <span class="lock-icon">🔒</span>
+                        </div>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">Tkinter GUI, multi-window app, webcam preview, user interface design</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-info">
+                            <span>0/2 Lessons</span>
+                            <span>Locked</span>
+                        </div>
+                        <p class="lock-msg">Complete Week 6 to unlock</p>
+                    </div>
+
+                    <div class="week-progress-card locked" data-week="8">
+                        <div class="week-header">
+                            <h4>Week 8: Testing & Distribution</h4>
+                            <span class="badge badge-medium">Medium</span>
+                            <span class="lock-icon">🔒</span>
+                        </div>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">UI polish, unit testing, PyInstaller executable, application distribution</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-info">
+                            <span>0/3 Lessons</span>
+                            <span>Locked</span>
+                        </div>
+                        <p class="lock-msg">Complete Week 7 to unlock</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>🎯 Learning Milestones</h3>
+                <div class="steps-container">
+                    <div class="step-card">
+                        <div class="step-number">✓</div>
+                        <div class="step-content">
+                            <h4>Weeks 1-2: Foundation</h4>
+                            <p>Master Python, OpenCV, and face detection basics</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">✓</div>
+                        <div class="step-content">
+                            <h4>Weeks 3-4: Recognition</h4>
+                            <p>Build face recognition and dataset collection system</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">✓</div>
+                        <div class="step-content">
+                            <h4>Weeks 5-6: Integration</h4>
+                            <p>Complete recognition system with database & attendance</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">✓</div>
+                        <div class="step-content">
+                            <h4>Weeks 7-8: Deployment</h4>
+                            <p>Build desktop GUI and distribute application</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="assets/js/lms-main.js"></script>
+</body>
+</html>

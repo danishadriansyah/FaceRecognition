@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 7: Desktop GUI - Face Recognition LMS</title>
+    <link rel="stylesheet" href="../assets/css/lms-styles.css">
+    <link rel="stylesheet" href="../assets/css/lesson-styles.css">
+</head>
+<body class="lms-body">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>🎓 Face Recognition LMS</h2>
+            <p class="sidebar-subtitle">Learning Platform</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="../dashboard.html" class="nav-item">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="../learning-path.html" class="nav-item">
+                <span class="icon">🗺️</span>
+                <span>Learning Path</span>
+            </a>
+            <a href="../my-progress.html" class="nav-item">
+                <span class="icon">📈</span>
+                <span>My Progress</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            <p class="nav-label">MINGGU</p>
+            
+            <a href="week-1.html" class="nav-item">
+                <span class="icon">1️⃣</span>
+                <span>Python & OpenCV</span>
+                <span class="badge badge-easy">Easy</span>
+            </a>
+            <a href="week-2.html" class="nav-item">
+                <span class="icon">2️⃣</span>
+                <span>Face Detection</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="week-3.html" class="nav-item">
+                <span class="icon">3️⃣</span>
+                <span>Face Recognition</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="week-4.html" class="nav-item">
+                <span class="icon">4️⃣</span>
+                <span>Dataset Collection</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="week-5.html" class="nav-item">
+                <span class="icon">5️⃣</span>
+                <span>Recognition System</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="week-6.html" class="nav-item">
+                <span class="icon">6️⃣</span>
+                <span>Database & Attendance</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="week-7.html" class="nav-item active">
+                <span class="icon">7️⃣</span>
+                <span>Desktop GUI</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="week-8.html" class="nav-item">
+                <span class="icon">8️⃣</span>
+                <span>Testing & Deploy</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            
+            <a href="../resources.html" class="nav-item">
+                <span class="icon">📚</span>
+                <span>Resources</span>
+            </a>
+            <a href="../community.html" class="nav-item">
+                <span class="icon">👥</span>
+                <span>Community</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="avatar">👤</div>
+                <div class="user-info">
+                    <p class="user-name">Student</p>
+                    <p class="user-role">Learner</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                <div class="breadcrumb">
+                    <a href="../dashboard.html">Home</a>
+                    <span class="separator">›</span>
+                    <span class="current">Week 7</span>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <button class="icon-btn" title="Notifications">🔔</button>
+                <button class="icon-btn" title="Settings">⚙️</button>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <section class="week-header">
+                <div class="week-title">
+                    <h1>Week 7: Desktop GUI Development</h1>
+                    <span class="badge badge-medium">Medium</span>
+                </div>
+                <p class="week-description">
+                    Build desktop application dengan Tkinter. Create multi-window interface dengan webcam preview, person registration, dan attendance tracking.
+                </p>
+                <div class="week-meta">
+                    <div class="meta-item">
+                        <span class="icon">⏱️</span>
+                        <span>5-6 jam</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="icon">📚</span>
+                        <span>2 Lessons</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="icon">🎯</span>
+                        <span>Medium</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>📚 Lessons</h3>
+                <div class="lessons-list">
+                    <!-- Lesson 1 -->
+                    <div class="lesson-card" onclick="openLesson(7, 1)">
+                        <div class="lesson-number">01</div>
+                        <div class="lesson-content">
+                            <h3>Desktop GUI Fundamentals</h3>
+                            <p>Pilih framework (Tkinter vs PyQt), understand event-driven programming, widgets (Button, Label, Entry, Canvas), layout managers (grid/pack/place), threading untuk non-blocking operations, embed OpenCV video di GUI</p>
+                            <div class="lesson-meta">
+                                <span>⏱️ 90-105 min</span>
+                                <span class="lesson-status">Not Started</span>
+                            </div>
+                        </div>
+                        <div class="lesson-action">
+                            <button class="btn-start">Start →</button>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 2 -->
+                    <div class="lesson-card" onclick="openLesson(7, 2)">
+                        <div class="lesson-number">02</div>
+                        <div class="lesson-content">
+                            <h3>Full Application Development</h3>
+                            <p>Build complete desktop app: Main Window (webcam + recognition status), Registration Window (form + face capture), Reports Window (table + filters), Settings Window, menu bar, professional styling dengan ttk themes</p>
+                            <div class="lesson-meta">
+                                <span>⏱️ 210-240 min</span>
+                                <span class="lesson-status locked">� Locked</span>
+                            </div>
+                        </div>
+                        <div class="lesson-action">
+                            <button class="btn-start" >Start </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Project Module -->
+            <section class="module-section">
+                <h2>📦 Project Module: Desktop Application</h2>
+                <div class="module-card">
+                    <p class="module-description">User-friendly desktop GUI untuk face recognition attendance system dengan multi-window interface.</p>
+                    
+                    <h4>Main Application Files:</h4>
+                    <ul class="function-list">
+                        <li>
+                            <code>app.py (main entry point)</code>
+                            <span>Initialize application, load config, start main window</span>
+                        </li>
+                        <li>
+                            <code>gui/main_window.py</code>
+                            <span>Main interface dengan live webcam preview, recognition status, attendance counter</span>
+                        </li>
+                        <li>
+                            <code>gui/registration_window.py</code>
+                            <span>Person registration form dengan face capture dari webcam (30-50 images)</span>
+                        </li>
+                        <li>
+                            <code>gui/reports_window.py</code>
+                            <span>Attendance records table dengan date filtering, search, export to Excel/CSV</span>
+                        </li>
+                        <li>
+                            <code>gui/settings_window.py</code>
+                            <span>Configure camera, recognition parameters, database connection</span>
+                        </li>
+                        <li>
+                            <code>utils/video_thread.py</code>
+                            <span>Threaded video capture untuk non-blocking GUI updates</span>
+                        </li>
+                    </ul>
+
+                    <div class="integration-note">
+                        <strong>📌 Integration dengan Week 6:</strong>
+                        <p>GUI calls <code>attendance_system.py</code> untuk all backend operations (recognition, database, reports).</p>
+                    </div>
+
+                    <div class="next-week-preview">
+                        <strong>� Next Week Preview:</strong>
+                        <p>Week 8: Final testing, debugging, optimization, deployment preparation, documentation & presentation!</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>🎯 Learning Objectives</h3>
+                <div class="objectives-grid">
+                    <div class="objective-card">
+                        <div class="objective-icon">🖥️</div>
+                        <h4>Tkinter Mastery</h4>
+                        <p>Widgets, layout managers (grid/pack), event-driven programming</p>
+                    </div>
+                    <div class="objective-card">
+                        <div class="objective-icon">📹</div>
+                        <h4>Webcam in GUI</h4>
+                        <p>Embed OpenCV webcam feed di Tkinter Canvas dengan threading</p>
+                    </div>
+                    <div class="objective-card">
+                        <div class="objective-icon">🪟</div>
+                        <h4>Multi-Window App</h4>
+                        <p>Main window, registration window, reports window</p>
+                    </div>
+                    <div class="objective-card">
+                        <div class="objective-icon">🎨</div>
+                        <h4>UI/UX Design</h4>
+                        <p>Professional layout, colors, responsive design</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>🪟 GUI Windows</h3>
+                <div class="concepts-container">
+                    <div class="concept-card">
+                        <h4>🏠 Main Window</h4>
+                        <p>Webcam preview + live recognition + attendance status display</p>
+                    </div>
+                    <div class="concept-card">
+                        <h4>📝 Registration Window</h4>
+                        <p>Form untuk add new person + face capture system</p>
+                    </div>
+                    <div class="concept-card">
+                        <h4>📊 Reports Window</h4>
+                        <p>Attendance records table + date filter + export to Excel/CSV</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>📦 Project Deliverable</h3>
+                <div class="deliverable-box">
+                    <p><strong>Complete Desktop Application dengan:</strong></p>
+                    <ul>
+                        <li>✅ main_app.py - Application entry point</li>
+                        <li>✅ gui/main_window.py - Main interface dengan webcam</li>
+                        <li>✅ gui/register_window.py - Person registration</li>
+                        <li>✅ gui/reports_window.py - Attendance reports</li>
+                        <li>✅ Threading untuk non-blocking webcam</li>
+                        <li>✅ Professional UI dengan ttk themes</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>⚙️ Terminal Commands</h3>
+                <div class="command-box">
+                    <code>
+cd minggu-7-desktop-gui/learning<br>
+python 02_restful_api_design.py<br>
+python 03_authentication.py<br><br>
+cd ../project<br>
+python app.py
+                    </code>
+                </div>
+            </section>
+
+            <section class="week-navigation">
+                <a href="week-6.html" class="btn-nav">← Previous: Week 6</a>
+                <a href="week-8.html" class="btn-nav btn-next">Next: Week 8 →</a>
+            </section>
+        </div>
+    </main>
+
+    <script src="../assets/js/lms-main.js"></script>
+</body>
+</html>
+

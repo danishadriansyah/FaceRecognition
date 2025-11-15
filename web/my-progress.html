@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Progress - Face Recognition LMS</title>
+    <link rel="stylesheet" href="assets/css/lms-styles.css">
+</head>
+<body class="lms-body">
+    <!-- Sidebar (sama seperti dashboard) -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>🎓 Face Recognition LMS</h2>
+            <p class="sidebar-subtitle">Learning Platform</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="learning-path.html" class="nav-item">
+                <span class="icon">🗺️</span>
+                <span>Learning Path</span>
+            </a>
+            <a href="my-progress.html" class="nav-item active">
+                <span class="icon">📈</span>
+                <span>My Progress</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            <p class="nav-label">MINGGU</p>
+            
+            <a href="pages/week-1.html" class="nav-item">
+                <span class="icon">1️⃣</span>
+                <span>Python & OpenCV</span>
+                <span class="badge badge-easy">Easy</span>
+            </a>
+            <a href="pages/week-2.html" class="nav-item">
+                <span class="icon">2️⃣</span>
+                <span>Face Detection</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="pages/week-3.html" class="nav-item">
+                <span class="icon">3️⃣</span>
+                <span>Face Recognition</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="pages/week-4.html" class="nav-item">
+                <span class="icon">4️⃣</span>
+                <span>Dataset Collection</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="pages/week-5.html" class="nav-item">
+                <span class="icon">5️⃣</span>
+                <span>Recognition System</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="pages/week-6.html" class="nav-item">
+                <span class="icon">6️⃣</span>
+                <span>Database & Attendance</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="pages/week-7.html" class="nav-item">
+                <span class="icon">7️⃣</span>
+                <span>Desktop GUI</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="pages/week-8.html" class="nav-item">
+                <span class="icon">8️⃣</span>
+                <span>Testing & Deploy</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            
+            <a href="resources.html" class="nav-item">
+                <span class="icon">📚</span>
+                <span>Resources</span>
+            </a>
+            <a href="community.html" class="nav-item">
+                <span class="icon">👥</span>
+                <span>Community</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="avatar">👤</div>
+                <div class="user-info">
+                    <p class="user-name">Student</p>
+                    <p class="user-role">Learner</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                <h1>My Progress</h1>
+            </div>
+            <div class="topbar-right">
+                <button class="icon-btn" title="Notifications">🔔</button>
+                <button class="icon-btn" title="Settings">⚙️</button>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <section class="welcome-section">
+                <div class="welcome-card">
+                    <h2>📈 Your Learning Progress</h2>
+                    <p>Track your achievements, see your progress, and earn badges!</p>
+                    <div class="welcome-stats">
+                        <div class="stat-item">
+                            <div class="stat-icon">📚</div>
+                            <div class="stat-info">
+                                <h3 id="completed-lessons">0</h3>
+                                <p>Lessons Completed</p>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">🎯</div>
+                            <div class="stat-info">
+                                <h3 id="overall-progress">0%</h3>
+                                <p>Overall Progress</p>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">🏆</div>
+                            <div class="stat-info">
+                                <h3 id="badges-earned">0</h3>
+                                <p>Badges Earned</p>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">🔥</div>
+                            <div class="stat-info">
+                                <h3>1</h3>
+                                <p>Day Streak</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>🏆 Earned Badges</h3>
+                <div id="badges-container" class="action-grid">
+                    <div class="action-card" style="opacity: 0.5;">
+                        <div class="action-icon">🎉</div>
+                        <h4>Week 1 Complete</h4>
+                        <p>Complete all Week 1 lessons</p>
+                        <span style="font-size: 0.75rem; color: var(--text-light);">Not earned yet</span>
+                    </div>
+                    <div class="action-card" style="opacity: 0.5;">
+                        <div class="action-icon">🔍</div>
+                        <h4>Week 2 Complete</h4>
+                        <p>Master Face Detection</p>
+                        <span style="font-size: 0.75rem; color: var(--text-light);">Not earned yet</span>
+                    </div>
+                    <div class="action-card" style="opacity: 0.5;">
+                        <div class="action-icon">👤</div>
+                        <h4>Week 3 Complete</h4>
+                        <p>Face Recognition Expert</p>
+                        <span style="font-size: 0.75rem; color: var(--text-light);">Not earned yet</span>
+                    </div>
+                    <div class="action-card" style="opacity: 0.5;">
+                        <div class="action-icon">📊</div>
+                        <h4>Week 4 Complete</h4>
+                        <p>Dataset Master</p>
+                        <span style="font-size: 0.75rem; color: var(--text-light);">Not earned yet</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>📊 Progress by Week</h3>
+                <div id="progress-details"></div>
+            </section>
+        </div>
+    </main>
+
+    <script src="assets/js/lms-main.js"></script>
+    <script>
+        // Update progress details
+        const progressDetails = document.getElementById('progress-details');
+        const prog = window.progress || loadProgress();
+        
+        let html = '';
+        Object.keys(prog.weeks).forEach(week => {
+            const w = prog.weeks[week];
+            const perc = Math.round((w.completed / w.total) * 100);
+            html += `
+                <div class="week-progress-card" style="margin-bottom: 1rem;">
+                    <div class="week-header">
+                        <h4>Week ${week}</h4>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${perc}%"></div>
+                    </div>
+                    <div class="progress-info">
+                        <span>${w.completed}/${w.total} Lessons</span>
+                        <span>${perc}%</span>
+                    </div>
+                </div>
+            `;
+        });
+        progressDetails.innerHTML = html;
+        
+        // Update stats
+        const completedLessons = document.getElementById('completed-lessons');
+        const overallProgress = document.getElementById('overall-progress');
+        const badgesEarned = document.getElementById('badges-earned');
+        
+        completedLessons.textContent = prog.completedLessons;
+        overallProgress.textContent = Math.round((prog.completedLessons / prog.totalLessons) * 100) + '%';
+        badgesEarned.textContent = prog.badges.length;
+    </script>
+</body>
+</html>

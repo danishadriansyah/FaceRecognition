@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 6: Database & Attendance - Face Recognition LMS</title>
+    <link rel="stylesheet" href="../assets/css/lms-styles.css">
+    <link rel="stylesheet" href="../assets/css/lesson-styles.css">
+</head>
+<body class="lms-body">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>🎓 Face Recognition LMS</h2>
+            <p class="sidebar-subtitle">Learning Platform</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="../dashboard.html" class="nav-item">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="../learning-path.html" class="nav-item">
+                <span class="icon">🗺️</span>
+                <span>Learning Path</span>
+            </a>
+            <a href="../my-progress.html" class="nav-item">
+                <span class="icon">📈</span>
+                <span>My Progress</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            <p class="nav-label">MINGGU</p>
+            
+            <a href="week-1.html" class="nav-item">
+                <span class="icon">1️⃣</span>
+                <span>Python & OpenCV</span>
+                <span class="badge badge-easy">Easy</span>
+            </a>
+            <a href="week-2.html" class="nav-item">
+                <span class="icon">2️⃣</span>
+                <span>Face Detection</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="week-3.html" class="nav-item">
+                <span class="icon">3️⃣</span>
+                <span>Face Recognition</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="week-4.html" class="nav-item">
+                <span class="icon">4️⃣</span>
+                <span>Dataset Collection</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="week-5.html" class="nav-item">
+                <span class="icon">5️⃣</span>
+                <span>Recognition System</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="week-6.html" class="nav-item active">
+                <span class="icon">6️⃣</span>
+                <span>Database & Attendance</span>
+                <span class="badge badge-hard">Hard</span>
+            </a>
+            <a href="week-7.html" class="nav-item">
+                <span class="icon">7️⃣</span>
+                <span>Desktop GUI</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            <a href="week-8.html" class="nav-item">
+                <span class="icon">8️⃣</span>
+                <span>Testing & Deploy</span>
+                <span class="badge badge-medium">Medium</span>
+            </a>
+            
+            <div class="nav-divider"></div>
+            
+            <a href="../resources.html" class="nav-item">
+                <span class="icon">📚</span>
+                <span>Resources</span>
+            </a>
+            <a href="../community.html" class="nav-item">
+                <span class="icon">👥</span>
+                <span>Community</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="avatar">👤</div>
+                <div class="user-info">
+                    <p class="user-name">Student</p>
+                    <p class="user-role">Learner</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                <div class="breadcrumb">
+                    <a href="../dashboard.html">Home</a>
+                    <span class="separator">›</span>
+                    <span class="current">Week 6</span>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <button class="icon-btn" title="Notifications">🔔</button>
+                <button class="icon-btn" title="Settings">⚙️</button>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <section class="week-header">
+                <div class="week-title">
+                    <h1>Week 6: Database & Attendance System</h1>
+                    <span class="badge badge-hard">Hard</span>
+                </div>
+                <p class="week-description">
+                    Setup MySQL database, define models dengan SQLAlchemy, build attendance management system dengan CRUD operations dan reporting.
+                </p>
+                <div class="week-meta">
+                    <div class="meta-item">
+                        <span class="icon">⏱️</span>
+                        <span>6-7 jam</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="icon">📚</span>
+                        <span>3 Lessons</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="icon">🎯</span>
+                        <span>Advanced</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>📚 Lessons</h3>
+                <div class="lessons-list">
+                    <!-- Lesson 1 -->
+                    <div class="lesson-card" onclick="openLesson(6, 1)">
+                        <div class="lesson-number">01</div>
+                        <div class="lesson-content">
+                            <h3>Database Setup & Schema Design</h3>
+                            <p>Install MySQL 8.0+, setup SQLAlchemy ORM, design normalized schema dengan 3 tables (Person, Attendance, FaceEncoding), create migrations, establish relationships dengan foreign keys</p>
+                            <div class="lesson-meta">
+                                <span>⏱️ 90-105 min</span>
+                                <span class="lesson-status">Not Started</span>
+                            </div>
+                        </div>
+                        <div class="lesson-action">
+                            <button class="btn-start">Start →</button>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 2 -->
+                    <div class="lesson-card" onclick="openLesson(6, 2)">
+                        <div class="lesson-number">02</div>
+                        <div class="lesson-content">
+                            <h3>CRUD Operations & ORM Queries</h3>
+                            <p>Implement Create, Read, Update, Delete untuk Person & Attendance records. Complex queries dengan filters, joins, aggregations. Transaction management dan error handling untuk data integrity</p>
+                            <div class="lesson-meta">
+                                <span>⏱️ 120-135 min</span>
+                                <span class="lesson-status">Not Started</span>
+                            </div>
+                        </div>
+                        <div class="lesson-action">
+                            <button class="btn-start">Start →</button>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 3 -->
+                    <div class="lesson-card" onclick="openLesson(6, 3)">
+                        <div class="lesson-number">03</div>
+                        <div class="lesson-content">
+                            <h3>Attendance System & Report Generation</h3>
+                            <p>Build AttendanceSystem class dengan check-in/check-out logic, duplicate prevention (same person <5 minutes), daily/weekly/monthly reports, export to Excel/CSV/PDF dengan formatting</p>
+                            <div class="lesson-meta">
+                                <span>⏱️ 105-120 min</span>
+                                <span class="lesson-status">Not Started</span>
+                            </div>
+                        </div>
+                        <div class="lesson-action">
+                            <button class="btn-start">Start →</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Project Module -->
+            <section class="module-section">
+                <h2>📦 Project Module: attendance_system.py</h2>
+                <div class="module-card">
+                    <p class="module-description">Complete attendance tracking system dengan database persistence, duplicate prevention, dan comprehensive reporting.</p>
+                    
+                    <h4>Class & Methods:</h4>
+                    <ul class="function-list">
+                        <li>
+                            <code>class AttendanceSystem(__init__)</code>
+                            <span>Initialize database connection, load models, setup recognition service</span>
+                        </li>
+                        <li>
+                            <code>record_attendance(person_name, timestamp, type, confidence)</code>
+                            <span>Save attendance record dengan duplicate check (5 min cooldown)</span>
+                        </li>
+                        <li>
+                            <code>add_person(name, employee_id, department, face_encoding)</code>
+                            <span>Register new person dengan face encoding storage</span>
+                        </li>
+                        <li>
+                            <code>get_daily_attendance(date)</code>
+                            <span>Retrieve all attendance records untuk specific date</span>
+                        </li>
+                        <li>
+                            <code>get_person_history(person_id, start_date, end_date)</code>
+                            <span>Get attendance history untuk person dalam date range</span>
+                        </li>
+                        <li>
+                            <code>generate_report(report_type, date_range, export_format)</code>
+                            <span>Generate Excel/CSV/PDF reports dengan filtering options</span>
+                        </li>
+                        <li>
+                            <code>get_statistics()</code>
+                            <span>Return stats: total persons, today's attendance, avg check-in time</span>
+                        </li>
+                    </ul>
+
+                    <div class="integration-note">
+                        <strong>📌 Integration dengan Week 5:</strong>
+                        <p>Uses <code>recognition_service.py</code> untuk identify people, kemudian save results ke MySQL database.</p>
+                    </div>
+
+                    <div class="next-week-preview">
+                        <strong>� Next Week Preview:</strong>
+                        <p>Week 7: Build desktop GUI dengan tkinter atau PyQt untuk user-friendly interface dengan live webcam preview!</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>🎯 Learning Objectives</h3>
+                <div class="objectives-grid">
+                    <div class="objective-card">
+                        <div class="objective-icon">🗄️</div>
+                        <h4>Database Design</h4>
+                        <p>Design normalized database schema untuk attendance system</p>
+                    </div>
+                    <div class="objective-card">
+                        <div class="objective-icon">🔧</div>
+                        <h4>SQLAlchemy ORM</h4>
+                        <p>Use SQLAlchemy untuk database operations tanpa raw SQL</p>
+                    </div>
+                    <div class="objective-card">
+                        <div class="objective-icon">📝</div>
+                        <h4>Attendance Logic</h4>
+                        <p>Record check-in/check-out, prevent duplicates, generate reports</p>
+                    </div>
+                    <div class="objective-card">
+                        <div class="objective-icon">📊</div>
+                        <h4>Query & Reporting</h4>
+                        <p>Complex queries, date filtering, data export to Excel/CSV</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>💡 Database Schema</h3>
+                <div class="concepts-container">
+                    <div class="concept-card">
+                        <h4>📋 Person Table</h4>
+                        <code style="display: block;">
+id (PK), name, employee_id, department, email, created_at
+                        </code>
+                    </div>
+                    <div class="concept-card">
+                        <h4>📅 Attendance Table</h4>
+                        <code style="display: block;">
+id (PK), person_id (FK), timestamp, type (check_in/check_out), 
+photo_path, confidence
+                        </code>
+                    </div>
+                    <div class="concept-card">
+                        <h4>👤 FaceEncoding Table</h4>
+                        <code style="display: block;">
+id (PK), person_id (FK), encoding_data, created_at
+                        </code>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>📦 Project Deliverables</h3>
+                <div class="deliverable-box">
+                    <p><strong>models.py</strong> - Database models (Person, Attendance, FaceEncoding)</p>
+                    <p><strong>database.py</strong> - Connection management, session handling</p>
+                    <p><strong>attendance_system.py</strong> - Attendance business logic & reporting</p>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>⚙️ Terminal Commands</h3>
+                <div class="command-box">
+                    <code>
+pip install mysql-connector-python sqlalchemy<br><br>
+cd minggu-6-database-attendance/learning<br>
+python 01_database_setup.py<br>
+python 02_database_design.py<br>
+python 03_attendance_logic.py<br><br>
+cd ../project<br>
+python test_attendance.py
+                    </code>
+                </div>
+            </section>
+
+            <section class="week-navigation">
+                <a href="week-5.html" class="btn-nav">← Previous: Week 5</a>
+                <a href="week-7.html" class="btn-nav btn-next">Next: Week 7 →</a>
+            </section>
+        </div>
+    </main>
+
+    <script src="../assets/js/lms-main.js"></script>
+</body>
+</html>
