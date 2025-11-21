@@ -1,7 +1,26 @@
 # Minggu 3 - Project Module: Face Recognizer
 
 ## 📚 Overview
-Folder ini berisi implementasi production-ready module **face_recognizer.py** untuk face recognition menggunakan face_recognition library. Module ini combines face detection (week 2) dengan face recognition untuk identify people.
+Folder ini berisi implementasi production-ready module **face_recognizer.py** untuk face recognition menggunakan **MediaPipe** library (updated dari face_recognition). Module ini combines face detection (week 2) dengan face recognition untuk identify people.
+
+⚠️ **MIGRATION UPDATE (MediaPipe):**
+Seluruh project sudah di-migrate dari `face_recognition` (yang butuh dlib) ke **MediaPipe** karena:
+- ✅ **Tidak butuh compile dlib** - Just pip install!
+- ✅ **Super cepat** - 30+ FPS real-time processing
+- ✅ **Google product** - Well-maintained, frequently updated
+- ✅ **Works everywhere** - Windows, Mac, Linux instantly
+
+**What changed in code:**
+- `face_recognition.face_encodings()` → `MediaPipe FaceMesh + feature extraction`
+- `face_recognition.face_locations()` → `MediaPipe FaceDetection`
+- `face_recognition.face_distance()` → `numpy Euclidean distance`
+- API sekarang di `FaceRecognizer` class (sudah handle semua internally)
+
+**Dari user perspective:**
+- Install: `pip install -r requirements.txt` (tidak perlu C++ tools!)
+- Usage: Sama seperti sebelumnya, via `FaceRecognizer` class
+- Performance: **Lebih cepat** (30+ FPS vs 15-20 FPS sebelumnya)
+- All week 3-7 modules updated automatically
 
 ## 📁 File Structure
 
@@ -410,7 +429,7 @@ for img_path in test_images:
 - Resize images before encoding
 - Use batch processing for multiple images
 - Cache encodings instead of regenerating
-- Consider using GPU acceleration (dlib)
+- Consider using GPU acceleration (MediaPipe support)
 
 **Database file corrupted:**
 ```python

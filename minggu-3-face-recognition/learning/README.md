@@ -1,7 +1,12 @@
 # Minggu 3 - Learning: Face Recognition
 
 ## 📚 Overview
-Folder ini berisi 3 tutorial files untuk belajar face recognition menggunakan face_recognition library. Anda akan belajar cara mengenali dan membedakan wajah orang menggunakan face encodings (128-d vectors).
+Folder ini berisi 3 tutorial files untuk belajar face recognition menggunakan **MediaPipe** library (updated dari face_recognition). Anda akan belajar cara mengenali dan membedakan wajah orang menggunakan face encodings (128-d vectors).
+
+⚠️ **NOTE:** Project sudah migrate dari `face_recognition` ke `MediaPipe` karena:
+- ✅ Tidak butuh compile C++ (no dlib!)
+- ✅ Super cepat (30+ FPS)
+- ✅ Google product (well-maintained)
 
 ## 📁 File Structure
 
@@ -40,29 +45,39 @@ python 01_face_encodings.py
 - Values: normalized between -1 and 1
 
 **Konsep penting:**
-- face_recognition.face_encodings() - Generate 128-d vector
+- MediaPipe FaceMesh - Extract facial landmarks & features
 - Encoding adalah unique "fingerprint" untuk setiap wajah
 - Encodings dapat disimpan dan di-load kembali
 - Same person = similar encodings
 - Different person = different encodings
 
-**Code example:**
+**Code example (MediaPipe version):**
 ```python
-import face_recognition
+import mediapipe as mp
 import pickle
+import cv2
 
 # Load image
-image = face_recognition.load_image_file('person.jpg')
+image = cv2.imread('person.jpg')
+rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-# Generate encoding
-encodings = face_recognition.face_encodings(image)
-if len(encodings) > 0:
-    encoding = encodings[0]  # First face
-    print(f'Encoding shape: {encoding.shape}')  # (128,)
+# Initialize MediaPipe
+mp_face_detection = mp.solutions.face_detection
+with mp_face_detection.FaceDetection() as face_detection:
+    results = face_detection.process(rgb_image)
     
-    # Save encoding
-    with open('person.pkl', 'wb') as f:
-        pickle.dump(encoding, f)
+    if results.detections:
+        # Face detected! Extract features
+        # (Actual feature extraction handled by face_recognizer.py)
+        print("Face detected!")
+        
+        # Save encoding (from face_recognizer module)
+        from minggu-3-face-recognition.project.face_recognizer import FaceRecognizer
+        recognizer = FaceRecognizer()
+        encoding = recognizer.encode_face(image)
+        
+        with open('person.pkl', 'wb') as f:
+            pickle.dump(encoding, f)
 ```
 
 **Tips:**
@@ -77,8 +92,8 @@ if len(encodings) > 0:
 **Tujuan:** Membandingkan encodings untuk recognize faces
 
 **Apa yang dipelajari:**
-- face_recognition.compare_faces() untuk matching
-- face_recognition.face_distance() untuk similarity score
+- MediaPipe feature extraction
+- Similarity scoring dengan distance calculation
 - Set tolerance threshold untuk accuracy
 - Handle multiple known faces
 - Best match selection
@@ -96,27 +111,28 @@ python 02_face_comparison.py
 
 **Konsep penting:**
 
-**compare_faces():**
+**Feature Extraction (MediaPipe):**
 ```python
-known_encodings = [encoding1, encoding2, encoding3]
-unknown_encoding = encoding_test
+from minggu-3-face-recognition.project.face_recognizer import FaceRecognizer
+import cv2
 
-matches = face_recognition.compare_faces(
-    known_encodings, 
-    unknown_encoding,
-    tolerance=0.6  # Lower = stricter
-)
-# Returns: [True, False, False]
+# Use FaceRecognizer untuk extract features
+recognizer = FaceRecognizer()
+img = cv2.imread('face.jpg')
+encoding = recognizer.encode_face(img)
+print(f"Encoding shape: {encoding.shape}")  # (128,)
 ```
 
-**face_distance():**
+**Distance Calculation:**
 ```python
-distances = face_recognition.face_distance(
-    known_encodings,
-    unknown_encoding
-)
-# Returns: [0.42, 0.68, 0.71]
+import numpy as np
+
+# Calculate Euclidean distance
+distance = np.linalg.norm(encoding1 - encoding2)
+print(f"Distance: {distance:.4f}")
+
 # Lower distance = more similar
+# If distance <= tolerance (0.6): Match!
 ```
 
 **Tolerance explained:**
@@ -166,67 +182,70 @@ python 03_recognition_webcam.py
 
 **Implementation steps:**
 
-**1. Setup known faces:**
+**1. Setup known faces with MediaPipe:**
 ```python
-import face_recognition
+from minggu-3-face-recognition.project.face_recognizer import FaceRecognizer
 import pickle
 
-# Load known encodings
-with open('known_faces.pkl', 'rb') as f:
-    known_data = pickle.load(f)
-    known_encodings = known_data['encodings']
-    known_names = known_data['names']
+# Initialize recognizer
+recognizer = FaceRecognizer()
+
+# Load known faces (dapat dari database atau file)
+recognizer.load_database('known_faces.pkl')
+print(f"Loaded {recognizer.get_statistics()['total_faces']} known faces")
 ```
 
-**2. Process each frame:**
+**2. Process each frame (using FaceRecognizer):**
 ```python
 import cv2
 
 cap = cv2.VideoCapture(0)
+recognizer = FaceRecognizer()
+recognizer.load_database('known_faces.pkl')
+
 while True:
     ret, frame = cap.read()
     
-    # Detect faces
-    face_locations = face_recognition.face_locations(frame)
-    face_encodings = face_recognition.face_encodings(frame, face_locations)
+    # Recognize all faces in frame
+    results = recognizer.recognize_faces_in_image(frame)
     
-    # Recognize each face
-    for (top, right, bottom, left), encoding in zip(face_locations, face_encodings):
-        matches = face_recognition.compare_faces(known_encodings, encoding)
-        name = "Unknown"
-        
-        if True in matches:
-            distances = face_recognition.face_distance(known_encodings, encoding)
-            best_match_index = np.argmin(distances)
-            if matches[best_match_index]:
-                name = known_names[best_match_index]
+    # Draw results
+    for result in results:
+        x, y, w, h = result['bbox']
+        name = result['name']
+        confidence = result['confidence']
         
         # Draw box and name
-        cv2.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)
-        cv2.putText(frame, name, (left, top-10), 
+        cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+        label = f"{name} ({confidence:.1%})"
+        cv2.putText(frame, label, (x, y-10), 
                     cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 255, 0), 2)
     
     cv2.imshow('Face Recognition', frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
+
+cap.release()
+cv2.destroyAllWindows()
 ```
 
 **Performance optimization:**
 ```python
-# Process every Nth frame
+# FaceRecognizer sudah optimized, tapi bisa dipercepat lebih lanjut:
+import cv2
+
+cap = cv2.VideoCapture(0)
 frame_count = 0
-process_this_frame = True
+results_cache = []
 
 while True:
     ret, frame = cap.read()
     
-    # Only process every other frame
-    if process_this_frame:
-        # Resize for faster processing
+    # Process every Nth frame
+    if frame_count % 2 == 0:
+        # Resize untuk faster processing
         small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
-        
-        # Detect and recognize
-        face_locations = face_recognition.face_locations(small_frame)
+        results_cache = recognizer.recognize_faces_in_image(small_frame)
         face_encodings = face_recognition.face_encodings(small_frame, face_locations)
         # ... recognition logic ...
     
@@ -294,11 +313,13 @@ Test dengan wajah known dan unknown
 - Check image quality (not too blurry)
 - Try different image
 - Verify image loaded correctly
+- MediaPipe usually detects faces well, so quality matters!
 
-**face_recognition.face_encodings() returns empty list:**
+**Encoding returns None:**
 - Face tidak terdeteksi di image
 - Coba dengan gambar yang lebih jelas
 - Pastikan wajah cukup besar di foto
+- Gunakan MediaPipe FaceMesh, bukan hanya detection
 
 **Wrong person recognized:**
 - Lower tolerance (try 0.5)
@@ -308,20 +329,18 @@ Test dengan wajah known dan unknown
 
 **Slow performance on webcam:**
 - Resize frame to smaller size (0.25 scale)
-- Use model='hog' instead of 'cnn'
 - Process every 2-3 frames only
 - Reduce number of known faces
+- MediaPipe sudah fast, tapi resize frame membantu CPU
 
-**Import error: No module named 'face_recognition':**
+**Import error: No module named 'mediapipe':**
 ```bash
-pip install face-recognition
-pip install dlib  # Required dependency
+pip install mediapipe opencv-python
 ```
 
-**dlib installation fails:**
-- Windows: Use pre-built wheel (see minggu-1 README)
-- Mac: `brew install cmake`
-- Linux: `sudo apt-get install cmake`
+**Other issues:**
+- Make sure you ran: `pip install -r requirements.txt`
+- Verify MediaPipe installed: `python -c "import mediapipe; print('OK')"`
 
 ---
 
@@ -364,10 +383,10 @@ tolerance = 0.7
 
 ## 📖 Additional Resources
 
-- face_recognition library: https://github.com/ageitgey/face_recognition
-- How it works: dlib's face recognition model
-- Theory: FaceNet paper (128-d embeddings)
-- Alternative: OpenCV DNN face recognition
+- **MediaPipe:** https://mediapipe.dev/
+- **How it works:** MediaPipe FaceMesh - 468 facial landmarks
+- **Theory:** FaceNet/VGGFace2 embeddings (128-d vectors)
+- **Previous:** face_recognition library (now replaced with MediaPipe)
 
 ---
 

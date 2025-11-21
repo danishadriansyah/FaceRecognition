@@ -1,15 +1,21 @@
 """
 Lesson 1: Face Encoding & Recognition (Gambar)
 Build simple face recognition dari known faces database
+Using MediaPipe (NO dlib needed!)
 """
-import face_recognition
+import mediapipe as mp
 import cv2
 import os
 import numpy as np
+import sys
+
+# Add parent path for imports
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../project'))
+from face_recognizer import FaceRecognizer
 
 def main():
     print("="*60)
-    print("LESSON 1: Face Encoding & Recognition")
+    print("LESSON 1: Face Encoding & Recognition (MediaPipe)")
     print("="*60)
     
     # Setup paths
@@ -19,8 +25,13 @@ def main():
     output_dir = os.path.join(script_dir, 'output')
     os.makedirs(output_dir, exist_ok=True)
     
+    # Initialize MediaPipe recognizer
+    print("\n1. Initializing MediaPipe recognizer...")
+    recognizer = FaceRecognizer(tolerance=0.6)
+    print("   ✅ MediaPipe FaceMesh initialized")
+    
     # Load known faces
-    print("\n1. Loading known faces...")
+    print("\n2. Loading known faces...")
     known_encodings = []
     known_names = []
     
@@ -37,12 +48,17 @@ def main():
         for filename in os.listdir(person_dir):
             if filename.endswith(('.jpg', '.png')):
                 filepath = os.path.join(person_dir, filename)
-                img = face_recognition.load_image_file(filepath)
-                encodings = face_recognition.face_encodings(img)
+                img = cv2.imread(filepath)
+                if img is None:
+                    continue
                 
-                if len(encodings) > 0:
-                    known_encodings.append(encodings[0])
+                # Extract encoding using MediaPipe
+                encoding = recognizer.encode_face(img)
+                
+                if encoding is not None:
+                    known_encodings.append(encoding)
                     known_names.append(person_name)
+                    recognizer.add_known_face(encoding, person_name)
                     print(f"   ✅ Loaded: {person_name}/{filename}")
     
     if len(known_encodings) == 0:
@@ -52,7 +68,7 @@ def main():
     print(f"\n✅ Loaded {len(known_encodings)} face(s) from {len(set(known_names))} person(s)")
     
     # Test recognition
-    print("\n2. Testing recognition...")
+    print("\n3. Testing recognition...")
     test_path = os.path.join(images_dir, 'test.jpg')
     
     if not os.path.exists(test_path):
@@ -60,41 +76,33 @@ def main():
         return
     
     # Load and recognize
-    test_img = face_recognition.load_image_file(test_path)
-    test_img_cv = cv2.cvtColor(test_img, cv2.COLOR_RGB2BGR)
-    test_encodings = face_recognition.face_encodings(test_img)
-    face_locations = face_recognition.face_locations(test_img)
+    test_img = cv2.imread(test_path)
+    results = recognizer.recognize_faces_in_image(test_img)
     
-    print(f"   Found {len(test_encodings)} face(s) in test image")
+    print(f"   Found {len(results)} face(s) in test image")
     
     # Recognize each face
-    for (top, right, bottom, left), face_encoding in zip(face_locations, test_encodings):
-        matches = face_recognition.compare_faces(known_encodings, face_encoding, tolerance=0.6)
-        name = "Unknown"
-        confidence = 0
-        
-        if True in matches:
-            face_distances = face_recognition.face_distance(known_encodings, face_encoding)
-            best_match_index = np.argmin(face_distances)
-            if matches[best_match_index]:
-                name = known_names[best_match_index]
-                confidence = (1 - face_distances[best_match_index]) * 100
+    for result in results:
+        name = result['name']
+        confidence = result['confidence']
+        x, y, w, h = result['bbox']
         
         # Draw rectangle and name
-        cv2.rectangle(test_img_cv, (left, top), (right, bottom), (0, 255, 0), 2)
-        cv2.rectangle(test_img_cv, (left, bottom - 35), (right, bottom), (0, 255, 0), cv2.FILLED)
-        cv2.putText(test_img_cv, f"{name} ({confidence:.1f}%)", (left + 6, bottom - 6),
+        cv2.rectangle(test_img, (x, y), (x+w, y+h), (0, 255, 0), 2)
+        cv2.rectangle(test_img, (x, y+h-35), (x+w, y+h), (0, 255, 0), cv2.FILLED)
+        label = f"{name} ({confidence*100:.1f}%)"
+        cv2.putText(test_img, label, (x+6, y+h-6),
                     cv2.FONT_HERSHEY_DUPLEX, 0.6, (255, 255, 255), 1)
         
-        print(f"   ✅ Recognized: {name} (confidence: {confidence:.1f}%)")
+        print(f"   ✅ Recognized: {name} (confidence: {confidence*100:.1f}%)")
     
     # Save result
     output_path = os.path.join(output_dir, 'recognized.jpg')
-    cv2.imwrite(output_path, test_img_cv)
+    cv2.imwrite(output_path, test_img)
     print(f"\n✅ Result saved: {output_path}")
     
     # Show result
-    cv2.imshow('Face Recognition - Press any key', test_img_cv)
+    cv2.imshow('Face Recognition - Press any key', test_img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
     

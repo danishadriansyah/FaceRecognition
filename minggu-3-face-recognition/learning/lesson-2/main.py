@@ -1,14 +1,20 @@
 """
 Lesson 2: Real-Time Face Recognition dari Webcam
+Using MediaPipe (NO dlib needed!)
 """
-import face_recognition
 import cv2
 import os
 import numpy as np
+import sys
+import time
+
+# Add parent path for imports
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../project'))
+from face_recognizer import FaceRecognizer
 
 def main():
     print("="*60)
-    print("LESSON 2: Real-Time Face Recognition")
+    print("LESSON 2: Real-Time Face Recognition (MediaPipe)")
     print("="*60)
     
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -16,8 +22,12 @@ def main():
     output_dir = os.path.join(script_dir, 'output')
     os.makedirs(output_dir, exist_ok=True)
     
+    # Initialize MediaPipe recognizer
+    print("\n1. Initializing MediaPipe recognizer...")
+    recognizer = FaceRecognizer(tolerance=0.6)
+    
     # Load known faces
-    print("\n1. Loading known faces...")
+    print("\n2. Loading known faces...")
     known_encodings = []
     known_names = []
     
@@ -28,16 +38,21 @@ def main():
         for filename in os.listdir(person_dir):
             if filename.endswith(('.jpg', '.png')):
                 filepath = os.path.join(person_dir, filename)
-                img = face_recognition.load_image_file(filepath)
-                encodings = face_recognition.face_encodings(img)
-                if len(encodings) > 0:
-                    known_encodings.append(encodings[0])
+                img = cv2.imread(filepath)
+                if img is None:
+                    continue
+                
+                # Extract encoding using MediaPipe
+                encoding = recognizer.encode_face(img)
+                if encoding is not None:
+                    known_encodings.append(encoding)
                     known_names.append(person_name)
+                    recognizer.add_known_face(encoding, person_name)
     
     print(f"✅ Loaded {len(known_encodings)} face(s)")
     
     # Open webcam
-    print("\n2. Opening webcam...")
+    print("\n3. Opening webcam...")
     cap = cv2.VideoCapture(0)
     if not cap.isOpened():
         print("❌ Cannot open webcam")
@@ -47,51 +62,36 @@ def main():
     print("\nControls: ESC=Exit, SPACE=Snapshot")
     
     frame_count = 0
-    face_locations = []
-    face_encodings_list = []
-    face_names = []
+    results = []
     
     while True:
         ret, frame = cap.read()
         if not ret:
             break
         
-        # Process every 3rd frame for speed
+        # Process every 3rd frame for speed (MediaPipe sudah cepat!)
         if frame_count % 3 == 0:
-            small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
-            rgb_small = cv2.cvtColor(small_frame, cv2.COLOR_BGR2RGB)
-            
-            face_locations = face_recognition.face_locations(rgb_small, model="hog")
-            face_encodings_list = face_recognition.face_encodings(rgb_small, face_locations)
-            
-            face_names = []
-            for face_encoding in face_encodings_list:
-                matches = face_recognition.compare_faces(known_encodings, face_encoding, tolerance=0.6)
-                name = "Unknown"
-                
-                if True in matches:
-                    face_distances = face_recognition.face_distance(known_encodings, face_encoding)
-                    best_match_index = np.argmin(face_distances)
-                    if matches[best_match_index]:
-                        name = known_names[best_match_index]
-                
-                face_names.append(name)
+            # Recognize faces in frame
+            results = recognizer.recognize_faces_in_image(frame)
         
         frame_count += 1
         
         # Draw results
-        for (top, right, bottom, left), name in zip(face_locations, face_names):
-            # Scale back up
-            top *= 4
-            right *= 4
-            bottom *= 4
-            left *= 4
+        for result in results:
+            x, y, w, h = result['bbox']
+            name = result['name']
+            confidence = result['confidence']
             
             color = (0, 255, 0) if name != "Unknown" else (0, 0, 255)
-            cv2.rectangle(frame, (left, top), (right, bottom), color, 2)
-            cv2.rectangle(frame, (left, bottom - 35), (right, bottom), color, cv2.FILLED)
-            cv2.putText(frame, name, (left + 6, bottom - 6),
+            cv2.rectangle(frame, (x, y), (x+w, y+h), color, 2)
+            cv2.rectangle(frame, (x, y+h-35), (x+w, y+h), color, cv2.FILLED)
+            label = f"{name} ({confidence*100:.1f}%)"
+            cv2.putText(frame, label, (x+6, y+h-6),
                        cv2.FONT_HERSHEY_DUPLEX, 0.8, (255, 255, 255), 1)
+        
+        # Show FPS
+        cv2.putText(frame, f"Frame: {frame_count}", (10, 30),
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
         
         cv2.imshow('Face Recognition - ESC to exit', frame)
         
@@ -99,7 +99,6 @@ def main():
         if key == 27:  # ESC
             break
         elif key == 32:  # SPACE
-            import time
             filename = f"snapshot_{int(time.time())}.jpg"
             cv2.imwrite(os.path.join(output_dir, filename), frame)
             print(f"📸 Saved: {filename}")

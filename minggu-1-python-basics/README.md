@@ -11,37 +11,51 @@
 
 ```
 minggu-1-python-basics/
-├── learning/          # Tutorial & latihan
-│   ├── 01_hello_opencv.py
-│   ├── 02_image_operations.py
-│   ├── 03_drawing_shapes.py
-│   ├── 04_webcam_basics.py
-│   └── latihan.py
+├── learning/                   # Tutorial & latihan
+│   ├── lesson-1/              # Python & OpenCV Basics
+│   │   ├── README.md         # Penjelasan materi
+│   │   ├── main.py           # Code praktik
+│   │   └── output/           # Hasil praktik
+│   ├── lesson-2/              # Drawing & Webcam
+│   │   ├── README.md
+│   │   ├── main.py
+│   │   └── output/
+│   ├── images/               # Sample images
+│   ├── output/               # Shared output
+│   └── README.md             # Overview
 │
-└── project/           # Project development
-    ├── image_utils.py
-    └── test_utils.py
+├── project/                   # Project development
+│   ├── image_utils.py
+│   ├── test_utils.py
+│   ├── output/
+│   └── test_images/
+│
+├── tugas/                     # Assignment
+│   └── README.md             # Tugas minggu 1
+│
+└── README.md                  # This file
 ```
 
 ## Materi Learning
 
-### 1. Python & OpenCV Basics
+### Lesson 1: Python & OpenCV Basics
 - Installation & setup
 - Reading, displaying, saving images
 - Image as numpy arrays
-- Color spaces (BGR, RGB, Grayscale)
+- Basic operations: grayscale, resize, crop, rotate
+- Save processed images
 
-### 2. Image Operations
-- Resize, crop, rotate, flip
-- Color conversion
-- Drawing shapes and text
-- Image quality checks
+**File:** `learning/lesson-1/main.py`
 
-### 3. Webcam Handling
+### Lesson 2: Drawing Shapes & Webcam
+- Drawing shapes (rectangles, circles, lines)
+- Adding text to images
+- Color spaces (BGR, RGB)
 - Access webcam
-- Capture frames
+- Capture frames & snapshots
 - Real-time processing
-- Frame rate optimization
+
+**File:** `learning/lesson-2/main.py`
 
 ## Project Development
 
@@ -66,21 +80,16 @@ Module ini akan menjadi foundation untuk:
 ## Cara Penggunaan
 
 ### Learning (Tutorial)
-
-## Cara Penggunaan
-
-### Learning (Tutorial)
 ```bash
 cd minggu-1-python-basics/learning
 
-# Jalankan tutorial secara berurutan
-python 01_hello_opencv.py
-python 02_image_operations.py
-python 03_drawing_shapes.py
-python 04_webcam_basics.py
+# Lesson 1: OpenCV Basics
+cd lesson-1
+python main.py
 
-# Kerjakan latihan
-python latihan.py
+# Lesson 2: Drawing & Webcam
+cd ../lesson-2
+python main.py
 ```
 
 ### Project Development
@@ -92,9 +101,14 @@ python image_utils.py
 
 # Test functions
 python test_utils.py
+```
 
-# Integrate to main project
-# Copy image_utils.py to ../../core/
+### Tugas (Assignment)
+```bash
+cd minggu-1-python-basics/tugas
+
+# Baca tugas di README.md
+# Kerjakan tugas: Photo Editor Sederhana
 ```
 
 ## Konsep Penting
@@ -118,14 +132,16 @@ Image = Matrix of Pixels
 ## Deliverables
 
 ### Learning
-- Completed tutorial exercises
-- Understanding of image processing basics
-- Ability to work with OpenCV
+- ✅ Lesson 1: Basic image operations
+- ✅ Lesson 2: Drawing & webcam handling
+- ✅ Understanding of OpenCV fundamentals
 
 ### Project
-- `image_utils.py` - Reusable image processing functions
-- `test_utils.py` - Unit tests for utilities
-- Documentation of functions
+- ✅ `image_utils.py` - Reusable functions
+- ✅ `test_utils.py` - Unit tests
+
+### Tugas
+- 📝 Photo Editor Sederhana (see tugas/README.md)
 
 ## Next Week Preview
 
