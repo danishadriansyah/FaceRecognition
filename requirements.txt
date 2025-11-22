@@ -3,45 +3,30 @@
 # Python Version: 3.11.9
 # =======================================================
 
-# Database (MySQL)
+# Database
 SQLAlchemy==2.0.23
 alembic==1.13.1
-mysqlclient==2.2.4  # Requires MySQL client libraries
 pymysql==1.1.0
-cryptography==41.0.7
 
-# Computer Vision & Face Recognition
+# Computer Vision
 opencv-python==4.8.1.78
-opencv-contrib-python==4.8.1.78
-mediapipe==0.10.8  # Google's face detection/recognition - no dlib needed!
-
-# Data Processing
-numpy==1.26.2  # Compatible with Python 3.11
+mediapipe==0.10.9  # Pengganti dlib untuk deteksi
+numpy==1.26.2
 Pillow==10.1.0
-pandas==2.1.4
 
-# Excel/CSV Export
+# Data Processing & Export
+pandas==2.1.4
 openpyxl==3.1.2
 xlsxwriter==3.1.9
 
 # Utilities
-imutils==0.5.4
 tqdm==4.66.1
 python-dateutil==2.8.2
 
-# Desktop GUI (Tkinter is built-in for Python 3.11)
-# No additional GUI packages needed
-
-# Desktop Application Distribution
+# Distribution & Testing
 pyinstaller==6.3.0
-
-# Testing
 pytest==7.4.3
 pytest-cov==4.1.0
-
-# Development Tools
-black==23.12.1
-flake8==6.1.0
 
 # =======================================================
 # Installation Notes:
