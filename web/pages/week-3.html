@@ -120,16 +120,16 @@
                     <span class="badge badge-medium">Medium</span>
                 </div>
                 <p class="week-description">
-                    Pelajari face recognition dengan face_recognition library. Understand face encodings, comparison, dan build recognition system dari known faces database.
+                    Pelajari face recognition dengan MediaPipe. Understand face encodings, comparison, dan build recognition system dari known faces database.
                 </p>
                 <div class="week-meta">
                     <div class="meta-item">
                         <span class="icon">⏱️</span>
-                        <span>5-6 jam</span>
+                        <span>3-4 jam</span>
                     </div>
                     <div class="meta-item">
                         <span class="icon">📚</span>
-                        <span>3 Lessons</span>
+                        <span>2 Lessons</span>
                     </div>
                     <div class="meta-item">
                         <span class="icon">🎯</span>
@@ -146,7 +146,7 @@
                         <div class="lesson-number">01</div>
                         <div class="lesson-content">
                             <h3>Face Encodings Basics</h3>
-                            <p>Install face_recognition library, understand 128-dimensional vectors, generate face encodings dari detected faces, save/load encodings dengan pickle</p>
+                            <p>Install MediaPipe, understand face landmarks, generate face encodings dari detected faces, save/load encodings dengan pickle</p>
                             <div class="lesson-meta">
                                 <span>⏱️ 60-75 min</span>
                                 <span class="lesson-status">Not Started</span>
@@ -172,21 +172,40 @@
                             <button class="btn-start">Start →</button>
                         </div>
                     </div>
+                </div>
+            </section>
 
-                    <!-- Lesson 3 -->
-                    <div class="lesson-card" onclick="openLesson(3, 3)">
-                        <div class="lesson-number">03</div>
-                        <div class="lesson-content">
-                            <h3>Building Face Recognizer Module</h3>
-                            <p>Create FaceRecognizer class, implement encode_face(), recognize_face(), add_known_face(), calculate_confidence(). Real-time recognition dari webcam with name labels!</p>
-                            <div class="lesson-meta">
-                                <span>⏱️ 120-150 min</span>
-                                <span class="lesson-status">Not Started</span>
-                            </div>
-                        </div>
-                        <div class="lesson-action">
-                            <button class="btn-start">Start →</button>
-                        </div>
+            <!-- Tugas Assignment -->
+            <section class="assignment-section">
+                <h2>📝 Tugas: Face Recognition System (Fill in the Blanks)</h2>
+                <div class="assignment-card">
+                    <div class="assignment-header">
+                        <span class="assignment-badge">8 Soal</span>
+                        <span class="difficulty-badge medium">Medium</span>
+                    </div>
+                    <p class="assignment-description">
+                        Lengkapi <code>face_recognition_template.py</code> untuk membuat face recognition system dengan MediaPipe.
+                    </p>
+                    
+                    <h4>Yang Akan Kamu Isi:</h4>
+                    <ul class="assignment-list">
+                        <li><code>FaceRecognizer()</code> - Initialize recognizer</li>
+                        <li><code>encode_faces_in_folder()</code> - Encode dataset</li>
+                        <li><code>pickle.dump()</code> - Save encodings</li>
+                        <li><code>recognize_faces_in_image()</code> - Recognize faces</li>
+                        <li>File paths & configurations</li>
+                    </ul>
+
+                    <div class="assignment-commands">
+                        <h4>🚀 Cara Mengerjakan:</h4>
+                        <pre><code>cd minggu-3-face-recognition/tugas
+copy face_recognition_template.py face_recognition.py
+python face_recognition.py</code></pre>
+                    </div>
+
+                    <div class="assignment-footer">
+                        <span>📖 Lihat: <code>tugas/README.md</code></span>
+                        <span>⭐ Nilai: 100 points (~12-13 pts per soal)</span>
                     </div>
                 </div>
             </section>
@@ -195,7 +214,7 @@
             <section class="module-section">
                 <h2>📦 Project Module: face_recognizer.py</h2>
                 <div class="module-card">
-                    <p class="module-description">Core recognition engine yang menggunakan face_recognition library untuk identify people dari face encodings.</p>
+                    <p class="module-description">Core recognition engine yang menggunakan MediaPipe untuk identify people dari face encodings.</p>
                     
                     <h4>Class & Methods:</h4>
                     <ul class="function-list">
@@ -270,8 +289,10 @@
                         <h4>🔢 Face Encodings (128-D Vector)</h4>
                         <p>Setiap wajah di-convert menjadi 128-dimensional numeric vector yang unique:</p>
                         <code style="display: block; margin-top: 0.5rem;">
-import face_recognition
-encodings = face_recognition.face_encodings(image)
+import mediapipe as mp
+from face_recognizer import FaceRecognizer
+recognizer = FaceRecognizer()
+encoding = recognizer.encode_face(image)
 # Output: array of 128 float numbers
                         </code>
                     </div>
@@ -280,8 +301,9 @@ encodings = face_recognition.face_encodings(image)
                         <h4>📏 Face Distance & Comparison</h4>
                         <p>Lower distance = more similar. Typical threshold = 0.6:</p>
                         <code style="display: block; margin-top: 0.5rem;">
-distance = face_recognition.face_distance(known_encodings, unknown_encoding)
-matches = face_recognition.compare_faces(known_encodings, unknown_encoding, tolerance=0.6)
+import numpy as np
+distance = np.linalg.norm(known_encoding - unknown_encoding)
+is_match = distance < 0.6  # threshold
                         </code>
                     </div>
 
@@ -329,16 +351,16 @@ known_faces = {
             <section class="dashboard-section">
                 <h3>⚙️ Terminal Commands</h3>
                 <div class="command-box">
-                    <p><strong>Install face_recognition library:</strong></p>
-                    <code>pip install face-recognition</code>
+                    <p><strong>Install MediaPipe:</strong></p>
+                    <code>pip install mediapipe opencv-python numpy</code>
                 </div>
                 <div class="command-box" style="margin-top: 1rem;">
                     <p><strong>Run learning tutorials:</strong></p>
                     <code>
-cd minggu-3-face-recognition/learning<br>
-python 01_face_recognition_basic.py<br>
-python 02_recognition_concepts.py<br>
-python 03_building_database.py
+cd minggu-3-face-recognition/learning/lesson-1<br>
+python main.py<br>
+cd ../lesson-2<br>
+python main.py
                     </code>
                 </div>
                 <div class="command-box" style="margin-top: 1rem;">

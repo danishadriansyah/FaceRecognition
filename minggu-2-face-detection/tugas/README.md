@@ -1,202 +1,189 @@
-# 📝 TUGAS MINGGU 2 - Face Detection
+# 📝 TUGAS MINGGU 2 - Multi-Face Detector (Fill in the Blanks)
 
-## Deskripsi
-Buat aplikasi face detection yang bisa mendeteksi wajah dari gambar dan webcam, dengan statistik dan reporting.
-
----
+## 📖 Deskripsi
+Lengkapi program face detector dengan mengisi 10 soal (bagian kosong)
 
 ## 🎯 Objektif
-- Implement face detection dengan Haar Cascade
-- Handle multiple faces
-- Optimization techniques
-- Generate detection reports
+- Implement Haar Cascade face detection
+- Handle multiple faces dalam satu image
+- Real-time detection dari webcam
+- Batch processing & reporting
 
 ---
 
-## 📋 Tugas: Multi-Face Detector
+## 📋 SOAL - Isi Bagian yang Kosong!
 
-Buat program `face_detector_app.py` dengan fitur:
+File template: `face_detector_template.py`
 
-### Fitur Wajib
-1. **Image Mode**
-   - Upload gambar
-   - Detect semua wajah
-   - Draw rectangles dengan confidence
-   - Show jumlah wajah terdeteksi
+### ✏️ Daftar Soal (Total: 10 Soal)
 
-2. **Webcam Mode**
-   - Real-time detection
-   - FPS counter
-   - Face count display
-   - Save screenshot (tekan 's')
+**SOAL 1** (Baris 13): Load Haar Cascade classifier
+```python
+face_cascade = cv2.CascadeClassifier(
+    cv2.data.haarcascades + '_______________________________________'
+)
+```
+💡 Hint: Nama file XML untuk frontal face detection
 
-3. **Batch Mode**
-   - Process multiple images dari folder
-   - Generate report: berapa wajah per gambar
-   - Save all results
+**SOAL 2** (Baris 25): Convert ke grayscale
+```python
+gray = cv2.cvtColor(image, _________________)
+```
+💡 Hint: Constant untuk BGR to GRAY
 
-4. **Statistics**
-   - Total images processed
-   - Total faces detected
-   - Average faces per image
-   - Processing time
+**SOAL 3** (Baris 30): Detect faces
+```python
+faces = face_cascade._____________________(gray, _____, _____)
+```
+💡 Hint: Method untuk detectMultiScale, scaleFactor 1.1, minNeighbors 5
+
+**SOAL 4** (Baris 41): Draw rectangle
+```python
+cv2.rectangle(image, (x, y), (_____, _____), (0, 255, 0), 2)
+```
+💡 Hint: Bottom-right corner = (x+w, y+h)
+
+**SOAL 5**: Sudah ada di code (putText)
+
+**SOAL 6** (Baris 58): Load image
+```python
+img = _________(f'input_images/{filename}')
+```
+💡 Hint: Fungsi untuk baca image
+
+**SOAL 7** (Baris 74): Save hasil detection
+```python
+_________(output_path, result)
+```
+💡 Hint: Fungsi untuk save image
+
+**SOAL 8** (Baris 91): Buka webcam
+```python
+cap = _________(0)
+```
+💡 Hint: Class untuk video capture
+
+**SOAL 9** (Baris 114): Detect tombol 's' untuk screenshot
+```python
+if key == ord('_'):
+```
+💡 Hint: Karakter untuk save screenshot
+
+**SOAL 10** (Baris 174): Open file untuk write
+```python
+with _______('output/report.txt', '_') as f:
+```
+💡 Hint: Fungsi built-in untuk file I/O, mode 'w' untuk write
 
 ---
 
-## 📦 Deliverables
+---
+
+## 📦 Struktur File
 
 ```
 tugas/
-├── face_detector_app.py    # Main program
-├── input_images/           # Test images (min 5 gambar)
-├── output/                 # Detection results
-│   ├── detected_*.jpg     # Images with rectangles
-│   └── report.txt         # Statistics report
-└── README.md              # Documentation
+├── face_detector_template.py    # Template dengan blanks (JANGAN EDIT)
+├── face_detector.py              # ISI JAWABAN KAMU DI SINI
+├── input_images/                 # Taruh test images (min 5)
+│   ├── photo1.jpg
+│   ├── photo2.jpg
+│   └── ...
+├── output/                       # Hasil detection
+└── README.md
 ```
 
 ---
 
-## 🎯 Example Output
+## 🚀 Cara Mengerjakan
 
-### Console:
-```
-========================================
-   MULTI-FACE DETECTOR
-========================================
-
-Mode:
-1. Image Mode (single)
-2. Webcam Mode (real-time)
-3. Batch Mode (multiple)
-4. Exit
-
-Pilih: 3
-
-Processing batch...
-✅ image1.jpg - 3 faces detected (0.12s)
-✅ image2.jpg - 1 face detected (0.08s)
-✅ image3.jpg - 5 faces detected (0.15s)
-
-Report saved to: output/report.txt
+### Step 1: Copy Template
+```bash
+cd minggu-2-face-detection/tugas
+copy face_detector_template.py face_detector.py
 ```
 
-### report.txt:
-```
-FACE DETECTION REPORT
-=====================
-Date: 2025-11-18
-Mode: Batch Processing
+### Step 2: Isi 10 Soal
+Buka `face_detector.py` dan isi semua blanks
 
-Results:
---------
-image1.jpg: 3 faces
-image2.jpg: 1 face
-image3.jpg: 5 faces
-
-Statistics:
------------
-Total images: 3
-Total faces: 9
-Average: 3.0 faces/image
-Total time: 0.35s
+### Step 3: Test Program
+```bash
+python face_detector.py
 ```
+
+### Step 4: Test Semua Mode
+- Mode 1: Test dengan single image
+- Mode 2: Test webcam real-time
+- Mode 3: Test batch processing
 
 ---
 
-## 💡 Hints & Tips
+## 💡 Cheat Sheet
 
-### Face Detection
-```python
-import cv2
+| Fungsi/Constant | Kegunaan |
+|-----------------|----------|
+| `haarcascade_frontalface_default.xml` | Cascade classifier file |
+| `cv2.COLOR_BGR2GRAY` | Convert BGR to grayscale |
+| `detectMultiScale(gray, 1.1, 5)` | Detect faces |
+| `cv2.imread()` | Load image |
+| `cv2.imwrite()` | Save image |
+| `cv2.VideoCapture(0)` | Buka webcam |
+| `ord('s')` | ASCII code untuk karakter 's' |
+| `open(file, 'w')` | Buka file untuk write |
 
-cascade = cv2.CascadeClassifier(
-    cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
-)
+---
 
-gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-faces = cascade.detectMultiScale(gray, 1.1, 5)
+## ✅ Checklist Pengerjaan
 
-print(f"Found {len(faces)} faces")
 ```
-
-### Draw with Count
-```python
-for i, (x, y, w, h) in enumerate(faces, 1):
-    cv2.rectangle(img, (x, y), (x+w, y+h), (0, 255, 0), 2)
-    cv2.putText(img, f'Face {i}', (x, y-10),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-```
-
-### Batch Processing
-```python
-import os
-from datetime import datetime
-
-results = []
-
-for filename in os.listdir('input_images/'):
-    img = cv2.imread(f'input_images/{filename}')
-    # Detect faces
-    # Save results
-    results.append({
-        'filename': filename,
-        'faces': len(faces),
-        'time': processing_time
-    })
+[ ] SOAL 1: haarcascade_frontalface_default.xml
+[ ] SOAL 2: cv2.COLOR_BGR2GRAY
+[ ] SOAL 3: detectMultiScale, 1.1, 5
+[ ] SOAL 4: x+w, y+h
+[ ] SOAL 6: cv2.imread
+[ ] SOAL 7: cv2.imwrite
+[ ] SOAL 8: cv2.VideoCapture
+[ ] SOAL 9: 's'
+[ ] SOAL 10: open, 'w'
+[ ] Mode 1 (Image) working
+[ ] Mode 2 (Webcam) working
+[ ] Mode 3 (Batch) working
+[ ] Report generated correctly
 ```
 
 ---
 
 ## ✅ Kriteria Penilaian
 
-| Kriteria | Bobot | Poin |
-|----------|-------|------|
-| Image mode working | 20% | 20 |
-| Webcam mode working | 20% | 20 |
-| Batch mode working | 20% | 20 |
-| Statistics & report | 20% | 20 |
-| Code quality | 10% | 10 |
-| Documentation | 10% | 10 |
-
-**Total: 100 points**
-
----
-
-## 🌟 Fitur Bonus
-
-- [ ] Eye detection (Haar Cascade eyes)
-- [ ] Save video recording
-- [ ] Confidence score per face
-- [ ] Filter: minimum face size
-- [ ] Export report to CSV
-- [ ] GUI dengan Tkinter
-- [ ] Face blur untuk privacy
-
-**+10 pts per fitur bonus**
-
----
-
-## ⏰ Deadline
-
-**3 hari** setelah menyelesaikan Minggu 2
+| No | Soal | Poin |
+|----|------|------|
+| 1 | Haar Cascade path | 10 pts |
+| 2 | COLOR_BGR2GRAY | 10 pts |
+| 3 | detectMultiScale (3 params) | 15 pts |
+| 4 | Rectangle coords | 10 pts |
+| 6 | cv2.imread | 10 pts |
+| 7 | cv2.imwrite | 10 pts |
+| 8 | VideoCapture | 10 pts |
+| 9 | ord('s') | 10 pts |
+| 10 | open + mode | 10 pts |
+| **Fungsionalitas** | Semua mode working | +15 pts |
+| **TOTAL** | | **110 pts** |
 
 ---
 
 ## 🎓 Learning Outcomes
 
-- ✅ Face detection implementation
+- ✅ Face detection dengan Haar Cascade
 - ✅ Multi-face handling
-- ✅ Batch processing
-- ✅ Performance metrics
+- ✅ Real-time webcam processing
+- ✅ Batch processing workflow
 - ✅ Report generation
 
 ---
 
 ## 📚 Resources
 
-- Minggu 2 Lesson 1 & 2
-- `haarcascade_frontalface_default.xml`
-- OpenCV Cascade Classifier docs
+- Minggu 2 Lesson 1 & 2 (`learning/lesson-1/main.py`, `learning/lesson-2/main.py`)
+- [Haar Cascade Documentation](https://docs.opencv.org/4.x/db/d28/tutorial_cascade_classifier.html)
 
 **Good luck! 👤🔍**

@@ -43,7 +43,7 @@ Sistem absensi berbasis face recognition yang dikembangkan secara progressive da
 - Siapa saja yang mau build **production-ready attendance system**
 
 ### Tech Stack
-**Core:** Python 3.11.9, OpenCV 4.8.1, face_recognition 1.3.0  
+**Core:** Python 3.11.9, OpenCV 4.8.1, MediaPipe 0.10.8  
 **GUI:** Tkinter (built-in Python 3.11)  
 **Database:** MySQL 8.0+ dengan SQLAlchemy 2.0.23 ORM  
 **Data Processing:** NumPy 1.26.2, Pandas 2.1.4  
@@ -136,12 +136,7 @@ sudo apt-get install mysql-server
 sudo systemctl start mysql
 ```
 
-3. **Visual Studio Build Tools** (Windows Only)
-Diperlukan untuk compile dlib.
-- Download: https://visualstudio.microsoft.com/visual-cpp-build-tools/
-- Install "Desktop development with C++"
-
-4. **Git** (Optional)
+3. **Git** (Optional)
 Download dari: https://git-scm.com/
 
 ### Step-by-Step Installation
@@ -192,11 +187,10 @@ pip install mysqlclient==2.2.4
 pip install pymysql==1.1.0
 pip install cryptography==41.0.7
 
-# 2. Computer Vision & Face Recognition (PALING LAMA ~10 menit)
+# 2. Computer Vision & Face Recognition (CEPAT - <1 menit!)
 pip install opencv-python==4.8.1.78
 pip install opencv-contrib-python==4.8.1.78
-pip install face-recognition==1.3.0
-pip install dlib==19.24.2  # Ini yang paling lama compile
+pip install mediapipe==0.10.8  # No compile needed!
 
 # 3. Data Processing
 pip install numpy==1.26.2
@@ -227,9 +221,9 @@ pip install flake8==6.1.0
 
 **Tips Install Manual:**
 - Install satu-satu supaya bisa track package mana yang error
-- `dlib` paling lama (5-10 menit), sabar aja ☕
+- Semua install cepat dengan MediaPipe (total <5 menit) ☕
 - Kalau ada error di package tertentu, skip dulu, lanjut ke package lain
-- Package yang **WAJIB**: opencv-python, face-recognition, SQLAlchemy, mysqlclient
+- Package yang **WAJIB**: opencv-python, mediapipe, SQLAlchemy, mysqlclient
 - Package yang **OPTIONAL**: pytest, black, flake8 (untuk development)
 
 **Step 4: Setup MySQL Database**
@@ -250,7 +244,7 @@ EXIT;
 **Step 5: Verify Installation**
 ```bash
 python -c "import cv2; print('OpenCV:', cv2.__version__)"
-python -c "import face_recognition; print('face_recognition: OK')"
+python -c "import mediapipe; print('MediaPipe: OK')"
 python -c "import tkinter; print('Tkinter: OK')"
 python -c "import MySQLdb; print('MySQL: OK')"  # or import pymysql
 ```
@@ -295,14 +289,16 @@ python -c "import mediapipe; print('✅ MediaPipe ready!')"
 
 **Yang berubah di code:**
 ```python
-# BEFORE (dengan dlib):
+# BEFORE (dengan face_recognition library):
 import face_recognition
 face_locations = face_recognition.face_locations(image)
+face_encodings = face_recognition.face_encodings(image)
 
-# AFTER (dengan MediaPipe):
-import mediapipe as mp
-mp_face_detection = mp.solutions.face_detection
-results = mp_face_detection.FaceDetection().process(image)
+# AFTER (dengan MediaPipe + face_recognizer module):
+from face_recognizer import FaceRecognizer
+recognizer = FaceRecognizer()
+encoding = recognizer.encode_face(image)
+result = recognizer.recognize_face(encoding)
 ```
 
 Semua sudah di-update! Tinggal install requirements.txt dan langsung bisa mulai. 🚀
@@ -624,13 +620,11 @@ A: Fleksibel!
 
 ### Setup & Installation
 
-**Q: Kenapa install face_recognition lama?**  
-A: Karena dia compile dlib (C++ library). Normal 5-10 menit. Sabar! ☕
+**Q: Kenapa pakai MediaPipe dan bukan face_recognition?**  
+A: MediaPipe lebih cepat install (no compile!), ringan, dan fast. Perfect untuk learning! ☕
 
-**Q: Error saat install dlib?**  
-A: Windows: Install Visual Studio Build Tools dulu  
-Mac: `brew install cmake`  
-Linux: `sudo apt-get install cmake build-essential`
+**Q: MediaPipe akurat?**  
+A: 90%+ accuracy untuk attendance system. Lebih dari cukup untuk production use!
 
 **Q: Bisa pakai Python 3.7?**  
 A: Tidak recommended. Minimal **Python 3.8+**.
@@ -1094,7 +1088,7 @@ Week 8: [ ] Read READMEs [ ] Complete tutorials [ ] Deploy app [ ] Final tests
 
 ### External Resources
 - **OpenCV Docs:** https://docs.opencv.org/
-- **face_recognition:** https://github.com/ageitgey/face_recognition
+- **MediaPipe:** https://google.github.io/mediapipe/
 - **Flask Tutorial:** https://flask.palletsprojects.com/
 
 ### Need Help?

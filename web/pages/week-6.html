@@ -125,11 +125,11 @@
                 <div class="week-meta">
                     <div class="meta-item">
                         <span class="icon">⏱️</span>
-                        <span>6-7 jam</span>
+                        <span>3-4 jam</span>
                     </div>
                     <div class="meta-item">
                         <span class="icon">📚</span>
-                        <span>3 Lessons</span>
+                        <span>2 Lessons</span>
                     </div>
                     <div class="meta-item">
                         <span class="icon">🎯</span>
@@ -172,21 +172,41 @@
                             <button class="btn-start">Start →</button>
                         </div>
                     </div>
+                </div>
+            </section>
 
-                    <!-- Lesson 3 -->
-                    <div class="lesson-card" onclick="openLesson(6, 3)">
-                        <div class="lesson-number">03</div>
-                        <div class="lesson-content">
-                            <h3>Attendance System & Report Generation</h3>
-                            <p>Build AttendanceSystem class dengan check-in/check-out logic, duplicate prevention (same person <5 minutes), daily/weekly/monthly reports, export to Excel/CSV/PDF dengan formatting</p>
-                            <div class="lesson-meta">
-                                <span>⏱️ 105-120 min</span>
-                                <span class="lesson-status">Not Started</span>
-                            </div>
-                        </div>
-                        <div class="lesson-action">
-                            <button class="btn-start">Start →</button>
-                        </div>
+            <!-- Tugas Assignment -->
+            <section class="assignment-section">
+                <h2>📝 Tugas: Attendance System Test (Fill in the Blanks)</h2>
+                <div class="assignment-card">
+                    <div class="assignment-header">
+                        <span class="assignment-badge">6 Soal</span>
+                        <span class="difficulty-badge hard">Hard</span>
+                    </div>
+                    <p class="assignment-description">
+                        Lengkapi <code>attendance_test_template.py</code> untuk test attendance system dengan database.
+                    </p>
+                    
+                    <h4>Yang Akan Kamu Isi:</h4>
+                    <ul class="assignment-list">
+                        <li><code>AttendanceSystem</code> - Import system</li>
+                        <li><code>check_in()</code> - Employee check-in</li>
+                        <li><code>check_out()</code> - Employee check-out</li>
+                        <li><code>get_today_records()</code> - View today's data</li>
+                        <li><code>generate_report()</code> - Monthly report</li>
+                        <li><code>export_to_excel()</code> - Export to Excel</li>
+                    </ul>
+
+                    <div class="assignment-commands">
+                        <h4>🚀 Cara Mengerjakan:</h4>
+                        <pre><code>cd minggu-6-database-attendance/tugas
+copy attendance_test_template.py attendance_test.py
+python attendance_test.py</code></pre>
+                    </div>
+
+                    <div class="assignment-footer">
+                        <span>📖 Lihat: <code>tugas/TUGAS.md</code></span>
+                        <span>⭐ Nilai: 100 points (~16-17 pts per soal)</span>
                     </div>
                 </div>
             </section>

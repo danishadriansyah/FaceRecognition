@@ -172,37 +172,40 @@
                             <button class="btn-start">Start →</button>
                         </div>
                     </div>
+                </div>
+            </section>
 
-                    <!-- Lesson 3 -->
-                    <div class="lesson-card" onclick="openLesson(2, 3)">
-                        <div class="lesson-number">03</div>
-                        <div class="lesson-content">
-                            <h3>Parameter Tuning & Optimization</h3>
-                            <p>Deep dive into scaleFactor, minNeighbors, minSize. Experiment dengan different values, optimize for accuracy vs speed, handle false positives</p>
-                            <div class="lesson-meta">
-                                <span>⏱️ 50-65 min</span>
-                                <span class="lesson-status">Not Started</span>
-                            </div>
-                        </div>
-                        <div class="lesson-action">
-                            <button class="btn-start">Start →</button>
-                        </div>
+            <!-- Tugas Assignment -->
+            <section class="assignment-section">
+                <h2>📝 Tugas: Multi-Face Detector (Fill in the Blanks)</h2>
+                <div class="assignment-card">
+                    <div class="assignment-header">
+                        <span class="assignment-badge">10 Soal</span>
+                        <span class="difficulty-badge medium">Medium</span>
+                    </div>
+                    <p class="assignment-description">
+                        Lengkapi <code>face_detector_template.py</code> dengan 10 blanks untuk membuat face detector yang bisa detect multiple faces.
+                    </p>
+                    
+                    <h4>Yang Akan Kamu Isi:</h4>
+                    <ul class="assignment-list">
+                        <li><code>cv2.CascadeClassifier()</code> - Load Haar Cascade</li>
+                        <li><code>detectMultiScale()</code> - Detect faces</li>
+                        <li><code>cv2.rectangle()</code> - Draw bounding box</li>
+                        <li><code>cv2.VideoCapture()</code> - Webcam access</li>
+                        <li>Loop parameters & error handling</li>
+                    </ul>
+
+                    <div class="assignment-commands">
+                        <h4>🚀 Cara Mengerjakan:</h4>
+                        <pre><code>cd minggu-2-face-detection/tugas
+copy face_detector_template.py face_detector.py
+python face_detector.py</code></pre>
                     </div>
 
-                    <!-- Lesson 4 -->
-                    <div class="lesson-card" onclick="openLesson(2, 4)">
-                        <div class="lesson-number">04</div>
-                        <div class="lesson-content">
-                            <h3>Building Face Detector Module</h3>
-                            <p>Create FaceDetector class, implement detect_faces(), detect_faces_webcam(), draw_detections(), get_face_regions(), validate_detection(). Production-ready code!</p>
-                            <div class="lesson-meta">
-                                <span>⏱️ 90-120 min</span>
-                                <span class="lesson-status">Not Started</span>
-                            </div>
-                        </div>
-                        <div class="lesson-action">
-                            <button class="btn-start">Start →</button>
-                        </div>
+                    <div class="assignment-footer">
+                        <span>📖 Lihat: <code>tugas/README.md</code> untuk hints</span>
+                        <span>⭐ Nilai: 100 points (10 pts per soal)</span>
                     </div>
                 </div>
             </section>
@@ -248,7 +251,7 @@
 
                     <div class="next-week-preview">
                         <strong>� Next Week Preview:</strong>
-                        <p>Week 3 akan menggunakan face_detector.py untuk preprocessing sebelum face recognition dengan face_recognition library!</p>
+                        <p>Week 3 akan menggunakan face_detector.py untuk preprocessing sebelum face recognition dengan MediaPipe!</p>
                     </div>
                 </div>
             </section>

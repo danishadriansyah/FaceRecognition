@@ -145,7 +145,7 @@ python test_detector.py`
         tutorials: "3 tutorials",
         objectives: [
             "Memahami face recognition vs face detection",
-            "Menggunakan face_recognition library",
+            "Menggunakan MediaPipe untuk face recognition",
             "Face encodings dan comparison",
             "Build recognition system",
             "Known faces database management"

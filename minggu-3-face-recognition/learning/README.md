@@ -1,248 +1,227 @@
-# Minggu 3 - Learning: Face Recognition dengan MediaPipe FaceMesh
+# Minggu 3 - Learning: Face Recognition
 
 ## 📚 Overview
+Folder ini berisi **2 lessons** untuk belajar face recognition menggunakan **MediaPipe** library (updated dari face_recognition). Anda akan belajar cara mengenali dan membedakan wajah orang menggunakan face encodings (128-d vectors).
 
-Folder ini berisi **2 lesson files** untuk belajar face recognition menggunakan **MediaPipe FaceMesh** (production-grade face encoding). Anda akan belajar cara recognize wajah secara akurat menggunakan 1404-dimensional facial landmarks.
-
-🚀 **MediaPipe FaceMesh Benefits:**
-- ✅ **No dlib compilation needed** - Just `pip install`!
-- ✅ **Super fast** - 30+ FPS real-time processing
-- ✅ **More accurate** - 468 facial landmarks (3D coordinates)
-- ✅ **Production-ready** - Google's face technology
-- ✅ **Cross-platform** - Windows, Mac, Linux instantly
+⚠️ **NOTE:** Project sudah migrate dari `face_recognition` ke `MediaPipe` karena:
+- ✅ Tidak butuh compile C++ (no dlib!)
+- ✅ Super cepat (30+ FPS)
+- ✅ Google product (well-maintained)
 
 ## 📁 File Structure
 
 ```
 learning/
 ├── README.md (file ini)
-├── lesson-1/
-│   ├── main.py              # Static image recognition
+├── lesson-1/          # Face encoding & recognition (gambar)
+│   ├── main.py
 │   ├── README.md
-│   ├── images/              # Test images folder
-│   ├── known_faces/         # Known people photos
-│   └── output/              # Results folder
-└── lesson-2/
-    ├── main.py              # Real-time webcam
+│   ├── known_faces/   # Database known faces
+│   ├── images/        # Test images
+│   └── output/        # Recognition results
+└── lesson-2/          # Real-time recognition (webcam)
+    ├── main.py
     ├── README.md
-    ├── known_faces/         # Known people photos
-    └── output/              # Captured frames folder
+    ├── known_faces/
+    └── output/
 ```
 
 ---
 
-## 🎯 Lesson 1: Static Image Recognition
+## 🎯 Tutorial Lessons - Detailed Guide
 
-**Tujuan:** Memahami face encoding dengan MediaPipe FaceMesh dan recognition dari static images
+### Lesson 1: Face Encoding & Recognition (Gambar)
+**Lokasi:** `lesson-1/main.py`
+
+**Tujuan:** Memahami face encodings dan bagaimana mengenali wajah dari static images
 
 **Apa yang dipelajari:**
-- Generate 1404-d face encodings (468 landmarks × 3 coordinates)
-- Load known faces dari database
-- Recognize all faces in image
-- Calculate confidence scores (cosine similarity)
-- Visualize results dengan bounding boxes
+- Setup known faces database (folder per person)
+- Generate face encodings (128-dimension vectors) dengan MediaPipe
+- Load known faces dan build encodings database
+- Recognize face dari test image
+- Calculate distance & determine match
+- Display results dengan confidence score
 
 **Cara menggunakan:**
 ```bash
-cd lesson-1
+cd minggu-3-face-recognition/learning/lesson-1
 python main.py
 ```
 
-**Setup folder struktur:**
+**Setup known faces:**
 ```
-lesson-1/
-├── known_faces/
-│   ├── alice/
-│   │   ├── alice1.jpg
-│   │   └── alice2.jpg
-│   └── bob/
-│       └── bob1.jpg
-├── images/
-│   └── test.jpg          # Test image with faces
-└── output/               # Results will be saved here
+known_faces/
+├── alice/
+│   ├── photo1.jpg
+│   └── photo2.jpg
+└── bob/
+    ├── photo1.jpg
+    └── photo2.jpg
 ```
 
 **Output yang diharapkan:**
-- ✅ Konsol: progress indicators (1️⃣ 2️⃣ 3️⃣)
-- ✅ Konsol: detected faces dengan names & confidence
-- ✅ File: `output/recognized.jpg` - annotated image
-- ✅ Window: Display hasil recognition dengan bounding boxes
+- Console print: Recognition results
+- Distance scores untuk setiap comparison
+- Best match name dengan confidence
+- Output images saved di `output/` folder
 
 **Konsep penting:**
-- **MediaPipe FaceMesh:** Extract 468 facial landmarks dalam 3D
-- **Encoding:** 1404-d vector (normalized)
-- **Cosine Similarity:** Distance metric untuk matching
-- **Confidence:** Direct conversion dari distance score
-- **Multi-face:** Process semua faces in single pass
+- MediaPipe FaceMesh - Extract facial landmarks & features
+- Encoding adalah unique "fingerprint" untuk setiap wajah
+- Encodings dapat disimpan dan di-load kembali
+- Same person = similar encodings
+- Different person = different encodings
 
-**How it works (under the hood):**
+**Code example (MediaPipe version):**
 ```python
-from face_recognizer import FaceRecognizer
+import mediapipe as mp
+import pickle
 import cv2
 
-# Initialize recognizer dengan MediaPipe FaceMesh
-recognizer = FaceRecognizer(tolerance=0.5)
+# Load image
+image = cv2.imread('person.jpg')
+rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-# Load known faces
-img = cv2.imread('alice/alice1.jpg')
-encoding = recognizer.encode_face(img)  # 1404-d vector
-recognizer.add_known_face(encoding, 'Alice')
-
-# Recognize in test image
-test_img = cv2.imread('test.jpg')
-results = recognizer.recognize_faces_in_image(test_img)
-
-# Results: [{'name': 'Alice', 'confidence': 0.92, 'bbox': (x,y,w,h), ...}]
+# Initialize MediaPipe
+mp_face_detection = mp.solutions.face_detection
+with mp_face_detection.FaceDetection() as face_detection:
+    results = face_detection.process(rgb_image)
+    
+    if results.detections:
+        # Face detected! Extract features
+        # (Actual feature extraction handled by face_recognizer.py)
+        print("Face detected!")
+        
+        # Save encoding (import from project folder)
+        import sys
+        sys.path.append('../project')
+        from face_recognizer import FaceRecognizer
+        
+        recognizer = FaceRecognizer()
+        encoding = recognizer.encode_face(image)
+        
+        with open('person.pkl', 'wb') as f:
+            pickle.dump(encoding, f)
 ```
 
-**Key differences from old face_recognition:**
-```
-OLD: 128-d encoding (simplified)
-NEW: 1404-d encoding (468 landmarks × 3 coords: x, y, z)
-
-OLD: Euclidean distance
-NEW: Cosine similarity (more stable for normalized vectors)
-
-OLD: Sequential face crop + encoding
-NEW: Direct FaceMesh landmark extraction (faster)
-```
-
-**Tips untuk hasil terbaik:**
-- ✅ Use high-quality frontal face images (min 100x100 pixels)
-- ✅ Add 2-3 photos per person untuk robustness
-- ✅ Ensure consistent lighting dalam known_faces folder
-- ✅ Test images sebaiknya sama format (jpg/png) dengan known faces
+**Tips:**
+- Always check if face was detected (len(encodings) > 0)
+- Use high-quality frontal face images
+- One encoding per face in image
+- Store encodings dengan nama yang jelas
 
 ---
 
-## 🎯 Lesson 2: Real-Time Webcam Recognition
+### Lesson 2: Real-Time Recognition dari Webcam
+**Lokasi:** `lesson-2/main.py`
 
-**Tujuan:** Real-time face recognition dari webcam dengan live statistics
+**Tujuan:** Real-time face recognition dari webcam stream
 
 **Apa yang dipelajari:**
-- Load known faces database
-- Real-time detection & recognition
-- FPS calculation & monitoring
-- Frame caching untuk performance optimization
-- Live statistics display
-- Capture snapshots
+- Load known faces database dari lesson 1
+- Real-time face detection & recognition
+- Display names dan confidence scores
+- Handle multiple faces simultaneously
+- Performance optimization untuk smooth video (>15 FPS)
 
 **Cara menggunakan:**
 ```bash
-cd lesson-2
+cd minggu-3-face-recognition/learning/lesson-2
 python main.py
 ```
 
-**Keyboard Controls:**
-- `SPACE` - Capture screenshot
-- `ESC` atau `Q` - Exit
-
-**Setup (same as lesson-1):**
-```
-lesson-2/
-├── known_faces/
-│   ├── alice/
-│   │   ├── alice1.jpg
-│   │   └── alice2.jpg
-│   └── bob/
-│       └── bob1.jpg
-└── output/              # Screenshots saved here
-```
+**Setup:**
+- Gunakan known_faces dari lesson-1 (atau buat baru)
+- Webcam harus terhubung dan working
 
 **Output yang diharapkan:**
-- ✅ Live webcam feed dengan face boxes
-- ✅ Names & confidence scores displayed
-- ✅ FPS counter di top-left
-- ✅ Face counter & frame counter
-- ✅ Color-coded boxes (green=matched, red=unknown)
-- ✅ ~30 FPS performance
+- Live video feed dengan rectangle boxes
+- Names displayed above each detected face
+- Confidence scores shown (e.g., "Alice 85%")
+- "Unknown" untuk wajah yang tidak dikenali
+- Smooth performance (>15 FPS)
+
+**Keyboard controls:**
+- ESC: Exit program
+- SPACE: Save current frame snapshot
+- R: Reset recognition cache
+
+**Performance optimization tips:**
+```python
+# Process every Nth frame untuk speed
+frame_count = 0
+if frame_count % 3 == 0:  # Process every 3rd frame
+    results = recognizer.recognize_faces_in_image(small_frame)
+
+# Resize frame untuk faster processing
+small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
+```
 
 **Konsep penting:**
-
-**Performance Optimization:**
-```python
-# Frame caching untuk speed
-cache_interval = 3  # Detect setiap 3 frames
-if frame_count % cache_interval == 0:
-    results = recognizer.recognize_faces_in_image(frame)
-# Reuse results untuk intermediate frames
-```
-
-**Cosine Similarity (NEW from Euclidean):**
-```python
-# OLD: Euclidean distance = √Σ(a-b)²
-# NEW: Cosine similarity = 1 - (a·b)/(‖a‖‖b‖)
-
-# Benefit: More stable untuk normalized vectors
-# Range: [0, 2] vs Euclidean [0, ∞)
-```
-
-**Tolerance Tuning:**
-- `0.4`: Very strict (rarely false positives)
-- `0.5`: Default, recommended
-- `0.6`: More lenient (more matches)
-- `0.7`: Very loose (many false positives)
-
-**Tips untuk smooth real-time:**
-- ✅ Frame caching (detect every Nth frame)
-- ✅ Use consistent lighting
-- ✅ Keep faces ~30cm dari camera
-- ✅ Frontal face position lebih baik
-
----
-
-## 📊 Technical Comparison: Old vs New
-
-| Aspect | Old (face_recognition) | New (MediaPipe FaceMesh) |
-|--------|------------------------|--------------------------|
-| **Encoding** | 128-d (simplified) | 1404-d (full landmarks) |
-| **Landmarks** | Implicit features | 468 explicit 3D coords |
-| **Similarity** | Euclidean distance | Cosine similarity |
-| **Performance** | 15-20 FPS | 30+ FPS |
-| **Multi-face** | Sequential crop | Parallel processing |
-| **Dependencies** | dlib (C++ compile) | MediaPipe only |
-| **Install** | Complex | Simple (pip install) |
-| **Accuracy** | Good | Excellent (3D geometry) |
+- **Real-time vs Batch:** Video needs speed, optimize aggressively
+- **Frame skipping:** Process every 2-3 frames, reuse results
+- **Resize strategy:** 1/4 size (0.25 scale) = 16x faster
+- **MediaPipe advantage:** Already optimized for real-time!
 
 ---
 
 ## 🎓 Cara Belajar yang Efektif
 
-### Step 1: Setup Known Faces
-Create `known_faces/` folder structure dengan 2-3 orang
-
-### Step 2: Run Lesson 1
+### Step 1: Setup Known Faces Database
 ```bash
-cd lesson-1
+cd minggu-3-face-recognition/learning/lesson-1
+```
+
+Buat folder `known_faces/` dengan struktur:
+```
+known_faces/
+├── alice/
+│   ├── photo1.jpg
+│   └── photo2.jpg
+├── bob/
+│   ├── photo1.jpg
+│   └── photo2.jpg
+└── charlie/
+    ├── photo1.jpg
+    └── photo2.jpg
+```
+
+### Step 2: Learn Face Encoding & Recognition
+```bash
 python main.py
 ```
-Understand static image recognition
+- Pahami bagaimana face encodings di-generate
+- Lihat distance calculation dan matching
+- Eksperimen dengan berbagai test images
 
-### Step 3: Run Lesson 2
+### Step 3: Real-time Recognition
 ```bash
-cd lesson-2
+cd ../lesson-2
 python main.py
 ```
-Test real-time webcam recognition
+- Test dengan wajah known dan unknown
+- Perhatikan performance (FPS)
+- Coba multiple faces simultaneously
 
-### Step 4: Experiment
-- Change tolerance (0.4 to 0.7)
-- Add more known faces
-- Test berbagai lighting conditions
-- Observe FPS changes
+### Step 4: Optimization
+- Adjust tolerance threshold (0.5 - 0.7)
+- Test different frame skip rates
+- Try different resize scales
 
 ---
 
 ## ✅ Checklist Progress
 
 ```
-[ ] lesson-1/main.py - Static recognition tested
-[ ] lesson-2/main.py - Real-time recognition tested
-[ ] Created known_faces/ dengan 2+ people
-[ ] Recognition accuracy >85%
-[ ] Real-time performance >20 FPS
-[ ] Understood tolerance tuning
-[ ] Captures working correctly
+[ ] Lesson 1 completed - Static image recognition working
+[ ] Built known_faces database dengan 3+ people
+[ ] Recognition accuracy >85% di lesson 1
+[ ] Lesson 2 completed - Real-time recognition smooth
+[ ] Performance >15 FPS di lesson 2
+[ ] Understand tolerance tuning
+[ ] Can handle multiple faces
+[ ] Ready untuk minggu 4!
 ```
 
 ---
@@ -252,48 +231,52 @@ Test real-time webcam recognition
 **No face detected in image:**
 - Ensure face is clear and frontal
 - Check image quality (not too blurry)
-- Try different image
-- Verify image loaded correctly
-- MediaPipe usually detects faces well, so quality matters!
+- Face should be large enough in frame
+- MediaPipe works best with well-lit faces
 
-**Encoding returns None:**
-- Face tidak terdeteksi di image
-- Coba dengan gambar yang lebih jelas
-- Pastikan wajah cukup besar di foto
-- Gunakan MediaPipe FaceMesh, bukan hanya detection
+**Recognition returns "Unknown" for known person:**
+- Check if person exists di known_faces database
+- Try adding more photos of that person (2-3 minimum)
+- Lower tolerance threshold (try 0.5)
+- Ensure photos are good quality
 
 **Wrong person recognized:**
-- Lower tolerance (try 0.5)
+- Increase tolerance strictness (try 0.5 instead of 0.6)
 - Use better quality enrollment photos
-- Add more photos per person
-- Check for similar-looking people
+- Check for similar-looking people in database
+- Add more varied photos per person
 
-**Slow performance on webcam:**
-- Resize frame to smaller size
-- Process every 2-3 frames only
-- Reduce number of known faces
-- MediaPipe sudah fast, tapi frame cache membantu
+**Slow performance on webcam (Lesson 2):**
+- Increase frame skip rate (process every 3-5 frames)
+- Reduce frame resize scale (try 0.2 instead of 0.25)
+- Reduce number of known faces if possible
+- Close other applications using webcam
 
 **Import error: No module named 'mediapipe':**
 ```bash
-pip install -r ../../requirements.txt
+pip install mediapipe opencv-python numpy
 ```
+
+**Webcam not opening:**
+- Check if other apps using webcam
+- Try different camera index: `cv2.VideoCapture(1)`
+- Verify webcam permissions
 
 ---
 
 ## 📚 Key Concepts Summary
 
 ### Face Encodings
-- 1404-dimension numerical vector
+- 128-dimension numerical vector
 - Unique "fingerprint" untuk setiap wajah
-- Generated by MediaPipe FaceMesh landmarks
+- Generated by deep neural network
 - Dapat disimpan dan di-load
 - Fast to compare (vector math)
 
 ### Face Recognition Process
-1. Detect face locations menggunakan FaceMesh
-2. Generate encodings untuk each face (1404-d)
-3. Compare dengan known encodings (cosine similarity)
+1. Detect face locations
+2. Generate encodings untuk each face
+3. Compare dengan known encodings
 4. Find best match berdasarkan distance
 5. Apply tolerance threshold
 
@@ -301,8 +284,8 @@ pip install -r ../../requirements.txt
 - Lower distance = More similar
 - Distance 0.0 = Identical (same photo)
 - Distance < 0.4 = Very likely same person
-- Distance 0.4-0.5 = Likely same person
-- Distance > 0.5 = Probably different person
+- Distance 0.4-0.6 = Likely same person
+- Distance > 0.6 = Probably different person
 
 ### Tolerance Setting
 ```python
@@ -310,10 +293,10 @@ pip install -r ../../requirements.txt
 tolerance = 0.4
 
 # Balanced (recommended)
-tolerance = 0.5
+tolerance = 0.6
 
 # Loose (more matches, more false positives)
-tolerance = 0.6
+tolerance = 0.7
 ```
 
 ---
@@ -321,23 +304,24 @@ tolerance = 0.6
 ## 📖 Additional Resources
 
 - **MediaPipe:** https://mediapipe.dev/
-- **FaceMesh Details:** 468 facial landmarks
-- **Theory:** Facial embeddings (similarity metric)
+- **How it works:** MediaPipe FaceMesh - 468 facial landmarks
+- **Theory:** FaceNet/VGGFace2 embeddings (128-d vectors)
 - **Previous:** face_recognition library (now replaced with MediaPipe)
 
 ---
 
 ## ⏭️ Next Steps
 
-Setelah selesai learning:
+Setelah selesai kedua lessons:
 
-1. ✅ Can generate face encodings reliably
-2. ✅ Recognition accuracy >85%
-3. ✅ Real-time working smoothly (>20 FPS)
-4. ✅ Pindah ke ../project/
-5. ✅ Review face_recognizer.py module
+1. ✅ Can recognize faces dari static images (Lesson 1)
+2. ✅ Real-time recognition working smoothly (Lesson 2)
+3. ✅ Recognition accuracy >85%
+4. ✅ Performance >15 FPS di webcam
+5. ✅ Review code di `../project/face_recognizer.py` module
 6. ✅ Run tests: `python ../project/test_recognizer.py`
-7. ✅ Lanjut ke **Minggu 4: Dataset Collection**
+7. ✅ Complete tugas di `../tugas/README.md`
+8. ✅ Lanjut ke **Minggu 4: Dataset Collection & Management**
 
 ---
 

@@ -117,7 +117,7 @@ faces = cascade.detectMultiScale(
 ## Next Week Preview
 
 **Minggu 3: Face Recognition**
-- face_recognition library
+- MediaPipe Face Recognition
 - Face encodings
 - Face comparison
 - Recognition system basics

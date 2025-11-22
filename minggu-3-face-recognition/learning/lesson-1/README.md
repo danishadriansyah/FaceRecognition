@@ -1,124 +1,118 @@
-# Lesson 1: Face Recognition dari Static Image
+# Lesson 1: Face Encoding & Recognition (Gambar)
 
 ## Tujuan
-1️⃣ Load face database dari `known_faces/` folder  
-2️⃣ Extract 1404-d face encodings menggunakan MediaPipe FaceMesh  
-3️⃣ Recognize faces dalam test image menggunakan cosine similarity  
-4️⃣ Visualize hasil dengan bounding boxes dan confidence scores  
+- Understand konsep face encoding (128-d vector)
+- Generate face encodings dari gambar
+- Compare encodings untuk recognize wajah
+- Build simple face recognition system
 
 ## Konsep Face Encoding
 
-**Face Encoding** = Vector 1404 angka yang represent wajah seseorang
-- **468 landmarks** (mata, hidung, mulut, etc.) × **3 coordinates** (x, y, z)
-- Setiap wajah punya encoding 3D yang unik
-- Compare 2 encodings menggunakan **cosine similarity**
-- Distance < 0.5 → wajah sama (high confidence)
-- Distance > 0.6 → wajah beda (low confidence)
+**Face Encoding** = Vector 128 angka yang represent wajah seseorang
+- Setiap wajah punya encoding unik
+- Compare 2 encodings → tahu sama/beda orang
+- Distance < 0.6 → wajah sama
+- Distance > 0.6 → wajah beda
 
-## Setup Known Faces Database
+## Setup Known Faces
 
-Buat struktur folder `known_faces/` seperti ini:
+**`known_faces/`** = Database orang yang **SUDAH DIKENAL** (untuk training/enrollment)
+
+Buat folder per person di `known_faces/`:
 ```
 known_faces/
 ├── alice/
-│   ├── alice1.jpg
-│   └── alice2.jpg
+│   ├── photo1.jpg      ← Foto Alice untuk dikenali nanti
+│   └── photo2.jpg
 └── bob/
-    ├── bob1.jpg
-    └── bob2.jpg
+    ├── photo1.jpg      ← Foto Bob untuk dikenali nanti
+    └── photo2.jpg
 ```
 
-**Persyaratan:**
-- Folder per person (nama folder = person name)
-- Minimal 2-3 foto per person
-- Foto berkualitas (face jelas terlihat)
-- Format: JPG, PNG, atau JPEG
+**`images/`** = Test images yang **MAU DIKENALI** (bisa known atau unknown person)
+
+Taruh test image di `images/`:
+```
+images/
+├── test1.jpg           ← Foto seseorang (mungkin Alice, Bob, atau orang lain)
+├── test2.jpg           ← Foto untuk dicek "ini siapa ya?"
+└── group.jpg           ← Bisa multiple faces
+```
+
+**Cara kerjanya:**
+1. Program **baca known_faces/** → Build database encoding (Alice, Bob)
+2. Program **baca images/test.jpg** → "Ini foto siapa ya?"
+3. Program **bandingkan** → "Oh ini Alice!" atau "Unknown person"
 
 ## Yang Dipelajari
 
-### 1. Initialize Face Recognizer
+### 1. Load Known Faces
 ```python
+known_encodings = []
+known_names = []
+
+# Use face_recognizer module
 from face_recognizer import FaceRecognizer
+recognizer = FaceRecognizer()
 
-# Buat recognizer dengan tolerance 0.5 (0.3-0.7 range)
-recognizer = FaceRecognizer(tolerance=0.5)
-```
-
-### 2. Load Known Faces
-```python
 for person_name in os.listdir('known_faces'):
     for filename in os.listdir(f'known_faces/{person_name}'):
-        img = cv2.imread(f'known_faces/{person_name}/{filename}')
-        encoding = recognizer.encode_face(img)  # 1404-d vector
-        recognizer.add_known_face(encoding, person_name)
+        img = cv2.imread(...)  # Load with OpenCV
+        encoding = recognizer.encode_face(img)
+        if encoding is not None:
+            known_encodings.append(encoding)
+            known_names.append(person_name)
 ```
 
-### 3. Recognize Face dari Test Image
+### 2. Recognize Face
 ```python
-test_img = cv2.imread('images/test.jpg')
-results = recognizer.recognize_faces_in_image(test_img)
+import numpy as np
 
-for result in results:
-    name = result['name']              # Name or "Unknown"
-    confidence = result['confidence']  # 0-1 (1 = 100% match)
-    x, y, w, h = result['bbox']        # Bounding box
+# Load test image
+test_img = cv2.imread('test.jpg')
+test_encoding = recognizer.encode_face(test_img)
+
+# Compare using distance calculation
+distances = [np.linalg.norm(known_enc - test_encoding) for known_enc in known_encodings]
+
+# Get best match
+best_match_index = np.argmin(distances)
+if distances[best_match_index] < 0.6:  # threshold
+    name = known_names[best_match_index]
 ```
 
 ## Langkah Praktik
 
-**Setup:**
-1. Buat folder `known_faces/alice/` dan `known_faces/bob/`
-2. Copy 2-3 foto masing-masing ke folder
-3. Buat folder `images/` dan copy test image ke `test.jpg`
+1. **Setup known faces (database):**
+   - Buat folder `known_faces/alice/` dan `known_faces/bob/`
+   - Taruh 2-3 foto **Alice** di folder alice/
+   - Taruh 2-3 foto **Bob** di folder bob/
 
-**Run Program:**
-```bash
-python main.py
+2. **Setup test images (yang mau dikenali):**
+   - Taruh foto test di `images/test1.jpg` 
+   - Bisa foto Alice (harusnya detect "Alice")
+   - Bisa foto Bob (harusnya detect "Bob")
+   - Bisa foto orang lain (harusnya detect "Unknown")
+
+3. **Run program:**
+   ```bash
+   python main.py
+   ```
+
+4. **Check output:**
+   - Lihat hasil recognition di console
+   - Check output images di folder `output/`
+
+**Contoh flow:**
 ```
-
-**Expected Output:**
+known_faces/alice/photo1.jpg  →  Build encoding Alice
+known_faces/bob/photo1.jpg    →  Build encoding Bob
+images/test1.jpg              →  Load image → Compare → "Ini Alice!" ✅
 ```
-1️⃣  Initializing MediaPipe Face Recognizer...
-   ✅ FaceRecognizer ready (tolerance: 0.5)
-   📊 Using 1404-dimensional FaceMesh landmarks as encoding
-
-2️⃣  Loading known faces...
-   ✅ alice: 2 face(s) loaded
-   ✅ bob: 2 face(s) loaded
-   📊 Total: 4 face(s) dari 2 person(s)
-
-3️⃣  Testing recognition...
-   🔍 Found 2 face(s) in test image
-   Face #1: alice (confidence: 92.5%) ✅ MATCHED
-   Face #2: bob (confidence: 88.0%) ✅ MATCHED
-```
-
-**Output:**
-- Visual result di `output/recognized.jpg` (bounding boxes + names)
-- Statistics di console
-
-## Troubleshooting
-
-| Problem | Solution |
-|---------|----------|
-| `known_faces` folder tidak ada | Buat folder sesuai struktur di atas |
-| No face detected | Pastikan foto jelas, wajah frontal, cahaya cukup |
-| Low confidence score | Coba tambah tolerance ke 0.6, atau gunakan foto lebih baik |
-| Unknown faces terus | Pastikan sudah load known_faces dengan benar |
 
 ## Challenge
+- Recognize dari group photo (multiple faces)
+- Show confidence score
+- Handle unknown faces
 
-✨ Coba upgrade program:
-1. **Multiple test images** - Process `images/` folder
-2. **Show statistics** - Hitung matched vs unknown
-3. **Batch recognition** - Process 10+ faces sekaligus
-4. **Save database** - Persist encoding ke pickle file
-
-## Key Takeaways
-
-✅ MediaPipe FaceMesh menghasilkan 1404-d encoding (10x lebih detail)  
-✅ Cosine similarity lebih akurat untuk normalized vectors  
-✅ Tolerance 0.5 = balanced (0.3 strict, 0.7 loose)  
-✅ Unknown faces = distance > tolerance  
-
-## Next: Lesson 2 - Real-time Recognition dari Webcam
+## Next: Lesson 2 - Real-time recognition dari webcam

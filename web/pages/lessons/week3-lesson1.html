@@ -111,38 +111,42 @@
         <div class="content-wrapper">
             <div class="lesson-header">
                 <h1>🧬 Lesson 3.1: Face Encodings Basics</h1>
-                <p>Install face_recognition library, understand 128-dimensional vectors, generate face encodings</p>
+                <p>Install MediaPipe, understand face landmarks, generate face encodings</p>
             </div>
 
             <section class="lesson-content-section">
                 <h2>🎯 Learning Objectives</h2>
                 <ul>
-                    <li>Install face_recognition library</li>
-                    <li>Understand 128-dimensional face encoding vectors</li>
+                    <li>Install MediaPipe library</li>
+                    <li>Understand face landmarks and feature extraction</li>
                     <li>Generate face encodings dari detected faces</li>
                     <li>Save & load encodings menggunakan pickle</li>
                 </ul>
 
                 <h2>📝 Tutorial</h2>
                 <div class="concept-card">
-                    <h4>Step 1: Install face_recognition</h4>
-                    <pre><code>pip install face_recognition</code></pre>
-                    <p>Library ini built on top of dlib, jadi akan install dlib juga sebagai dependency.</p>
+                    <h4>Step 1: Install MediaPipe</h4>
+                    <pre><code>pip install mediapipe</code></pre>
+                    <p>MediaPipe adalah Google's solution untuk face detection dan recognition. No compilation needed!</p>
                 </div>
 
                 <div class="concept-card">
                     <h4>Step 2: Generate Face Encoding</h4>
-                    <pre><code>import face_recognition
+                    <pre><code>import sys
+sys.path.append('../../project')
+from face_recognizer import FaceRecognizer
 import cv2
 
+# Initialize recognizer
+recognizer = FaceRecognizer()
+
 # Load image
-image = face_recognition.load_image_file('person.jpg')
+image = cv2.imread('person.jpg')
 
 # Get face encoding (128-D vector)
-encodings = face_recognition.face_encodings(image)
+face_encoding = recognizer.encode_face(image)
 
-if len(encodings) > 0:
-    face_encoding = encodings[0]
+if face_encoding is not None:
     print(f"Encoding shape: {face_encoding.shape}")
     print(f"First 5 values: {face_encoding[:5]}")</code></pre>
                     <p>Face encoding adalah array of 128 numbers yang uniquely represent seseorang's face.</p>
@@ -184,7 +188,7 @@ print(f"Encoding loaded successfully!")</code></pre>
                     </ol>
                 </div>
 
-                <p><strong>📁 Reference:</strong> <code>minggu-3-face-recognition/learning/01_face_recognition_basic.py</code></p>
+                <p><strong>📁 Reference:</strong> <code>minggu-3-face-recognition/learning/lesson-1/main.py</code></p>
 
                 <div class="lesson-actions">
                     <button onclick="window.location.href='../week-3.html'" class="btn-secondary">← Back to Week 3</button>

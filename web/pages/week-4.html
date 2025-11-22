@@ -125,11 +125,11 @@
                 <div class="week-meta">
                     <div class="meta-item">
                         <span class="icon">⏱️</span>
-                        <span>5-6 jam</span>
+                        <span>3-4 jam</span>
                     </div>
                     <div class="meta-item">
                         <span class="icon">📚</span>
-                        <span>3 Lessons</span>
+                        <span>2 Lessons</span>
                     </div>
                     <div class="meta-item">
                         <span class="icon">🎯</span>
@@ -172,21 +172,41 @@
                             <button class="btn-start">Start →</button>
                         </div>
                     </div>
+                </div>
+            </section>
 
-                    <!-- Lesson 3 -->
-                    <div class="lesson-card" onclick="openLesson(4, 3)">
-                        <div class="lesson-number">03</div>
-                        <div class="lesson-content">
-                            <h3>Dataset Management System</h3>
-                            <p>Create DatasetManager class, organize folders by person name, backup/restore functionality, clean duplicate/corrupted images, generate dataset statistics, export untuk training</p>
-                            <div class="lesson-meta">
-                                <span>⏱️ 90-120 min</span>
-                                <span class="lesson-status">Not Started</span>
-                            </div>
-                        </div>
-                        <div class="lesson-action">
-                            <button class="btn-start">Start →</button>
-                        </div>
+            <!-- Tugas Assignment -->
+            <section class="assignment-section">
+                <h2>📝 Tugas: Dataset Manager (Fill in the Blanks)</h2>
+                <div class="assignment-card">
+                    <div class="assignment-header">
+                        <span class="assignment-badge">6 Soal</span>
+                        <span class="difficulty-badge hard">Hard</span>
+                    </div>
+                    <p class="assignment-description">
+                        Lengkapi <code>dataset_manager_template.py</code> untuk mengelola dataset wajah dengan smart capture.
+                    </p>
+                    
+                    <h4>Yang Akan Kamu Isi:</h4>
+                    <ul class="assignment-list">
+                        <li><code>DatasetManager</code> - Import class</li>
+                        <li><code>cv2.VideoCapture()</code> - Webcam access</li>
+                        <li><code>add_face()</code> - Save captured image</li>
+                        <li><code>get_statistics()</code> - Dataset stats</li>
+                        <li><code>export_dataset()</code> - Export untuk training</li>
+                        <li><code>shutil.copytree()</code> - Backup dataset</li>
+                    </ul>
+
+                    <div class="assignment-commands">
+                        <h4>🚀 Cara Mengerjakan:</h4>
+                        <pre><code>cd minggu-4-dataset-collection/tugas
+copy dataset_manager_template.py dataset_manager.py
+python dataset_manager.py</code></pre>
+                    </div>
+
+                    <div class="assignment-footer">
+                        <span>📖 Lihat: <code>tugas/TUGAS.md</code></span>
+                        <span>⭐ Nilai: 100 points (~16-17 pts per soal)</span>
                     </div>
                 </div>
             </section>

@@ -61,7 +61,7 @@ Build a **production-ready desktop application** with:
 ### Technical Requirements
 - **Language**: Python 3.8+
 - **Face Detection**: Haar Cascade or HOG
-- **Face Recognition**: face_recognition library (dlib)
+- **Face Recognition**: MediaPipe (Google)
 - **Database**: MySQL 8.0+ with SQLAlchemy ORM
 - **GUI**: Tkinter (built-in)
 - **Export**: Excel (openpyxl), CSV (pandas)
@@ -323,7 +323,7 @@ Your project is **successful** if it can:
 
 ### External Resources
 - [OpenCV Documentation](https://docs.opencv.org/)
-- [face_recognition Library](https://github.com/ageitgey/face_recognition)
+- [MediaPipe](https://google.github.io/mediapipe/)
 - [SQLAlchemy ORM](https://docs.sqlalchemy.org/)
 - [Tkinter Tutorial](https://docs.python.org/3/library/tkinter.html)
 
