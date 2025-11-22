@@ -18,7 +18,20 @@ import cv2
 
 class FaceRecognizer:
     """
-    Face recognition using MediaPipe FaceMesh with feature extraction
+    Face recognition menggunakan MediaPipe FaceMesh dengan feature extraction
+    
+    Features:
+    - Uses MediaPipe FaceMesh untuk 468 facial landmarks
+    - 1404-dimensional encoding (468 landmarks × 3 coordinates: x, y, z)
+    - Cosine similarity untuk face matching
+    - Database persistence (pickle format)
+    - Real-time processing
+    
+    Example:
+        recognizer = FaceRecognizer(tolerance=0.5)
+        encoding = recognizer.encode_face(image)
+        recognizer.add_known_face(encoding, "Alice")
+        results = recognizer.recognize_faces_in_image(image)
     """
     
     def __init__(self, tolerance: float = 0.6, model: str = 'large'):
@@ -50,7 +63,7 @@ class FaceRecognizer:
             face_location: Optional face location (top, right, bottom, left)
             
         Returns:
-            Face encoding (128-d vector approximation), or None if no face found
+            Face encoding (468-d landmark vector from FaceMesh)
         """
         # Convert BGR to RGB if needed
         if len(image.shape) == 3 and image.shape[2] == 3:
@@ -58,72 +71,56 @@ class FaceRecognizer:
         else:
             rgb_image = image
         
-        # Use face detection to find faces
-        results = self.face_detection.process(rgb_image)
-        
-        if not results.detections:
-            return None
-        
-        # Get first detection
-        detection = results.detections[0]
-        
-        # Crop face region
         h, w, c = rgb_image.shape
-        bbox = detection.location_data.relative_bounding_box
-        x_min = max(0, int(bbox.xmin * w))
-        y_min = max(0, int(bbox.ymin * h))
-        x_max = min(w, int((bbox.xmin + bbox.width) * w))
-        y_max = min(h, int((bbox.ymin + bbox.height) * h))
         
-        face_crop = rgb_image[y_min:y_max, x_min:x_max]
-        
-        # Extract mesh landmarks
-        mesh_results = self.face_mesh.process(face_crop)
+        # Use face mesh to extract landmarks directly (more reliable than detection)
+        mesh_results = self.face_mesh.process(rgb_image)
         
         if not mesh_results.multi_face_landmarks:
             return None
         
-        # Convert landmarks to encoding-like feature vector (468 landmarks * 3 coords = 1404, normalized to 128)
+        # Extract first detected face
         landmarks = mesh_results.multi_face_landmarks[0]
-        feature_vector = []
         
+        # Convert landmarks to feature vector (468 landmarks * 3 coords = 1404 dimensions)
+        feature_vector = []
         for landmark in landmarks.landmark:
             feature_vector.extend([landmark.x, landmark.y, landmark.z])
         
-        # Convert to numpy array and normalize to 128 dimensions (PCA-like reduction)
-        feature_vector = np.array(feature_vector)
+        # Convert to numpy array and normalize
+        encoding = np.array(feature_vector, dtype=np.float32)
         
-        # Simple dimensionality reduction: sample every Nth feature to get ~128 values
-        if len(feature_vector) > 128:
-            indices = np.linspace(0, len(feature_vector) - 1, 128, dtype=int)
-            encoding = feature_vector[indices]
-        else:
-            # Pad if needed
-            encoding = np.pad(feature_vector, (0, 128 - len(feature_vector)), 'constant')
+        # Normalize to unit vector (L2 normalization)
+        norm = np.linalg.norm(encoding)
+        if norm > 0:
+            encoding = encoding / norm
         
-        return encoding / (np.linalg.norm(encoding) + 1e-10)  # Normalize
+        return encoding
     
     def encode_face(self, image: np.ndarray, face_location: Tuple[int, int, int, int] = None) -> Optional[np.ndarray]:
         """
-        Generate face encoding from image
+        Generate face encoding dari image menggunakan MediaPipe FaceMesh
         
         Args:
-            image: Input image (RGB format)
-            face_location: Optional face location (top, right, bottom, left)
+            image: Input image (RGB atau BGR format)
+            face_location: Optional face location (top, right, bottom, left) - unused with FaceMesh
             
         Returns:
-            128-dimension face encoding, or None if no face found
+            1404-dimensional face encoding (468 landmarks × 3 coordinates), atau None jika tidak ada face
         """
         return self._extract_face_features(image, face_location)
     
     def add_known_face(self, encoding: np.ndarray, name: str, metadata: Dict = None):
         """
-        Add a known face to the database
+        Add a known face ke database
         
         Args:
-            encoding: Face encoding (128-d vector)
+            encoding: Face encoding (1404-d vector dari MediaPipe FaceMesh)
             name: Person's name
-            metadata: Additional information (employee_id, department, etc.)
+            metadata: Additional information seperti employee_id, department, etc.
+            
+        Example:
+            recognizer.add_known_face(encoding, "Alice", {"emp_id": "E001", "dept": "IT"})
         """
         self.known_face_encodings.append(encoding)
         self.known_face_names.append(name)
@@ -131,10 +128,10 @@ class FaceRecognizer:
     
     def recognize_face(self, face_encoding: np.ndarray) -> Tuple[Optional[str], float, Optional[Dict]]:
         """
-        Recognize a face from its encoding
+        Recognize a face from its encoding using cosine similarity
         
         Args:
-            face_encoding: Face encoding to identify
+            face_encoding: Face encoding (468-d vector from MediaPipe FaceMesh)
             
         Returns:
             Tuple of (name, confidence, metadata) or (None, 0.0, None) if unknown
@@ -142,9 +139,10 @@ class FaceRecognizer:
         if len(self.known_face_encodings) == 0:
             return None, 0.0, None
         
-        # Calculate distances (Euclidean)
+        # Calculate cosine distances
         known_encodings = np.array(self.known_face_encodings)
-        distances = np.linalg.norm(known_encodings - face_encoding, axis=1)
+        similarities = np.dot(known_encodings, face_encoding)
+        distances = 1.0 - similarities
         
         # Find best match
         best_match_index = np.argmin(distances)
@@ -153,7 +151,7 @@ class FaceRecognizer:
         # Check if match is good enough
         if best_distance <= self.tolerance:
             name = self.known_face_names[best_match_index]
-            confidence = 1.0 - (best_distance / 2.0)  # Convert distance to confidence
+            confidence = 1.0 - best_distance  # Direct conversion from cosine distance
             confidence = max(0.0, min(1.0, confidence))  # Clamp between 0-1
             metadata = self.known_face_metadata[best_match_index]
             return name, confidence, metadata
@@ -162,7 +160,7 @@ class FaceRecognizer:
     
     def recognize_faces_in_image(self, image: np.ndarray) -> List[Dict]:
         """
-        Recognize all faces in an image
+        Recognize all faces in an image using MediaPipe FaceMesh
         
         Args:
             image: Input image (BGR format)
@@ -171,38 +169,54 @@ class FaceRecognizer:
             List of recognition results with bounding boxes
         """
         # Convert BGR to RGB
-        rgb_image = image[:, :, ::-1]
+        rgb_image = image[:, :, ::-1] if len(image.shape) == 3 else image
         
-        # Detect faces
-        results = self.face_detection.process(rgb_image)
+        h, w = rgb_image.shape[:2]
         
-        if not results.detections:
+        # Get face mesh landmarks for ALL faces in image
+        mesh_results = self.face_mesh.process(rgb_image)
+        
+        if not mesh_results.multi_face_landmarks:
             return []
         
-        h, w, c = rgb_image.shape
         results_list = []
         
-        for i, detection in enumerate(results.detections):
-            # Extract bounding box
-            bbox = detection.location_data.relative_bounding_box
-            x = int(bbox.xmin * w)
-            y = int(bbox.ymin * h)
-            width = int(bbox.width * w)
-            height = int(bbox.height * h)
+        for face_idx, landmarks in enumerate(mesh_results.multi_face_landmarks):
+            # Calculate bounding box from landmarks
+            xs = [lm.x for lm in landmarks.landmark]
+            ys = [lm.y for lm in landmarks.landmark]
             
-            # Crop and get encoding
-            face_crop = rgb_image[y:y+height, x:x+width]
-            if face_crop.size == 0:
-                continue
+            x_min, x_max = min(xs), max(xs)
+            y_min, y_max = min(ys), max(ys)
             
-            encoding = self._extract_face_features(face_crop)
-            if encoding is None:
-                continue
+            # Convert to pixel coordinates
+            x = int(x_min * w)
+            y = int(y_min * h)
+            width = int((x_max - x_min) * w)
+            height = int((y_max - y_min) * h)
             
+            # Add padding
+            padding = 10
+            x = max(0, x - padding)
+            y = max(0, y - padding)
+            width = min(w - x, width + padding * 2)
+            height = min(h - y, height + padding * 2)
+            
+            # Extract encoding from landmarks
+            feature_vector = []
+            for landmark in landmarks.landmark:
+                feature_vector.extend([landmark.x, landmark.y, landmark.z])
+            
+            encoding = np.array(feature_vector, dtype=np.float32)
+            norm = np.linalg.norm(encoding)
+            if norm > 0:
+                encoding = encoding / norm
+            
+            # Recognize face
             name, confidence, metadata = self.recognize_face(encoding)
             
             result = {
-                'id': i,
+                'id': face_idx,
                 'name': name if name else 'Unknown',
                 'confidence': confidence,
                 'bbox': (x, y, width, height),
@@ -216,16 +230,20 @@ class FaceRecognizer:
     
     def compare_faces(self, encoding1: np.ndarray, encoding2: np.ndarray) -> Tuple[bool, float]:
         """
-        Compare two face encodings
+        Compare two face encodings using cosine similarity (better for normalized vectors)
         
         Args:
-            encoding1: First face encoding
-            encoding2: Second face encoding
+            encoding1: First face encoding (468-d vector)
+            encoding2: Second face encoding (468-d vector)
             
         Returns:
             Tuple of (is_match, distance)
         """
-        distance = np.linalg.norm(encoding1 - encoding2)
+        # Use cosine distance for normalized vectors (more stable than Euclidean)
+        # Cosine distance = 1 - cosine_similarity
+        similarity = np.dot(encoding1, encoding2)
+        distance = 1.0 - similarity
+        
         is_match = distance <= self.tolerance
         return is_match, distance
     
