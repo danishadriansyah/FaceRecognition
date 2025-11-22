@@ -6,11 +6,46 @@ Week 3 Project Module - Unit Tests
 import sys
 import os
 import numpy as np
+import cv2
 
 # Add parent directory to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__))))
 
 from face_recognizer import FaceRecognizer
+
+
+def get_known_faces_dir():
+    """Get path to known_faces folder in project"""
+    return os.path.join(os.path.dirname(__file__), 'known_faces')
+
+
+def load_real_face_images():
+    """Load real face images from known_faces directory"""
+    known_faces_dir = get_known_faces_dir()
+    face_images = []
+    
+    if not os.path.exists(known_faces_dir):
+        print(f"⚠️  Warning: {known_faces_dir} tidak ada")
+        return None
+    
+    # Try to load at least one face image
+    for person_name in os.listdir(known_faces_dir):
+        person_dir = os.path.join(known_faces_dir, person_name)
+        if not os.path.isdir(person_dir):
+            continue
+        
+        for filename in os.listdir(person_dir):
+            if filename.endswith(('.jpg', '.png', '.jpeg')):
+                img_path = os.path.join(person_dir, filename)
+                img = cv2.imread(img_path)
+                if img is not None:
+                    face_images.append({
+                        'image': img,
+                        'path': img_path,
+                        'person': person_name
+                    })
+    
+    return face_images if face_images else None
 
 
 def test_initialization():
@@ -23,45 +58,68 @@ def test_initialization():
 
 
 def test_encode_face_with_dummy_image():
-    """Test face encoding with dummy image"""
+    """Test face encoding with real or dummy image"""
     print("✅ Test 2: Face Encoding")
     recognizer = FaceRecognizer()
     
-    # Create dummy face image (preferably with some content)
-    dummy_face = np.random.randint(100, 200, (300, 300, 3), dtype=np.uint8)
+    # Try to load real face image
+    real_faces = load_real_face_images()
+    
+    if real_faces:
+        print("   📷 Using REAL face image from known_faces/")
+        test_image = real_faces[0]['image']
+        print(f"   📁 Image: {real_faces[0]['path']}")
+    else:
+        print("   🎨 Using dummy face image (no real data available)")
+        test_image = np.random.randint(100, 200, (300, 300, 3), dtype=np.uint8)
     
     # Try encoding
-    encoding = recognizer.encode_face(dummy_face)
+    encoding = recognizer.encode_face(test_image)
     
     if encoding is not None:
         print(f"   ✓ Encoding generated: shape {encoding.shape}")
         print(f"   ✓ Encoding dtype: {encoding.dtype}")
+        print(f"   ✓ Encoding is normalized: {np.isclose(np.linalg.norm(encoding), 1.0)}")
         print(f"   ✓ Encoding range: [{encoding.min():.4f}, {encoding.max():.4f}]\n")
     else:
-        print("   ✓ No face detected (expected for random image)\n")
+        print("   ✓ No face detected in image\n")
 
 
 def test_add_known_face():
-    """Test adding known faces"""
-    print("✅ Test 3: Add Known Face")
+    """Test adding known faces from real data"""
+    print("✅ Test 3: Add Known Face (Real Data)")
     recognizer = FaceRecognizer()
     
-    # Create dummy encodings (468-d vectors from MediaPipe FaceMesh)
-    dummy_encoding1 = np.random.rand(1404)
-    dummy_encoding1 = dummy_encoding1 / np.linalg.norm(dummy_encoding1)
+    # Try to load real faces
+    real_faces = load_real_face_images()
     
-    dummy_encoding2 = np.random.rand(1404)
-    dummy_encoding2 = dummy_encoding2 / np.linalg.norm(dummy_encoding2)
-    
-    # Add known faces
-    recognizer.add_known_face(dummy_encoding1, "Alice", {"employee_id": "001"})
-    recognizer.add_known_face(dummy_encoding2, "Bob", {"employee_id": "002"})
+    if real_faces and len(real_faces) >= 2:
+        print(f"   📷 Using {len(real_faces)} REAL face images")
+        
+        # Add real faces
+        for face_data in real_faces[:2]:
+            encoding = recognizer.encode_face(face_data['image'])
+            if encoding is not None:
+                person_name = face_data['person']
+                recognizer.add_known_face(encoding, person_name, 
+                    {"source": face_data['path']})
+                print(f"   ✓ Added {person_name}")
+    else:
+        print("   🎨 No real faces available, using dummy encodings")
+        # Fallback to dummy data
+        dummy_encoding1 = np.random.rand(1404)
+        dummy_encoding1 = dummy_encoding1 / np.linalg.norm(dummy_encoding1)
+        
+        dummy_encoding2 = np.random.rand(1404)
+        dummy_encoding2 = dummy_encoding2 / np.linalg.norm(dummy_encoding2)
+        
+        recognizer.add_known_face(dummy_encoding1, "Alice", {"employee_id": "001"})
+        recognizer.add_known_face(dummy_encoding2, "Bob", {"employee_id": "002"})
+        print(f"   ✓ Added 2 dummy faces")
     
     stats = recognizer.get_statistics()
-    assert stats['total_faces'] == 2
-    assert stats['unique_people'] == 2
-    print(f"   ✓ Added 2 known faces")
-    print(f"   ✓ Statistics: {stats}\n")
+    assert stats['total_faces'] >= 2
+    print(f"   ✓ Statistics: total_faces={stats['total_faces']}, unique_people={stats['unique_people']}\n")
 
 
 def test_face_comparison():

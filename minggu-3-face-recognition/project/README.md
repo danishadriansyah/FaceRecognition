@@ -43,10 +43,9 @@ Folder ini berisi implementasi **production-ready module `face_recognizer.py`** 
 ```
 project/
 ├── README.md (file ini)
-├── image_utils.py         # Week 1 module (duplicated)
-├── face_detector.py       # Week 2 module (duplicated)
-├── face_recognizer.py     # NEW: Face recognition module (UPDATED)
-└── test_recognizer.py     # Unit tests (UPDATED)
+├── __init__.py            # Package initialization
+├── face_recognizer.py     # Core module: Face recognition dengan MediaPipe (UPDATED)
+└── test_recognizer.py     # Unit tests: 9 comprehensive test cases (UPDATED)
 ```
 
 ---
@@ -378,6 +377,32 @@ Module Information:
 - **Webcam (full):** ~25 FPS (all frames)
 - **Webcam (cached):** ~30+ FPS (every 3rd frame)
 - **Multi-face (3):** ~20 FPS (parallel processing)
+
+---
+
+## 🧪 Run Unit Tests
+
+**Cara run:**
+```bash
+cd minggu-3-face-recognition/project
+python test_recognizer.py
+```
+
+**Expected output:**
+```
+✅ All 9 tests passed!
+
+Test coverage:
+- test_initialization
+- test_encode_face_with_dummy_image
+- test_add_known_face
+- test_face_comparison (cosine similarity)
+- test_recognition
+- test_database_persistence
+- test_multiple_faces_recognition
+- test_statistics
+- test_remove_person
+```
 
 ---
 
