@@ -7,9 +7,10 @@ import os
 import numpy as np
 import sys
 
-# Add parent path for imports
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../project'))
-from face_recognizer import FaceRecognizer
+# Add project path for imports
+project_dir = os.path.join(os.path.dirname(__file__), '../../project')
+sys.path.insert(0, project_dir)
+from face_recognizer import FaceRecognizer  # type: ignore
 
 def main():
     print("="*70)
