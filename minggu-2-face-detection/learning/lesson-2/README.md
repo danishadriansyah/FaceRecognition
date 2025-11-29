@@ -21,9 +21,20 @@ Di lesson ini kamu akan belajar:
 
 ## Konsep Video Processing
 
-### 1. Video Capture
+### 1. Camera Detection & Selection
 ```python
-cap = cv2.VideoCapture(0)  # 0 = default webcam
+# Detect available cameras
+available_cameras = detect_available_cameras()
+for cam in available_cameras:
+    print(f"Camera {cam['id']}: {cam['name']}")
+    print(f"  Resolution: {cam['resolution']}")
+    print(f"  FPS: {cam['fps']}")
+
+# User select camera
+camera_id = select_camera(available_cameras)
+
+# Open selected camera
+cap = cv2.VideoCapture(camera_id)
 ```
 
 ### 2. Read Frame Loop

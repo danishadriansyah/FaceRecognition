@@ -12,6 +12,53 @@ import time
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../project'))
 from face_recognizer import FaceRecognizer  # type: ignore
 
+def detect_available_cameras(max_cameras=5):
+    """Detect available cameras"""
+    available_cameras = []
+    print("\n🔍 Detecting available cameras...")
+    for camera_id in range(max_cameras):
+        cap = cv2.VideoCapture(camera_id)
+        if cap.isOpened():
+            ret, frame = cap.read()
+            if ret and frame is not None:
+                width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+                height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+                fps = int(cap.get(cv2.CAP_PROP_FPS))
+                backend = cap.getBackendName()
+                name = "Built-in Webcam / Default Camera" if camera_id == 0 else ("External USB Camera / Secondary Camera" if camera_id == 1 else f"Camera Device {camera_id}")
+                camera_info = {'id': camera_id, 'name': name, 'resolution': f"{width}x{height}", 'fps': fps, 'backend': backend}
+                available_cameras.append(camera_info)
+                print(f"  ✅ Camera {camera_id}: {name}")
+                print(f"     Resolution: {width}x{height} | FPS: {fps} | Backend: {backend}")
+            cap.release()
+        else:
+            break
+    return available_cameras
+
+def select_camera(available_cameras):
+    """Let user select camera"""
+    if len(available_cameras) == 0:
+        print("\n❌ No cameras detected!")
+        return None
+    if len(available_cameras) == 1:
+        cam = available_cameras[0]
+        print(f"\n✅ Found 1 camera: {cam['name']}")
+        confirm = input(f"Use this camera? (y/n): ").strip().lower()
+        return cam['id'] if confirm == 'y' else None
+    print(f"\n📹 Found {len(available_cameras)} cameras:")
+    for cam in available_cameras:
+        print(f"  [{cam['id']}] {cam['name']} - {cam['resolution']} @ {cam['fps']}fps")
+    while True:
+        try:
+            choice = int(input(f"\nSelect camera [0-{max([c['id'] for c in available_cameras])}]: ").strip())
+            selected = next((c for c in available_cameras if c['id'] == choice), None)
+            if selected:
+                print(f"✅ Selected: {selected['name']}")
+                return choice
+            print(f"❌ Camera {choice} not available")
+        except (ValueError, KeyboardInterrupt):
+            return None
+
 def main():
     print("="*60)
     print("LESSON 2: Real-Time Face Recognition (MediaPipe)")
@@ -51,14 +98,22 @@ def main():
     
     print(f"✅ Loaded {len(known_encodings)} face(s)")
     
-    # Open webcam
-    print("\n3. Opening webcam...")
-    cap = cv2.VideoCapture(0)
-    if not cap.isOpened():
-        print("❌ Cannot open webcam")
+    # Detect and select camera
+    available_cameras = detect_available_cameras()
+    camera_id = select_camera(available_cameras)
+    
+    if camera_id is None:
+        print("❌ Camera selection cancelled")
         return
     
-    print("✅ Webcam ready")
+    # Open webcam
+    print(f"\n3. Opening camera {camera_id}...")
+    cap = cv2.VideoCapture(camera_id)
+    if not cap.isOpened():
+        print(f"❌ Cannot open camera {camera_id}")
+        return
+    
+    print("✅ Camera ready")
     print("\nControls: ESC=Exit, SPACE=Snapshot")
     
     frame_count = 0

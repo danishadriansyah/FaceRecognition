@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Week 6: Database & Attendance - Face Recognition LMS</title>
+    <title>Week 6: Attendance System - Face Recognition LMS</title>
     <link rel="stylesheet" href="../assets/css/lms-styles.css">
     <link rel="stylesheet" href="../assets/css/lesson-styles.css">
 </head>
@@ -49,7 +49,7 @@
             </a>
             <a href="week-4.html" class="nav-item">
                 <span class="icon">4️⃣</span>
-                <span>Dataset Collection</span>
+                <span>Dataset & Database</span>
                 <span class="badge badge-hard">Hard</span>
             </a>
             <a href="week-5.html" class="nav-item">
@@ -59,7 +59,7 @@
             </a>
             <a href="week-6.html" class="nav-item active">
                 <span class="icon">6️⃣</span>
-                <span>Database & Attendance</span>
+                <span>Attendance System</span>
                 <span class="badge badge-hard">Hard</span>
             </a>
             <a href="week-7.html" class="nav-item">
@@ -116,11 +116,11 @@
         <div class="content-wrapper">
             <section class="week-header">
                 <div class="week-title">
-                    <h1>Week 6: Database & Attendance System</h1>
+                    <h1>Week 6: Attendance System</h1>
                     <span class="badge badge-hard">Hard</span>
                 </div>
                 <p class="week-description">
-                    Setup MySQL database, define models dengan SQLAlchemy, build attendance management system dengan CRUD operations dan reporting.
+                    Build attendance management system dengan check-in/check-out logic, business rules (late threshold, early leave), reporting & analytics dengan Excel/CSV export.
                 </p>
                 <div class="week-meta">
                     <div class="meta-item">
@@ -145,8 +145,8 @@
                     <div class="lesson-card" onclick="openLesson(6, 1)">
                         <div class="lesson-number">01</div>
                         <div class="lesson-content">
-                            <h3>Database Setup & Schema Design</h3>
-                            <p>Install MySQL 8.0+, setup SQLAlchemy ORM, design normalized schema dengan 3 tables (Person, Attendance, FaceEncoding), create migrations, establish relationships dengan foreign keys</p>
+                            <h3>Attendance Logic & Business Rules</h3>
+                            <p>Build AttendanceSystem class, check-in/check-out methods, business rules (working hours 08:00-17:00, late threshold 08:15, early leave < 16:45), confidence validation 75%+</p>
                             <div class="lesson-meta">
                                 <span>⏱️ 90-105 min</span>
                                 <span class="lesson-status">Not Started</span>
@@ -161,8 +161,8 @@
                     <div class="lesson-card" onclick="openLesson(6, 2)">
                         <div class="lesson-number">02</div>
                         <div class="lesson-content">
-                            <h3>CRUD Operations & ORM Queries</h3>
-                            <p>Implement Create, Read, Update, Delete untuk Person & Attendance records. Complex queries dengan filters, joins, aggregations. Transaction management dan error handling untuk data integrity</p>
+                            <h3>Reporting & Analytics</h3>
+                            <p>Build ReportGenerator class, daily attendance reports, monthly summaries, person history, late/early analysis, Excel/CSV export dengan pandas, formatted reports</p>
                             <div class="lesson-meta">
                                 <span>⏱️ 120-135 min</span>
                                 <span class="lesson-status">Not Started</span>

@@ -45,9 +45,9 @@ Website ini menjelaskan **semua materi minggu 1-8**:
 - ✅ Minggu 1: Python Basics & OpenCV (5 tutorials)
 - ✅ Minggu 2: Face Detection (4 tutorials)
 - ✅ Minggu 3: Face Recognition (3 tutorials)
-- ✅ Minggu 4: Dataset Collection (3 tutorials)
-- ✅ Minggu 5: Recognition System (2 tutorials)
-- ✅ Minggu 6: Database & Attendance (3 tutorials)
+- ✅ Minggu 4: Dataset & Database (2 tutorials)
+- ✅ Minggu 5: Hybrid Recognition System (2 tutorials)
+- ✅ Minggu 6: Attendance System (2 tutorials)
 - ✅ Minggu 7: Desktop GUI (2 tutorials)
 - ✅ Minggu 8: Final Testing & Distribution (3 tutorials)
 

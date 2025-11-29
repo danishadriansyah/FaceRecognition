@@ -57,13 +57,18 @@ MediaPipe sudah cepat, tapi tricks ini bikin lebih smooth!
    python main.py
    ```
 
-3. **Test recognition:**
+3. **Camera Selection:**
+   - Script akan auto-detect available cameras
+   - Pilih camera yang mau dipakai (jika ada multiple)
+   - Info ditampilkan: nama camera, resolusi, FPS
+
+4. **Test recognition:**
    - Webcam akan terbuka
    - Tunjukkan wajah ke camera
    - Program akan show nama di atas wajah
    - Coba dengan orang known (Alice/Bob) dan unknown
 
-4. **Check output:**
+5. **Check output:**
    - Snapshot tersimpan di folder `output/` (kalau tekan SPACE)
 
 ## Keyboard Controls

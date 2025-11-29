@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Week 4: Dataset Collection - Face Recognition LMS</title>
+    <title>Week 4: Dataset & Database - Face Recognition LMS</title>
     <link rel="stylesheet" href="../assets/css/lms-styles.css">
     <link rel="stylesheet" href="../assets/css/lesson-styles.css">
 </head>
@@ -49,7 +49,7 @@
             </a>
             <a href="week-4.html" class="nav-item active">
                 <span class="icon">4️⃣</span>
-                <span>Dataset Collection</span>
+                <span>Dataset & Database</span>
                 <span class="badge badge-hard">Hard</span>
             </a>
             <a href="week-5.html" class="nav-item">
@@ -59,7 +59,7 @@
             </a>
             <a href="week-6.html" class="nav-item">
                 <span class="icon">6️⃣</span>
-                <span>Database & Attendance</span>
+                <span>Attendance System</span>
                 <span class="badge badge-hard">Hard</span>
             </a>
             <a href="week-7.html" class="nav-item">
@@ -116,11 +116,11 @@
         <div class="content-wrapper">
             <section class="week-header">
                 <div class="week-title">
-                    <h1>Week 4: Dataset Collection & Management</h1>
+                    <h1>Week 4: Dataset & Database</h1>
                     <span class="badge badge-hard">Hard</span>
                 </div>
                 <p class="week-description">
-                    Systematic face data collection dengan multiple angles dan lighting conditions. Build dataset management system untuk organizing dan validating face images.
+                    Systematic face capture system + database integration dengan MySQL. Setup SQLAlchemy ORM models untuk store face images, encodings, dan metadata. Build production-ready dataset management.
                 </p>
                 <div class="week-meta">
                     <div class="meta-item">
@@ -161,8 +161,8 @@
                     <div class="lesson-card" onclick="openLesson(4, 2)">
                         <div class="lesson-number">02</div>
                         <div class="lesson-content">
-                            <h3>Quality Control & Validation</h3>
-                            <p>Implement blur detection dengan Laplacian variance, check face detection confidence, validate minimum/maximum face sizes, auto-reject low quality images, generate quality reports</p>
+                            <h3>Database Setup & Integration</h3>
+                            <p>MySQL database setup, SQLAlchemy ORM models (Person, FaceImage, FaceEncoding), store captured faces ke database, relationship management, session handling</p>
                             <div class="lesson-meta">
                                 <span>⏱️ 75-90 min</span>
                                 <span class="lesson-status">Not Started</span>
@@ -199,7 +199,7 @@
 
                     <div class="assignment-commands">
                         <h4>🚀 Cara Mengerjakan:</h4>
-                        <pre><code>cd minggu-4-dataset-collection/tugas
+                        <pre><code>cd minggu-4-dataset-database/tugas
 copy dataset_manager_template.py dataset_manager.py
 python dataset_manager.py</code></pre>
                     </div>

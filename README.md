@@ -27,14 +27,16 @@ Sistem absensi berbasis face recognition yang dikembangkan secara progressive da
 ## 🎯 Deskripsi Project
 
 ### Fitur Utama
-- ✅ Face Detection menggunakan Haar Cascade
-- ✅ Face Recognition dengan akurasi tinggi (95%+)
+- ✅ **Hybrid Face Recognition:** MediaPipe Detection + DeepFace Recognition
+- ✅ **High Accuracy:** 97%+ dengan Facenet512
+- ✅ **Real-time Performance:** 6-9 FPS (110-165ms per face)
 - ✅ Database MySQL (robust & scalable)
 - ✅ Real-time attendance tracking dari webcam
 - ✅ Desktop GUI dengan Tkinter (simple & user-friendly)
 - ✅ Export laporan ke Excel/CSV
 - ✅ Support 200+ persons
-- ✅ Berjalan di komputer lokal dengan MySQL server
+- ✅ Berjalan di komputer lokal - no cloud needed
+- ✅ No dlib dependency - easy installation
 
 ### Untuk Siapa Project Ini?
 - **Students** yang ingin belajar AI face recognition
@@ -43,12 +45,29 @@ Sistem absensi berbasis face recognition yang dikembangkan secara progressive da
 - Siapa saja yang mau build **production-ready attendance system**
 
 ### Tech Stack
-**Core:** Python 3.11.9, OpenCV 4.8.1, MediaPipe 0.10.8  
+**Core:**  
+- Python 3.11.9
+- OpenCV 4.8.1 (Computer Vision)
+- **MediaPipe 0.10.8** (Fast Face Detection - 10-15ms)
+- **DeepFace 0.0.89** (Accurate Face Recognition - 97%+)
+- **TensorFlow 2.15.0** (DeepFace backend)
+
+**Hybrid Approach (Minggu 4-7):**
+- Detection: MediaPipe (⚡ 30+ FPS)
+- Recognition: DeepFace Facenet512 (🎯 97%+ accuracy)
+- Pipeline: 110-165ms per face (real-time capable)
+
 **GUI:** Tkinter (built-in Python 3.11)  
 **Database:** MySQL 8.0+ dengan SQLAlchemy 2.0.23 ORM  
 **Data Processing:** NumPy 1.26.2, Pandas 2.1.4  
 **Export:** openpyxl 3.1.2, xlsxwriter 3.1.9  
-**Deployment:** PyInstaller 6.3.0, gunicorn 21.2.0 (optional)
+**Deployment:** PyInstaller 6.3.0
+
+**Why Hybrid?**
+- ✅ 2x lebih cepat dari pure DeepFace
+- ✅ Real-time performance (6-9 FPS)
+- ✅ Production-ready accuracy (97%+)
+- ✅ No dlib/C++ compiler needed
 
 ---
 
@@ -98,7 +117,7 @@ python 01_hello_opencv.py
 cd minggu-1-python-basics
 
 # 2. Setup dataset
-cd ../minggu-4-dataset-collection
+cd ../minggu-4-dataset-database
 python learning/01_capture_faces.py  # Capture 5-10 orang
 
 # 3. Run desktop app
@@ -368,9 +387,9 @@ ExtraQueensya/
 │
 ├── minggu-2-face-detection/      ← Week 2 (4 tutorials)
 ├── minggu-3-face-recognition/    ← Week 3 (3 tutorials)
-├── minggu-4-dataset-collection/  ← Week 4 (3 tutorials)
+├── minggu-4-dataset-database/     ← Week 4 (3 tutorials)
 ├── minggu-5-recognition-system/  ← Week 5 (2 tutorials)
-├── minggu-6-database-attendance/ ← Week 6 (3 tutorials)
+├── minggu-6-attendance-system/    ← Week 6 (3 tutorials)
 ├── minggu-7-desktop-gui/         ← Week 7 (2 tutorials + GUI)
 └── minggu-8-final-testing/       ← Week 8 (3 tutorials + dist)
 ```
@@ -942,37 +961,13 @@ os.makedirs(output_dir, exist_ok=True)
 cv2.imwrite(os.path.join(output_dir, 'output.jpg'), image)
 ```
 
-### Helper Utilities - `path_utils.py`
-
-Project menyediakan helper functions untuk manage paths dengan mudah:
-
-```python
-from path_utils import *
-
-# Get paths dengan benar
-output_path = get_output_path('result.jpg')          # Auto create folder
-input_path = get_input_path('sample.jpg')
-timestamped = get_timestamped_path('photo', 'jpg')   # photo_20251114_153045.jpg
-
-# List files
-images = list_files('images', '.jpg')
-
-# Cleanup old files
-deleted = cleanup_old_files('output', days=7)
-
-# Get directory size
-size = get_directory_size_mb('dataset')
-```
-
-**Lihat `path_utils_examples.py` untuk 6 contoh penggunaan lengkap!**
-
 ### File Organization Guidelines
 
 **1. Input Files (Images/Videos)**
 - Letakkan di `learning/images/` atau `project/test_images/`
 
 **2. Output Files (Results)**  
-- Otomatis ke `learning/output/` atau `project/output/` kalau pakai `path_utils.py`
+- Simpan ke `learning/output/` atau `project/output/` (otomatis dibuat)
 
 **3. Dataset (Week 4+)**
 - Production dataset di `project/dataset/`
@@ -1009,20 +1004,23 @@ size = get_directory_size_mb('dataset')
 
 ### ✅ Yang Sudah Tersedia
 
-**1. Dokumentasi Lengkap (16 README Files)**
+**1. Dokumentasi Lengkap (16 README Files + Guides)**
 - Setiap minggu (1-8) punya 2 README: `learning/README.md` dan `project/README.md`
 - Total ~40,000 kata penjelasan step-by-step dalam Bahasa Indonesia
 - Code examples, API references, troubleshooting guides
+- **`XAMPP_HEIDISQL_GUIDE.md`** - Complete database setup guide dengan HeidiSQL
 
 **2. Struktur Folder (42 Directories)**
 - Minggu 1-3: Basic folders (output, images, test_images)
 - Minggu 4-8: Advanced folders (dataset, logs, backups, reports, etc.)
 - Semua output tetap dalam folder mingguannya!
+- No hardcoding paths, semua menggunakan relative paths
 
-**3. Helper Utilities**
-- `path_utils.py` - Functions untuk manage paths otomatis
-- `path_utils_examples.py` - 6 contoh penggunaan
-- No hardcoding, semua relative paths
+**3. Database Setup (Week 4+)**
+- MySQL dengan XAMPP (easy setup)
+- HeidiSQL GUI untuk manage database
+- SQLAlchemy ORM untuk Python code
+- See: `XAMPP_HEIDISQL_GUIDE.md` untuk complete instructions
 
 ### 🚀 Cara Mulai Belajar
 
@@ -1066,11 +1064,10 @@ Week 8: [ ] Read READMEs [ ] Complete tutorials [ ] Deploy app [ ] Final tests
 ### 💡 Tips untuk Sukses
 
 1. **Baca README Dulu** - Jangan langsung coding, pahami konsep dulu
-2. **Gunakan `path_utils.py`** - Semua path via helper functions, jangan hardcode
-3. **Follow Folder Structure** - Input → `images/`, Output → `output/`
-4. **Run Tests!** - Test adalah validasi, kalau passed = code benar
-5. **Jangan Skip Minggu** - Tiap minggu build on previous week
-6. **Practice & Experiment** - Edit code, coba parameter berbeda
+2. **Follow Folder Structure** - Input → `images/`, Output → `output/`, gunakan relative paths
+3. **Run Tests!** - Test adalah validasi, kalau passed = code benar
+4. **Jangan Skip Minggu** - Tiap minggu build on previous week
+5. **Practice & Experiment** - Edit code, coba parameter berbeda
 
 ---
 
@@ -1081,10 +1078,7 @@ Week 8: [ ] Read READMEs [ ] Complete tutorials [ ] Deploy app [ ] Final tests
 - **Weekly READMEs** - Detailed per-week instructions:
   - Each week has 2 READMEs: `learning/README.md` (tutorials) & `project/README.md` (project code)
   - Total: 16 comprehensive READMEs dengan penjelasan detail
-- **`path_utils.py`** - Helper utilities untuk handle paths dengan benar
-- **`path_utils_examples.py`** - 6 contoh penggunaan path utilities
 - **`PROGRESSIVE_MODULES.md`** - Konsep duplication
-- **`PROJECT_TRACKING.md`** - Status & progress tracking
 
 ### External Resources
 - **OpenCV Docs:** https://docs.opencv.org/
@@ -1095,9 +1089,7 @@ Week 8: [ ] Read READMEs [ ] Complete tutorials [ ] Deploy app [ ] Final tests
 1. Baca ulang tutorial di `learning/` folder
 2. Lihat code di `project/` folder sebagai contoh
 3. Baca README.md di week yang sedang dikerjakan
-4. Check `path_utils_examples.py` untuk contoh path handling
-5. Google error message (seriously helpful!)
-6. Check `PROJECT_TRACKING.md` untuk status lengkap
+4. Google error message (seriously helpful!)
 
 ---
 

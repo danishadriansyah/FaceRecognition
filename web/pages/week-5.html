@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Week 5: Recognition System - Face Recognition LMS</title>
+    <title>Week 5: Hybrid Recognition - Face Recognition LMS</title>
     <link rel="stylesheet" href="../assets/css/lms-styles.css">
     <link rel="stylesheet" href="../assets/css/lesson-styles.css">
 </head>
@@ -49,7 +49,7 @@
             </a>
             <a href="week-4.html" class="nav-item">
                 <span class="icon">4️⃣</span>
-                <span>Dataset Collection</span>
+                <span>Dataset & Database</span>
                 <span class="badge badge-hard">Hard</span>
             </a>
             <a href="week-5.html" class="nav-item active">
@@ -59,7 +59,7 @@
             </a>
             <a href="week-6.html" class="nav-item">
                 <span class="icon">6️⃣</span>
-                <span>Database & Attendance</span>
+                <span>Attendance System</span>
                 <span class="badge badge-hard">Hard</span>
             </a>
             <a href="week-7.html" class="nav-item">
@@ -118,8 +118,8 @@
             <section class="week-header">
                 <div class="week-number">5</div>
                 <div class="week-info">
-                    <h1>Minggu 5: Recognition System Integration</h1>
-                    <p class="week-description">Integrasikan semua modules (detector, recognizer, dataset manager) jadi satu recognition service dengan real-time processing, performance optimization, dan error handling yang robust!</p>
+                    <h1>Minggu 5: Hybrid Recognition System</h1>
+                    <p class="week-description">Build hybrid face recognition system: MediaPipe untuk fast detection (10-15ms) + DeepFace Facenet512 untuk accurate recognition (97%+ accuracy). Real-time processing dengan database integration!</p>
                 </div>
                 <div class="week-meta">
                     <div class="meta-item">
@@ -144,8 +144,8 @@
                     <div class="lesson-card" onclick="openLesson(5, 1)">
                         <div class="lesson-number">01</div>
                         <div class="lesson-content">
-                            <h3>System Integration & Architecture</h3>
-                            <p>Design RecognitionService class yang integrate FaceDetector + FaceRecognizer + DatasetManager. Implement pipeline: load dataset → detect faces → recognize → return results dengan error handling dan logging</p>
+                            <h3>DeepFace Encoding Generation</h3>
+                            <p>Build EncodingGenerator class dengan DeepFace Facenet512, generate 512-dimensional face encodings, serialize/deserialize encodings, store to database, Euclidean distance comparison</p>
                             <div class="lesson-meta">
                                 <span>⏱️ 120-150 min</span>
                                 <span class="lesson-status">Not Started</span>
@@ -160,8 +160,8 @@
                     <div class="lesson-card" onclick="openLesson(5, 2)">
                         <div class="lesson-number">02</div>
                         <div class="lesson-content">
-                            <h3>Performance Optimization</h3>
-                            <p>Multi-threading untuk video processing, caching face encodings, reduce detection frequency (skip frames), GPU acceleration jika available, benchmark performance metrics (FPS, latency, accuracy)</p>
+                            <h3>Hybrid Recognition Service</h3>
+                            <p>Build RecognitionService dengan MediaPipe detection + DeepFace recognition, real-time webcam processing, load encodings from database, confidence thresholding 75%+, performance monitoring</p>
                             <div class="lesson-meta">
                                 <span>⏱️ 90-120 min</span>
                                 <span class="lesson-status">Not Started</span>

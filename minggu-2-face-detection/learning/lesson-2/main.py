@@ -28,6 +28,53 @@ def get_output_path(filename):
     return os.path.join(output_dir, filename)
 
 
+def detect_available_cameras(max_cameras=5):
+    """Detect available cameras"""
+    available_cameras = []
+    print("\n🔍 Detecting available cameras...")
+    for camera_id in range(max_cameras):
+        cap = cv2.VideoCapture(camera_id)
+        if cap.isOpened():
+            ret, frame = cap.read()
+            if ret and frame is not None:
+                width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+                height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+                fps = int(cap.get(cv2.CAP_PROP_FPS))
+                backend = cap.getBackendName()
+                name = "Built-in Webcam / Default Camera" if camera_id == 0 else ("External USB Camera / Secondary Camera" if camera_id == 1 else f"Camera Device {camera_id}")
+                camera_info = {'id': camera_id, 'name': name, 'resolution': f"{width}x{height}", 'fps': fps, 'backend': backend}
+                available_cameras.append(camera_info)
+                print(f"  ✅ Camera {camera_id}: {name}")
+                print(f"     Resolution: {width}x{height} | FPS: {fps} | Backend: {backend}")
+            cap.release()
+        else:
+            break
+    return available_cameras
+
+def select_camera(available_cameras):
+    """Let user select camera"""
+    if len(available_cameras) == 0:
+        print("\n❌ No cameras detected!")
+        return None
+    if len(available_cameras) == 1:
+        cam = available_cameras[0]
+        print(f"\n✅ Found 1 camera: {cam['name']}")
+        confirm = input(f"Use this camera? (y/n): ").strip().lower()
+        return cam['id'] if confirm == 'y' else None
+    print(f"\n📹 Found {len(available_cameras)} cameras:")
+    for cam in available_cameras:
+        print(f"  [{cam['id']}] {cam['name']} - {cam['resolution']} @ {cam['fps']}fps")
+    while True:
+        try:
+            choice = int(input(f"\nSelect camera [0-{max([c['id'] for c in available_cameras])}]: ").strip())
+            selected = next((c for c in available_cameras if c['id'] == choice), None)
+            if selected:
+                print(f"✅ Selected: {selected['name']}")
+                return choice
+            print(f"❌ Camera {choice} not available")
+        except (ValueError, KeyboardInterrupt):
+            return None
+
 def detect_faces_webcam():
     """Main function untuk detect faces dari webcam"""
     
@@ -47,32 +94,37 @@ def detect_faces_webcam():
     
     print("   ✅ Haar Cascade loaded successfully")
     
-    # 2. Open webcam
-    print("\n2. Opening webcam...")
-    cap = cv2.VideoCapture(0)  # 0 = default webcam
+    # 2. Detect and select camera
+    print("\n2. Detecting cameras...")
+    available_cameras = detect_available_cameras()
+    camera_id = select_camera(available_cameras)
+    
+    if camera_id is None:
+        print("   ❌ Camera selection cancelled")
+        return
+    
+    # 3. Open selected webcam
+    print(f"\n3. Opening camera {camera_id}...")
+    cap = cv2.VideoCapture(camera_id)
     
     if not cap.isOpened():
-        print("   ❌ Error: Cannot open webcam!")
-        print("   💡 Tips:")
-        print("      - Pastikan webcam terhubung")
-        print("      - Close aplikasi lain yang pakai webcam")
-        print("      - Try cv2.VideoCapture(1) untuk camera lain")
+        print(f"   ❌ Error: Cannot open camera {camera_id}!")
         return
     
     # Get webcam properties
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    print(f"   ✅ Webcam opened successfully")
+    print(f"   ✅ Camera opened successfully")
     print(f"   Resolution: {width}x{height}")
     
-    # 3. Setup variables
+    # 4. Setup variables
     prev_time = time.time()
     fps = 0
     show_fps = True
     show_count = True
     snapshot_count = 0
     
-    print("\n3. Starting face detection...")
+    print("\n4. Starting face detection...")
     print("\nKeyboard Controls:")
     print("   ESC   - Exit program")
     print("   SPACE - Save snapshot")
@@ -80,7 +132,7 @@ def detect_faces_webcam():
     print("   F     - Toggle FPS display")
     print("\n" + "="*60)
     
-    # 4. Main detection loop
+    # 5. Main detection loop
     while True:
         # Read frame from webcam
         ret, frame = cap.read()

@@ -189,49 +189,44 @@ cd ../project
 python test_recognizer.py`
     },
     4: {
-        title: "Minggu 4: Dataset Collection",
+        title: "Minggu 4: Dataset & Database",
         difficulty: "🔴 Medium-Hard",
         duration: "6-7 hari",
-        tutorials: "3 tutorials",
+        tutorials: "2 tutorials",
         objectives: [
-            "Systematic face data collection",
-            "Multiple angles dan lighting conditions",
-            "Dataset organization",
-            "Data quality validation",
-            "Dataset management system"
+            "Systematic face capture system",
+            "MySQL database setup",
+            "SQLAlchemy ORM models",
+            "Store dataset to database",
+            "Database integration"
         ],
         topics: [
             {
-                title: "01. Capture Faces",
-                description: "Basic face capture dari webcam, validation checks, save organized dataset"
+                title: "01. Face Capture System",
+                description: "Automated face capture, quality validation, multiple angles capture"
             },
             {
-                title: "02. Multi-Angle Capture",
-                description: "Capture multiple angles (frontal, left, right), lighting variation, quality metrics"
-            },
-            {
-                title: "03. Batch Processing",
-                description: "Process multiple images sekaligus, dataset validation, encoding generation"
+                title: "02. Database Integration",
+                description: "MySQL setup, SQLAlchemy models (Person, FaceImage, FaceEncoding), store to database"
             }
         ],
-        module: "dataset_manager.py",
+        module: "dataset_manager.py (project only)",
         moduleFunctions: [
-            "DatasetManager class - Manage face datasets",
-            "capture_face() - Capture with validation",
-            "add_person() - Add new person to dataset",
-            "remove_person() - Remove person from dataset",
-            "get_person_images() - Get all images for person",
-            "validate_dataset() - Check dataset quality",
-            "export_encodings() - Generate encodings for dataset"
+            "Database class - MySQL connection & session management",
+            "Person model - Store person information",
+            "FaceImage model - Store captured face images",
+            "FaceEncoding model - Store DeepFace encodings",
+            "Relationship management dengan foreign keys",
+            "Session handling & transactions"
         ],
         keyconcepts: [
-            "Dataset structure: person folders dengan multiple images",
-            "Multiple angles: frontal, left profile, right profile",
-            "Quality validation: lighting, blur, face size",
-            "Metadata management: person info, capture timestamps",
-            "Encoding caching untuk performance"
+            "SQLAlchemy ORM untuk database operations",
+            "Normalized schema dengan relationships",
+            "Store images as BLOB or file paths",
+            "Transaction management untuk data integrity",
+            "Database connection pooling"
         ],
-        commands: `cd minggu-4-dataset-collection/learning
+        commands: `cd minggu-4-dataset-database/learning
 python 01_capture_faces.py
 python 02_multi_angle_capture.py
 python 03_batch_processing.py
@@ -240,7 +235,7 @@ cd ../project
 python test_dataset.py`
     },
     5: {
-        title: "Minggu 5: Recognition System",
+        title: "Minggu 5: Hybrid Recognition System",
         difficulty: "🟣 Hard",
         duration: "6-7 hari",
         tutorials: "2 tutorials",
@@ -296,7 +291,7 @@ cd ../project
 python test_service.py`
     },
     6: {
-        title: "Minggu 6: Database & Attendance",
+        title: "Minggu 6: Attendance System",
         difficulty: "🔵 Hard",
         duration: "7-8 hari",
         tutorials: "3 tutorials",
@@ -354,7 +349,7 @@ FaceEncoding:
 - person_id (FK)
 - encoding_data
 - created_at`,
-        commands: `cd minggu-6-database-attendance/learning
+        commands: `cd minggu-6-attendance-system/learning
 python 01_database_setup.py
 python 02_models_sqlalchemy.py
 python 03_crud_operations.py

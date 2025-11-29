@@ -22,12 +22,23 @@
    - Green: (0, 255, 0)
    - Blue: (255, 0, 0)
 
-3. **Webcam Access**
+3. **Webcam Access with Camera Selection**
    ```python
-   cap = cv2.VideoCapture(0)  # 0 = default webcam
+   # Auto-detect available cameras
+   available_cameras = detect_available_cameras()
+   camera_id = select_camera(available_cameras)
+   
+   # Open selected camera
+   cap = cv2.VideoCapture(camera_id)
    ret, frame = cap.read()
    cap.release()
    ```
+   
+   Features:
+   - Auto-detect semua camera yang tersedia
+   - Tampilkan info: nama, resolusi, FPS, backend
+   - User pilih camera yang mau dipakai
+   - Support multiple cameras (built-in + USB)
 
 4. **Keyboard Controls**
    - 'q': Quit
@@ -36,9 +47,11 @@
 
 ## Langkah
 1. Run: `python main.py`
-2. Webcam akan terbuka
-3. Tekan 's' untuk snapshot
-4. Tekan 'q' untuk quit
+2. Script akan detect available cameras
+3. Pilih camera yang mau dipakai (jika ada multiple)
+4. Webcam akan terbuka
+5. Tekan 's' untuk snapshot
+6. Tekan 'q' untuk quit
 
 ## Output
 - Image dengan shapes
