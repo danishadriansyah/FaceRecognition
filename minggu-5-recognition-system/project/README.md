@@ -16,14 +16,14 @@ Production-ready `RecognitionService` class dengan **MySQL database integration*
 project/
 ├── README.md (file ini)
 ├── recognition_service.py ✨ (Database-backed service)
-├── test_recognition.py (8 comprehensive tests)
-├── face_detector.py (from Week 2)
-├── face_recognizer.py (from Week 3)
-├── dataset_manager.py (from Week 4 - imported)
+├── test_recognition.py (7 comprehensive tests)
+├── dataset_manager.py (auto-imported from Week 4)
 └── image_utils.py (from Week 1)
 ```
 
-**Note:** `dataset_manager.py` di-import dari Week 4 project secara otomatis.
+**Note:** 
+- `dataset_manager.py` di-import dari Week 4 project secara otomatis
+- `face_detector.py` dan `face_recognizer.py` di-import dari Week 2-3 project
 
 ---
 
@@ -81,41 +81,16 @@ service = RecognitionService(
 **What happens during initialization:**
 1. ✅ Connect to MySQL database
 2. ✅ Initialize DatasetManager (from Week 4)
-3. ✅ Load known encodings from `face_encodings` table
-4. ✅ Prepare for detector/recognizer modules (from Week 2-3)
-5. ✅ Initialize statistics tracking
+3. ✅ Auto-initialize FaceDetector (Week 2 - MediaPipe)
+4. ✅ Auto-initialize FaceRecognizer (Week 3 - DeepFace Facenet512)
+5. ✅ Load known encodings from `face_encodings` table
+6. ✅ Initialize statistics tracking
 
 ---
 
 ## 🔧 Core Methods
 
-### 1. set_detector_recognizer()
-**Purpose:** Set face detection & recognition modules dari Week 2-3
-
-```python
-from face_detector import FaceDetector
-from face_recognizer import FaceRecognizer
-
-# Initialize modules
-detector = FaceDetector()
-recognizer = FaceRecognizer()
-
-# Set to service
-service.set_detector_recognizer(detector, recognizer)
-```
-
-**Parameters:**
-- `face_detector`: FaceDetector instance (from Week 2)
-- `face_recognizer`: FaceRecognizer instance (from Week 3)
-
-**Output:**
-```
-✅ Detection and recognition modules loaded
-```
-
----
-
-### 2. generate_encodings_for_all()
+### 1. generate_encodings_for_all()
 **Purpose:** Generate face encodings untuk semua orang di database
 
 ```python
@@ -140,7 +115,7 @@ count = service.generate_encodings_for_all(model_name='ArcFace')
 
 ---
 
-### 3. process_image()
+### 2. process_image()
 **Purpose:** Process single image untuk face recognition
 
 ```python
@@ -189,7 +164,7 @@ for person in result['people']:
 
 ---
 
-### 4. process_webcam_frame()
+### 3. process_webcam_frame()
 **Purpose:** Process single webcam frame dengan visualization
 
 ```python
@@ -238,7 +213,7 @@ cv2.destroyAllWindows()
 
 ---
 
-### 5. get_statistics()
+### 4. get_statistics()
 **Purpose:** Get recognition statistics
 
 ```python
@@ -261,7 +236,7 @@ print(f"Recognition rate: {stats['recognition_rate']:.1%}")
 
 ---
 
-### 6. reset_statistics()
+### 5. reset_statistics()
 **Purpose:** Reset all statistics counters
 
 ```python
@@ -369,15 +344,13 @@ from recognition_service import RecognitionService
 service = RecognitionService(db_connection_string=...)
 service.run_webcam()
 
-# Project approach (more control)
+# Project approach (production-ready, auto-initialized)
 from recognition_service import RecognitionService
-from face_detector import FaceDetector
-from face_recognizer import FaceRecognizer
 
 service = RecognitionService()
-service.set_detector_recognizer(FaceDetector(), FaceRecognizer())
+# FaceDetector & FaceRecognizer are auto-initialized!
 
-# Now you have full control over recognition pipeline
+# Process images immediately
 result = service.process_image(image)
 ```
 
@@ -426,7 +399,7 @@ cd minggu-5-recognition-system/project
 python test_recognition.py
 ```
 
-### Test Suite (8 tests)
+### Test Suite (7 tests)
 
 ```python
 # test_recognition.py includes:
@@ -434,33 +407,31 @@ python test_recognition.py
 1. test_service_initialization()
    ✅ Database connection
    ✅ DatasetManager initialized
+   ✅ FaceDetector auto-loaded (MediaPipe)
+   ✅ FaceRecognizer auto-loaded (DeepFace)
 
-2. test_detector_recognizer_setup()
-   ✅ Modules can be set
-   ✅ Detection/recognition ready
-
-3. test_find_best_match()
+2. test_find_best_match()
    ✅ Encoding matching logic
    ✅ Distance calculation
    ✅ Confidence scoring
 
-4. test_process_image()
+3. test_process_image()
    ✅ Image processing pipeline
    ✅ Result format correct
 
-5. test_webcam_frame_processing()
+4. test_webcam_frame_processing()
    ✅ Frame annotation
    ✅ Visualization working
 
-6. test_statistics()
+5. test_statistics()
    ✅ Stats tracking
    ✅ Recognition rate calculation
 
-7. test_database_integration()
+6. test_database_integration()
    ✅ Database connectivity
    ✅ Data retrieval
 
-8. test_reset_statistics()
+7. test_reset_statistics()
    ✅ Counter reset working
 ```
 
@@ -498,13 +469,10 @@ ALL TESTS COMPLETED
 
 ```python
 from recognition_service import RecognitionService
-from face_detector import FaceDetector
-from face_recognizer import FaceRecognizer
 import cv2
 
-# Initialize
+# Initialize (detector & recognizer auto-loaded)
 service = RecognitionService()
-service.set_detector_recognizer(FaceDetector(), FaceRecognizer())
 
 # Process image
 image = cv2.imread('group_photo.jpg')
@@ -523,13 +491,10 @@ for person in result['people']:
 
 ```python
 from recognition_service import RecognitionService
-from face_detector import FaceDetector
-from face_recognizer import FaceRecognizer
 import cv2
 
-# Initialize
+# Initialize (detector & recognizer auto-loaded)
 service = RecognitionService()
-service.set_detector_recognizer(FaceDetector(), FaceRecognizer())
 
 # Open webcam
 cap = cv2.VideoCapture(0)
@@ -576,7 +541,6 @@ image = cv2.imread('test.jpg')
 
 for threshold in thresholds:
     service = RecognitionService(tolerance=threshold)
-    service.set_detector_recognizer(FaceDetector(), FaceRecognizer())
     
     result = service.process_image(image)
     
@@ -608,11 +572,16 @@ Solution:
 3. Verify persons table has records
 ```
 
-**❌ "FaceDetector/FaceRecognizer not set"**
+**❌ "FaceDetector/FaceRecognizer not initialized"**
 ```
 Solution:
-service.set_detector_recognizer(detector, recognizer)
-# Must call this before process_image() or process_webcam_frame()
+Check error message during initialization:
+⚠️  FaceDetector initialization warning: ...
+⚠️  FaceRecognizer initialization warning: ...
+
+Install missing dependencies:
+pip install mediapipe==0.10.8
+pip install deepface==0.0.89 tensorflow==2.15.0
 ```
 
 **❌ "All faces showing as 'Unknown'"**
@@ -668,8 +637,8 @@ Before using in production:
 - [ ] Learning Lesson 1 complete (encodings generated)
 - [ ] XAMPP MySQL running
 - [ ] Database connection tested
-- [ ] Test suite passing (8/8 tests)
-- [ ] Detector & Recognizer modules set
+- [ ] Test suite passing (7/7 tests)
+- [ ] MediaPipe & DeepFace installed
 - [ ] Real-time recognition tested
 - [ ] Threshold tuned for your use case
 
