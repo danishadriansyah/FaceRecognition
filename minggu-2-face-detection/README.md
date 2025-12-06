@@ -1,10 +1,10 @@
-# Minggu 2: Face Detection dengan OpenCV
+# Minggu 2: Face Detection dengan MediaPipe
 
 ## Tujuan Pembelajaran
 - Memahami konsep face detection
-- Menggunakan Haar Cascade Classifier
-- Mendeteksi wajah dari gambar dan webcam
-- Multiple face detection
+- Menggunakan MediaPipe Face Detection (Google's ML model)
+- Mendeteksi wajah dari gambar dan webcam dengan 10-15ms performance
+- Multiple face detection dengan confidence scores & keypoints
 
 ## Struktur Folder
 
@@ -34,20 +34,24 @@ minggu-2-face-detection/
 5. **latihan.py** - Mini project face detection
 
 ### Konsep Utama
-- Haar Cascade Classifier
-- detectMultiScale() parameters
-- Grayscale conversion untuk detection
-- ROI (Region of Interest)
-- Parameter tuning (scaleFactor, minNeighbors, minSize)
+- MediaPipe Face Detection (Google's state-of-the-art ML model)
+- Fast inference (10-15ms per frame on CPU)
+- Confidence scoring (0.0-1.0 for each detection)
+- Face keypoints (6 points: eyes, nose, mouth, ears)
+- Model selection: short-range (0-2m) vs full-range (0-5m)
+- Real-time capable (60+ FPS on webcam)
 
 ## Project Development
 
 ### Module: `face_detector.py`
-Production-ready face detection module dengan fungsi:
-- `FaceDetector` class - Face detection dengan Haar Cascade
-- `detect_faces()` - Detect faces dari image
+Production-ready face detection module dengan MediaPipe:
+- `FaceDetector` class - Face detection dengan MediaPipe
+- `detect_faces()` - Detect faces dari image (returns bbox + confidence)
+- `detect_faces_detailed()` - Detailed info with keypoints
 - `detect_faces_webcam()` - Real-time detection
-- `draw_detections()` - Draw bounding boxes
+- `draw_detections()` - Draw bounding boxes dengan confidence & keypoints
+- `get_face_regions()` - Extract face crops
+- `validate_detection()` - Quality checks
 - `get_face_regions()` - Extract face ROIs
 - `validate_detection()` - Quality validation
 

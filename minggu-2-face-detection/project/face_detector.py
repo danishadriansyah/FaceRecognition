@@ -2,7 +2,8 @@
 Face Detector Module
 Week 2 Project Module - Progressive Web Application
 
-This module provides face detection functionality using Haar Cascade.
+This module provides face detection functionality using MediaPipe.
+MediaPipe provides fast, accurate face detection with 10-15ms performance.
 Builds on Week 1's image_utils.py for preprocessing.
 """
 
@@ -11,93 +12,148 @@ import numpy as np
 import os
 from typing import List, Tuple, Optional, Dict
 
+try:
+    import mediapipe as mp
+    MEDIAPIPE_AVAILABLE = True
+except ImportError:
+    MEDIAPIPE_AVAILABLE = False
+    print("⚠️  MediaPipe not available. Install: pip install mediapipe")
+
 
 class FaceDetector:
     """
-    Face detection using Haar Cascade Classifier
+    Face detection using MediaPipe Face Detection
+    Provides fast and accurate face detection suitable for real-time applications
     """
     
-    def __init__(self, cascade_path: str = None):
+    def __init__(self, model_selection: int = 1, min_detection_confidence: float = 0.7):
         """
-        Initialize face detector
+        Initialize face detector with MediaPipe
         
         Args:
-            cascade_path: Path to Haar Cascade XML file
+            model_selection: 0 for short-range (within 2m), 1 for full-range (within 5m)
+            min_detection_confidence: Minimum confidence threshold (0.0-1.0)
         """
-        if cascade_path is None:
-            # Use OpenCV's built-in cascade
-            cascade_path = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
+        if not MEDIAPIPE_AVAILABLE:
+            raise ImportError(
+                "MediaPipe not installed!\n"
+                "Install with: pip install mediapipe==0.10.8"
+            )
         
-        if not os.path.exists(cascade_path):
-            raise FileNotFoundError(f"Cascade file not found: {cascade_path}")
+        self.mp_face_detection = mp.solutions.face_detection
+        self.mp_drawing = mp.solutions.drawing_utils
         
-        self.face_cascade = cv2.CascadeClassifier(cascade_path)
+        self.face_detection = self.mp_face_detection.FaceDetection(
+            model_selection=model_selection,
+            min_detection_confidence=min_detection_confidence
+        )
         
-        if self.face_cascade.empty():
-            raise ValueError("Failed to load cascade classifier")
-        
-        # Default detection parameters
-        self.scale_factor = 1.1
-        self.min_neighbors = 5
-        self.min_size = (30, 30)
+        self.model_selection = model_selection
+        self.min_detection_confidence = min_detection_confidence
     
     def detect_faces(self, image: np.ndarray, 
                     return_confidence: bool = False) -> List[Tuple[int, int, int, int]]:
         """
-        Detect faces in image
+        Detect faces in image using MediaPipe
         
         Args:
-            image: Input image (BGR or grayscale)
+            image: Input image (BGR format from OpenCV)
             return_confidence: Whether to return confidence scores
             
         Returns:
             List of face bounding boxes as (x, y, w, h)
+            If return_confidence=True, returns list of ((x, y, w, h), confidence)
         """
-        # Convert to grayscale if needed
-        if len(image.shape) == 3:
-            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        else:
-            gray = image
+        # Convert BGR to RGB for MediaPipe
+        rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         
         # Detect faces
-        faces = self.face_cascade.detectMultiScale(
-            gray,
-            scaleFactor=self.scale_factor,
-            minNeighbors=self.min_neighbors,
-            minSize=self.min_size,
-            flags=cv2.CASCADE_SCALE_IMAGE
-        )
+        results = self.face_detection.process(rgb_image)
         
-        # Convert to list of tuples
-        if len(faces) == 0:
+        if not results.detections:
             return []
         
-        return [tuple(face) for face in faces]
+        h, w, c = image.shape
+        face_boxes = []
+        
+        for detection in results.detections:
+            bbox = detection.location_data.relative_bounding_box
+            
+            # Convert normalized coordinates to pixel coordinates
+            x = int(bbox.xmin * w)
+            y = int(bbox.ymin * h)
+            width = int(bbox.width * w)
+            height = int(bbox.height * h)
+            
+            # Ensure coordinates are within image bounds
+            x = max(0, x)
+            y = max(0, y)
+            width = min(w - x, width)
+            height = min(h - y, height)
+            
+            if return_confidence:
+                confidence = detection.score[0]
+                face_boxes.append(((x, y, width, height), confidence))
+            else:
+                face_boxes.append((x, y, width, height))
+        
+        return face_boxes
     
     def detect_faces_detailed(self, image: np.ndarray) -> List[Dict]:
         """
-        Detect faces with detailed information
+        Detect faces with detailed information including confidence scores
         
         Args:
-            image: Input image
+            image: Input image (BGR format)
             
         Returns:
-            List of dictionaries with face info
+            List of dictionaries with face info including:
+            - id: Face index
+            - bbox: Bounding box (x, y, w, h)
+            - center: Face center point (x, y)
+            - area: Face area in pixels
+            - aspect_ratio: Width/height ratio
+            - confidence: Detection confidence score (0.0-1.0)
+            - keypoints: Face keypoints (6 points: eyes, nose, mouth)
         """
-        faces = self.detect_faces(image)
+        rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        results = self.face_detection.process(rgb_image)
         
-        results = []
-        for i, (x, y, w, h) in enumerate(faces):
+        if not results.detections:
+            return []
+        
+        h, w, c = image.shape
+        detailed_faces = []
+        
+        for i, detection in enumerate(results.detections):
+            bbox = detection.location_data.relative_bounding_box
+            
+            # Bounding box
+            x = max(0, int(bbox.xmin * w))
+            y = max(0, int(bbox.ymin * h))
+            width = min(w - x, int(bbox.width * w))
+            height = min(h - y, int(bbox.height * h))
+            
+            # Keypoints
+            keypoints = {}
+            if detection.location_data.relative_keypoints:
+                kp_names = ['right_eye', 'left_eye', 'nose_tip', 'mouth_center', 'right_ear', 'left_ear']
+                for idx, kp in enumerate(detection.location_data.relative_keypoints):
+                    if idx < len(kp_names):
+                        keypoints[kp_names[idx]] = (int(kp.x * w), int(kp.y * h))
+            
             face_info = {
                 'id': i,
-                'bbox': (x, y, w, h),
-                'center': (x + w // 2, y + h // 2),
-                'area': w * h,
-                'aspect_ratio': w / h if h > 0 else 0
+                'bbox': (x, y, width, height),
+                'center': (x + width // 2, y + height // 2),
+                'area': width * height,
+                'aspect_ratio': width / height if height > 0 else 0,
+                'confidence': detection.score[0],
+                'keypoints': keypoints
             }
-            results.append(face_info)
+            detailed_faces.append(face_info)
         
-        return results
+        return detailed_faces
     
     def get_face_region(self, image: np.ndarray, bbox: Tuple[int, int, int, int],
                        padding: int = 0) -> np.ndarray:
@@ -122,41 +178,71 @@ class FaceDetector:
         
         return image[y1:y2, x1:x2].copy()
     
-    def draw_detections(self, image: np.ndarray, faces: List[Tuple[int, int, int, int]],
-                       color: Tuple[int, int, int] = (0, 255, 0),
-                       thickness: int = 2,
-                       show_count: bool = True) -> np.ndarray:
+    def get_face_regions(self, image: np.ndarray, padding: int = 20) -> List[np.ndarray]:
         """
-        Draw bounding boxes on image
+        Extract all face regions from image
         
         Args:
-            image: Input image
-            faces: List of face bounding boxes
-            color: Box color (BGR)
+            image: Input image (BGR format)
+            padding: Padding around face in pixels
+            
+        Returns:
+            List of cropped face images
+        """
+        faces = self.detect_faces(image)
+        
+        face_regions = []
+        for (x, y, w, h) in faces:
+            face_region = self.get_face_region(image, (x, y, w, h), padding)
+            face_regions.append(face_region)
+        
+        return face_regions
+    
+    def draw_detections(self, image: np.ndarray, faces: List = None,
+                       color: Tuple[int, int, int] = (0, 255, 0),
+                       thickness: int = 2, show_confidence: bool = True) -> np.ndarray:
+        """
+        Draw face bounding boxes on image
+        
+        Args:
+            image: Input image (BGR format)
+            faces: List of face detections (if None, will detect automatically)
+            color: Box color (B, G, R)
             thickness: Line thickness
-            show_count: Whether to show face count
+            show_confidence: Whether to show confidence scores
             
         Returns:
             Image with drawn boxes
         """
-        result = image.copy()
+        output = image.copy()
         
-        for i, (x, y, w, h) in enumerate(faces):
-            # Draw rectangle
-            cv2.rectangle(result, (x, y), (x + w, y + h), color, thickness)
-            
-            # Draw label
-            label = f"Face {i+1}"
-            cv2.putText(result, label, (x, y - 10),
-                       cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+        if faces is None:
+            faces = self.detect_faces_detailed(image)
         
-        # Show count
-        if show_count and len(faces) > 0:
-            count_text = f"Faces: {len(faces)}"
-            cv2.putText(result, count_text, (10, 30),
-                       cv2.FONT_HERSHEY_SIMPLEX, 1, color, 2)
+        for face in faces:
+            if isinstance(face, dict):
+                bbox = face['bbox']
+                x, y, w, h = bbox
+                
+                # Draw rectangle
+                cv2.rectangle(output, (x, y), (x + w, y + h), color, thickness)
+                
+                # Draw confidence
+                if show_confidence and 'confidence' in face:
+                    conf_text = f"{face['confidence']*100:.1f}%"
+                    cv2.putText(output, conf_text, (x, y - 10),
+                              cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+                
+                # Draw keypoints
+                if 'keypoints' in face:
+                    for kp_name, (kp_x, kp_y) in face['keypoints'].items():
+                        cv2.circle(output, (kp_x, kp_y), 3, (0, 0, 255), -1)
+            else:
+                # Simple bbox tuple
+                x, y, w, h = face
+                cv2.rectangle(output, (x, y), (x + w, y + h), color, thickness)
         
-        return result
+        return output
     
     def validate_detection(self, bbox: Tuple[int, int, int, int],
                           image_shape: Tuple[int, int],
@@ -192,46 +278,109 @@ class FaceDetector:
         
         return True, "Face detection valid"
     
-    def set_parameters(self, scale_factor: float = None,
-                      min_neighbors: int = None,
-                      min_size: Tuple[int, int] = None):
+    def detect_faces_webcam(self, camera_id: int = 0, window_name: str = "MediaPipe Face Detection"):
+        """
+        Real-time face detection from webcam using MediaPipe
+        
+        Args:
+            camera_id: Camera device ID
+            window_name: Display window name
+        """
+        import time
+        
+        cap = cv2.VideoCapture(camera_id)
+        
+        if not cap.isOpened():
+            print(f"❌ Cannot open camera {camera_id}")
+            return
+        
+        print("🎥 Webcam opened. Press 'q' to quit.")
+        
+        prev_time = time.time()
+        
+        while True:
+            ret, frame = cap.read()
+            
+            if not ret:
+                print("❌ Failed to read frame")
+                break
+            
+            # Detect faces
+            faces = self.detect_faces_detailed(frame)
+            
+            # Draw detections
+            output = self.draw_detections(frame, faces, show_confidence=True)
+            
+            # Calculate FPS
+            curr_time = time.time()
+            fps = 1 / (curr_time - prev_time) if (curr_time - prev_time) > 0 else 0
+            prev_time = curr_time
+            
+            # Show statistics
+            cv2.putText(output, f"Faces: {len(faces)} | FPS: {fps:.1f}", (10, 30),
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+            
+            # Display
+            cv2.imshow(window_name, output)
+            
+            # Check for quit
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+        
+        cap.release()
+        cv2.destroyAllWindows()
+        print("✅ Webcam closed")
+    
+    def set_parameters(self, min_detection_confidence: float = None,
+                      model_selection: int = None):
         """
         Update detection parameters
         
         Args:
-            scale_factor: How much to reduce size at each scale
-            min_neighbors: How many neighbors to retain detection
-            min_size: Minimum face size
+            min_detection_confidence: Minimum confidence threshold (0.0-1.0)
+            model_selection: 0 for short-range, 1 for full-range
         """
-        if scale_factor is not None:
-            self.scale_factor = scale_factor
-        if min_neighbors is not None:
-            self.min_neighbors = min_neighbors
-        if min_size is not None:
-            self.min_size = min_size
+        if min_detection_confidence is not None:
+            self.min_detection_confidence = min_detection_confidence
+            self.face_detection = self.mp_face_detection.FaceDetection(
+                model_selection=self.model_selection,
+                min_detection_confidence=min_detection_confidence
+            )
+        
+        if model_selection is not None:
+            self.model_selection = model_selection
+            self.face_detection = self.mp_face_detection.FaceDetection(
+                model_selection=model_selection,
+                min_detection_confidence=self.min_detection_confidence
+            )
 
 
 # Example usage and testing
 if __name__ == "__main__":
-    print("Face Detector Module - Week 2 Project")
+    print("Face Detector Module - Week 2 Project (MediaPipe)")
     print("="*50)
     
     # Create detector
-    detector = FaceDetector()
-    print("\n1. Detector initialized")
-    print(f"   Scale factor: {detector.scale_factor}")
-    print(f"   Min neighbors: {detector.min_neighbors}")
-    print(f"   Min size: {detector.min_size}")
+    try:
+        detector = FaceDetector(model_selection=1, min_detection_confidence=0.7)
+        print("\n✅ MediaPipe detector initialized")
+        print(f"   Model: Full-range (5m)")
+        print(f"   Min confidence: 0.7")
+    except ImportError as e:
+        print(f"\n❌ {e}")
+        print("   Install: pip install mediapipe==0.10.8")
+        exit(1)
     
-    # Create test image
-    print("\n2. Creating test image...")
-    test_image = np.ones((480, 640, 3), dtype=np.uint8) * 200
+    # Test with webcam
+    print("\n🎥 Starting webcam test...")
+    print("   Press 'q' to quit")
     
-    # Draw fake face (rectangle)
-    cv2.rectangle(test_image, (200, 150), (400, 400), (150, 150, 150), -1)
-    cv2.circle(test_image, (270, 250), 20, (100, 100, 100), -1)  # Left eye
-    cv2.circle(test_image, (330, 250), 20, (100, 100, 100), -1)  # Right eye
-    cv2.ellipse(test_image, (300, 320), (40, 20), 0, 0, 180, (100, 100, 100), 2)  # Smile
+    try:
+        detector.detect_faces_webcam(camera_id=0)
+    except KeyboardInterrupt:
+        print("\n✅ Test stopped by user")
+    except Exception as e:
+        print(f"\n⚠️  Error: {e}")
     
     print("   Test image created: 640x480")
     

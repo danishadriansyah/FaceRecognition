@@ -1,10 +1,10 @@
-# Minggu 3: Face Recognition Fundamentals
+# Minggu 3: Face Recognition dengan DeepFace
 
 ## Tujuan Pembelajaran
 - Memahami face recognition vs face detection
-- Menggunakan MediaPipe untuk face recognition
-- Face encodings dan comparison
-- Build recognition system
+- Menggunakan DeepFace Facenet512 untuk face recognition
+- Face encodings (512-dimensional vectors) dan comparison
+- Build recognition system dengan 97%+ accuracy
 
 ## Struktur Folder
 
@@ -40,34 +40,36 @@ minggu-3-face-recognition/
 
 ### Tutorial Materials (learning/)
 1. **lesson-1/** - Face encoding & recognition dari gambar
-   - Generate face encodings dengan MediaPipe
-   - Compare encodings untuk recognize
+   - Generate face encodings dengan DeepFace Facenet512 (512-d)
+   - Compare encodings menggunakan Euclidean distance
    - Build known faces database
    - Recognition dari static images
 
 2. **lesson-2/** - Real-time recognition dari webcam
    - Load known faces database
-   - Real-time face detection & recognition
+   - Real-time face detection (MediaPipe) & recognition (DeepFace)
    - Display names dan confidence scores
-   - Performance optimization
+   - Performance optimization (6-9 FPS target)
 
 ### Konsep Utama
-- Face encodings (128-dimension vectors)
-- face_distance() dan face_compare()
-- Tolerance levels
-- Known faces database
-- Recognition confidence
+- Face encodings (512-dimension vectors dengan Facenet512)
+- Deep learning-based feature extraction
+- Euclidean distance matching (threshold 0.4-0.8)
+- Multiple model support (Facenet512, ArcFace, SFace)
+- Tolerance levels untuk accuracy tuning
+- Recognition confidence scoring (0.0-1.0)
 
 ## Project Development
 
 ### Module: `face_recognizer.py`
-Production-ready face recognition module dengan fungsi:
-- `FaceRecognizer` class - Main recognition engine
-- `encode_face()` - Generate face encoding
-- `recognize_face()` - Identify person from encoding
+Production-ready face recognition module dengan DeepFace:
+- `FaceRecognizer` class - Main recognition engine (DeepFace Facenet512)
+- `encode_face()` - Generate 512-d face encoding
+- `recognize_face()` - Identify person from encoding (Euclidean distance)
+- `recognize_faces_in_image()` - Batch recognition (requires face_detector)
 - `add_known_face()` - Add to known faces database
-- `get_all_encodings()` - Export encodings
-- `calculate_confidence()` - Recognition confidence score
+- `save_database()` / `load_database()` - Persistence
+- `calculate_confidence()` - Recognition confidence score (0.0-1.0)
 
 ### Integration
 Uses Week 2 `face_detector.py` for preprocessing.  

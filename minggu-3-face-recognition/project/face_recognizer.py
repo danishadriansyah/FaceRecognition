@@ -2,12 +2,12 @@
 Face Recognizer Module  
 Week 3 Project Module - Progressive Web Application
 
-This module provides face recognition functionality using MediaPipe.
+This module provides face recognition functionality using DeepFace.
+DeepFace provides state-of-the-art face recognition with 97%+ accuracy.
 Builds on Week 2's face_detector.py for face detection.
-Uses MediaPipe FaceMesh for facial landmarks and encoding.
+Uses DeepFace with Facenet512 model for 512-dimensional face encodings.
 """
 
-import mediapipe as mp
 import numpy as np
 import pickle
 import os
@@ -15,113 +15,92 @@ from typing import List, Tuple, Optional, Dict
 from pathlib import Path
 import cv2
 
+try:
+    from deepface import DeepFace
+    DEEPFACE_AVAILABLE = True
+except ImportError:
+    DEEPFACE_AVAILABLE = False
+    print("⚠️  DeepFace not available. Install: pip install deepface tensorflow")
+
 
 class FaceRecognizer:
     """
-    Face recognition using MediaPipe FaceMesh with feature extraction
+    Face recognition using DeepFace with Facenet512 model
+    Provides 512-dimensional face encodings for accurate recognition
     """
     
-    def __init__(self, tolerance: float = 0.6, model: str = 'large'):
+    def __init__(self, tolerance: float = 0.6, model: str = 'Facenet512'):
         """
-        Initialize face recognizer with MediaPipe
+        Initialize face recognizer with DeepFace
         
         Args:
             tolerance: Distance threshold for face matching (default 0.6)
-            model: Model type (kept for compatibility, 'large' or 'small')
+            model: DeepFace model name ('Facenet512', 'ArcFace', 'SFace', etc.)
         """
+        if not DEEPFACE_AVAILABLE:
+            raise ImportError(
+                "DeepFace not installed!\n"
+                "Install with: pip install deepface==0.0.89\n"
+                "              pip install tensorflow==2.15.0"
+            )
+        
         self.tolerance = tolerance
         self.model = model
         self.known_face_encodings = []
         self.known_face_names = []
         self.known_face_metadata = []
         
-        # Initialize MediaPipe
-        self.mp_face_detection = mp.solutions.face_detection
-        self.mp_face_mesh = mp.solutions.face_mesh
-        self.face_detection = self.mp_face_detection.FaceDetection()
-        self.face_mesh = self.mp_face_mesh.FaceMesh()
-    
-    def _extract_face_features(self, image: np.ndarray, face_location: Tuple[int, int, int, int] = None) -> Optional[np.ndarray]:
-        """
-        Extract face features/encoding from image using MediaPipe FaceMesh
-        
-        Args:
-            image: Input image (RGB format)
-            face_location: Optional face location (top, right, bottom, left)
-            
-        Returns:
-            Face encoding (128-d vector approximation), or None if no face found
-        """
-        # Convert BGR to RGB if needed
-        if len(image.shape) == 3 and image.shape[2] == 3:
-            rgb_image = image[:, :, ::-1]
-        else:
-            rgb_image = image
-        
-        # Use face detection to find faces
-        results = self.face_detection.process(rgb_image)
-        
-        if not results.detections:
-            return None
-        
-        # Get first detection
-        detection = results.detections[0]
-        
-        # Crop face region
-        h, w, c = rgb_image.shape
-        bbox = detection.location_data.relative_bounding_box
-        x_min = max(0, int(bbox.xmin * w))
-        y_min = max(0, int(bbox.ymin * h))
-        x_max = min(w, int((bbox.xmin + bbox.width) * w))
-        y_max = min(h, int((bbox.ymin + bbox.height) * h))
-        
-        face_crop = rgb_image[y_min:y_max, x_min:x_max]
-        
-        # Extract mesh landmarks
-        mesh_results = self.face_mesh.process(face_crop)
-        
-        if not mesh_results.multi_face_landmarks:
-            return None
-        
-        # Convert landmarks to encoding-like feature vector (468 landmarks * 3 coords = 1404, normalized to 128)
-        landmarks = mesh_results.multi_face_landmarks[0]
-        feature_vector = []
-        
-        for landmark in landmarks.landmark:
-            feature_vector.extend([landmark.x, landmark.y, landmark.z])
-        
-        # Convert to numpy array and normalize to 128 dimensions (PCA-like reduction)
-        feature_vector = np.array(feature_vector)
-        
-        # Simple dimensionality reduction: sample every Nth feature to get ~128 values
-        if len(feature_vector) > 128:
-            indices = np.linspace(0, len(feature_vector) - 1, 128, dtype=int)
-            encoding = feature_vector[indices]
-        else:
-            # Pad if needed
-            encoding = np.pad(feature_vector, (0, 128 - len(feature_vector)), 'constant')
-        
-        return encoding / (np.linalg.norm(encoding) + 1e-10)  # Normalize
+        # DeepFace will auto-download model on first use (~100MB for Facenet512)
+        print(f"✅ FaceRecognizer initialized (DeepFace {model})")
+        print(f"   Tolerance: {tolerance}")
+        print(f"   Note: Model will download on first use (~100MB)")
     
     def encode_face(self, image: np.ndarray, face_location: Tuple[int, int, int, int] = None) -> Optional[np.ndarray]:
         """
-        Generate face encoding from image
+        Generate face encoding from image using DeepFace
         
         Args:
-            image: Input image (RGB format)
-            face_location: Optional face location (top, right, bottom, left)
+            image: Input image (BGR format from OpenCV)
+            face_location: Optional face location (x, y, w, h) - if None, will detect automatically
             
         Returns:
-            128-dimension face encoding, or None if no face found
+            512-dimension face encoding, or None if no face found
         """
-        return self._extract_face_features(image, face_location)
+        try:
+            # If face_location provided, crop the face region
+            if face_location is not None:
+                x, y, w, h = face_location
+                face_crop = image[y:y+h, x:x+w]
+            else:
+                face_crop = image
+            
+            # DeepFace expects RGB but can handle BGR too
+            # represent() returns embeddings for the face
+            embedding_objs = DeepFace.represent(
+                img_path=face_crop,
+                model_name=self.model,
+                enforce_detection=False,  # Don't fail if face not detected
+                detector_backend='skip'  # Skip detection since we may have cropped face
+            )
+            
+            if len(embedding_objs) == 0:
+                return None
+            
+            # Get first face encoding (512-d for Facenet512)
+            encoding = np.array(embedding_objs[0]['embedding'])
+            
+            return encoding
+            
+        except Exception as e:
+            print(f"⚠️  Encoding failed: {e}")
+            return None
     
     def add_known_face(self, encoding: np.ndarray, name: str, metadata: Dict = None):
         """
         Add a known face to the database
         
         Args:
-            encoding: Face encoding (128-d vector)
+            encoding: Face encoding (512-d vector for Facenet512)
             name: Person's name
             metadata: Additional information (employee_id, department, etc.)
         """
@@ -131,10 +110,10 @@ class FaceRecognizer:
     
     def recognize_face(self, face_encoding: np.ndarray) -> Tuple[Optional[str], float, Optional[Dict]]:
         """
-        Recognize a face from its encoding
+        Recognize a face from its encoding using Euclidean distance
         
         Args:
-            face_encoding: Face encoding to identify
+            face_encoding: Face encoding to identify (512-d)
             
         Returns:
             Tuple of (name, confidence, metadata) or (None, 0.0, None) if unknown
@@ -153,60 +132,56 @@ class FaceRecognizer:
         # Check if match is good enough
         if best_distance <= self.tolerance:
             name = self.known_face_names[best_match_index]
-            confidence = 1.0 - (best_distance / 2.0)  # Convert distance to confidence
-            confidence = max(0.0, min(1.0, confidence))  # Clamp between 0-1
+            # Convert distance to confidence (inverse relationship)
+            confidence = max(0.0, 1.0 - (best_distance / self.tolerance))
             metadata = self.known_face_metadata[best_match_index]
             return name, confidence, metadata
         
         return None, 0.0, None
     
-    def recognize_faces_in_image(self, image: np.ndarray) -> List[Dict]:
+    def recognize_faces_in_image(self, image: np.ndarray, face_detector=None) -> List[Dict]:
         """
         Recognize all faces in an image
+        Requires a face_detector instance from Week 2 for face detection
         
         Args:
             image: Input image (BGR format)
+            face_detector: FaceDetector instance from Week 2 (required)
             
         Returns:
             List of recognition results with bounding boxes
         """
-        # Convert BGR to RGB
-        rgb_image = image[:, :, ::-1]
+        if face_detector is None:
+            raise ValueError(
+                "face_detector is required!\n"
+                "Import from Week 2: from face_detector import FaceDetector\n"
+                "Then pass detector instance: recognizer.recognize_faces_in_image(image, detector)"
+            )
         
-        # Detect faces
-        results = self.face_detection.process(rgb_image)
+        # Detect faces using Week 2 detector
+        faces = face_detector.detect_faces(image)
         
-        if not results.detections:
+        if not faces:
             return []
         
-        h, w, c = rgb_image.shape
         results_list = []
         
-        for i, detection in enumerate(results.detections):
-            # Extract bounding box
-            bbox = detection.location_data.relative_bounding_box
-            x = int(bbox.xmin * w)
-            y = int(bbox.ymin * h)
-            width = int(bbox.width * w)
-            height = int(bbox.height * h)
+        for i, (x, y, w, h) in enumerate(faces):
+            # Get encoding for this face
+            encoding = self.encode_face(image, face_location=(x, y, w, h))
             
-            # Crop and get encoding
-            face_crop = rgb_image[y:y+height, x:x+width]
-            if face_crop.size == 0:
-                continue
-            
-            encoding = self._extract_face_features(face_crop)
             if encoding is None:
                 continue
             
+            # Recognize
             name, confidence, metadata = self.recognize_face(encoding)
             
             result = {
                 'id': i,
                 'name': name if name else 'Unknown',
                 'confidence': confidence,
-                'bbox': (x, y, width, height),
-                'location': (y, x+width, y+height, x),  # top, right, bottom, left format
+                'bbox': (x, y, w, h),
+                'location': (y, x+w, y+h, x),  # top, right, bottom, left format
                 'encoding': encoding,
                 'metadata': metadata or {}
             }
@@ -234,20 +209,21 @@ class FaceRecognizer:
         Convert distance to confidence score
         
         Args:
-            distance: Face distance
+            distance: Face distance (Euclidean)
             
         Returns:
             Confidence score (0-1)
         """
-        confidence = 1.0 - (distance / 2.0)
-        return max(0.0, min(1.0, confidence))
+        # Inverse relationship: smaller distance = higher confidence
+        confidence = max(0.0, 1.0 - (distance / self.tolerance))
+        return confidence
     
     def save_database(self, filepath: str):
         """
         Save known faces database to file
         
         Args:
-            filepath: Path to save file
+            filepath: Path to save file (.pkl)
         """
         database = {
             'encodings': self.known_face_encodings,
@@ -262,14 +238,14 @@ class FaceRecognizer:
         with open(filepath, 'wb') as f:
             pickle.dump(database, f)
         
-        print(f"Database saved: {len(self.known_face_names)} faces")
+        print(f"✅ Database saved: {len(self.known_face_names)} faces → {filepath}")
     
     def load_database(self, filepath: str):
         """
         Load known faces database from file
         
         Args:
-            filepath: Path to database file
+            filepath: Path to database file (.pkl)
         """
         if not os.path.exists(filepath):
             raise FileNotFoundError(f"Database file not found: {filepath}")
@@ -281,9 +257,9 @@ class FaceRecognizer:
         self.known_face_names = database['names']
         self.known_face_metadata = database['metadata']
         self.tolerance = database.get('tolerance', 0.6)
-        self.model = database.get('model', 'large')
+        self.model = database.get('model', 'Facenet512')
         
-        print(f"Database loaded: {len(self.known_face_names)} faces")
+        print(f"✅ Database loaded: {len(self.known_face_names)} faces from {filepath}")
     
     def get_all_encodings(self) -> Dict[str, np.ndarray]:
         """
@@ -337,36 +313,47 @@ class FaceRecognizer:
 
 # Example usage and testing
 if __name__ == "__main__":
-    print("Face Recognizer Module - Week 3 Project (MediaPipe Version)")
+    print("Face Recognizer Module - Week 3 Project (DeepFace)")
     print("="*50)
     
-    # Create recognizer
-    recognizer = FaceRecognizer(tolerance=0.6)
-    print("\n1. Recognizer initialized")
-    print(f"   Using: MediaPipe FaceMesh")
-    print(f"   Tolerance: {recognizer.tolerance}")
-    print(f"   Model: {recognizer.model}")
+    try:
+        # Create recognizer
+        recognizer = FaceRecognizer(tolerance=0.6, model='Facenet512')
+        print("\n✅ DeepFace recognizer initialized")
+        print(f"   Model: {recognizer.model}")
+        print(f"   Tolerance: {recognizer.tolerance}")
+        print(f"   Encoding dimensions: 512")
+        
+    except ImportError as e:
+        print(f"\n❌ {e}")
+        print("   Install: pip install deepface==0.0.89")
+        print("            pip install tensorflow==2.15.0")
+        exit(1)
     
-    # Create test encodings (random for demo)
-    print("\n2. Creating test face encodings...")
-    test_encoding1 = np.random.rand(128)
-    test_encoding2 = np.random.rand(128)
-    test_encoding3 = np.random.rand(128)
+    print("\n📦 Module ready for integration!")
+    print("\n🔗 Integration with other modules:")
+    print("   • Week 1: image_utils.py (image preprocessing)")
+    print("   • Week 2: face_detector.py (MediaPipe detection)")
+    print("   • Week 3: face_recognizer.py (DeepFace recognition) ← YOU ARE HERE")
+    print("   • Week 4: dataset_manager.py (MySQL database)")
+    print("   • Week 5: recognition_service.py (complete system)")
     
-    # Add known faces
-    print("\n3. Adding known faces...")
-    recognizer.add_known_face(test_encoding1, "Alice", {'employee_id': '001', 'department': 'IT'})
-    recognizer.add_known_face(test_encoding2, "Bob", {'employee_id': '002', 'department': 'HR'})
-    recognizer.add_known_face(test_encoding3, "Charlie", {'employee_id': '003', 'department': 'Finance'})
-    print(f"   Added 3 known faces")
-    
-    # Test recognition
-    print("\n4. Testing recognition...")
-    name, confidence, metadata = recognizer.recognize_face(test_encoding1)
-    print(f"   Recognized: {name}, Confidence: {confidence:.2f}")
-    print(f"   Metadata: {metadata}")
-    
-    # Test comparison
+    print("\n💡 Example usage:")
+    print("   from face_detector import FaceDetector")
+    print("   from face_recognizer import FaceRecognizer")
+    print("")
+    print("   detector = FaceDetector()")
+    print("   recognizer = FaceRecognizer()")
+    print("")
+    print("   # Detect & encode faces")
+    print("   faces = detector.detect_faces(image)")
+    print("   for (x, y, w, h) in faces:")
+    print("       encoding = recognizer.encode_face(image, (x, y, w, h))")
+    print("       recognizer.add_known_face(encoding, 'Alice')")
+    print("")
+    print("   # Recognize")
+    print("   results = recognizer.recognize_faces_in_image(image, detector)")
+
     print("\n5. Testing face comparison...")
     is_match, distance = recognizer.compare_faces(test_encoding1, test_encoding2)
     print(f"   Alice vs Bob: Match={is_match}, Distance={distance:.4f}")

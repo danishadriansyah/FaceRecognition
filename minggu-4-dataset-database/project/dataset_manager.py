@@ -2,177 +2,260 @@
 Dataset Manager Module
 Week 4 Project Module - Progressive Web Application
 
-This module manages face dataset collection and organization.
+This module manages face dataset collection and organization WITH DATABASE.
+Stores data in MySQL database using SQLAlchemy ORM.
 Builds on Week 2's face_detector.py and Week 3's face_recognizer.py.
 """
 
 import cv2
 import numpy as np
 import os
-import json
+import sys
 import pickle
 from datetime import datetime
 from typing import List, Dict, Optional, Tuple
 from pathlib import Path
 
+# Import database modules from learning/lesson-2
+learning_path = os.path.join(os.path.dirname(__file__), '..', 'learning', 'lesson-2')
+sys.path.insert(0, learning_path)
+
+from database import Database
+from models import Person, FaceImage, FaceEncoding
+
 
 class DatasetManager:
     """
-    Manage face datasets for recognition system
+    Manage face datasets for recognition system with MySQL database
     """
     
-    def __init__(self, dataset_root: str = "dataset"):
+    def __init__(self, connection_string: str = None, image_storage_path: str = "dataset"):
         """
-        Initialize dataset manager
+        Initialize dataset manager with database
         
         Args:
-            dataset_root: Root directory for dataset storage
+            connection_string: MySQL connection string (default: XAMPP local)
+            image_storage_path: Path to store actual image files
         """
-        self.dataset_root = Path(dataset_root)
-        self.dataset_root.mkdir(parents=True, exist_ok=True)
+        # XAMPP Default connection
+        if connection_string is None:
+            connection_string = "mysql+pymysql://root:@localhost:3306/face_recognition_db"
         
-        self.metadata_file = self.dataset_root / "metadata.json"
-        self.metadata = self._load_metadata()
-    
-    def _load_metadata(self) -> Dict:
-        """Load dataset metadata"""
-        if self.metadata_file.exists():
-            with open(self.metadata_file, 'r') as f:
-                return json.load(f)
-        return {'people': {}, 'created_at': datetime.now().isoformat()}
-    
-    def _save_metadata(self):
-        """Save dataset metadata"""
-        self.metadata['updated_at'] = datetime.now().isoformat()
-        with open(self.metadata_file, 'w') as f:
-            json.dump(self.metadata, f, indent=2)
+        self.db = Database(connection_string)
+        
+        if not self.db.connect():
+            raise ConnectionError(
+                "❌ Database connection failed!\n"
+                "💡 Make sure:\n"
+                "   1. XAMPP MySQL is running\n"
+                "   2. Database 'face_recognition_db' exists\n"
+                "   3. Check in HeidiSQL: Session → New"
+            )
+        
+        # Image storage path (files still stored locally for performance)
+        self.image_storage_path = Path(image_storage_path)
+        self.image_storage_path.mkdir(parents=True, exist_ok=True)
+        
+        print("✅ DatasetManager initialized (Database mode)")
+        print(f"   Database: {connection_string.split('@')[1]}")
+        print(f"   Image storage: {self.image_storage_path}")
+
     
     def add_person(self, name: str, employee_id: str = None, 
-                   department: str = None, metadata: Dict = None) -> str:
+                   department: str = None, metadata: Dict = None) -> int:
         """
-        Add a new person to dataset
+        Add a new person to database
         
         Args:
             name: Person's name
             employee_id: Employee ID
             department: Department
-            metadata: Additional metadata
+            metadata: Additional metadata (stored as JSON)
             
         Returns:
-            Person ID (directory name)
+            Person database ID
         """
-        # Create safe directory name
-        person_id = name.lower().replace(' ', '_')
-        person_dir = self.dataset_root / person_id
-        person_dir.mkdir(parents=True, exist_ok=True)
+        session = self.db.get_session()
         
-        # Store metadata
-        person_data = {
-            'name': name,
-            'employee_id': employee_id,
-            'department': department,
-            'created_at': datetime.now().isoformat(),
-            'image_count': 0,
-            'metadata': metadata or {}
-        }
-        
-        self.metadata['people'][person_id] = person_data
-        self._save_metadata()
-        
-        return person_id
+        try:
+            # Create person record
+            person = Person(
+                name=name,
+                employee_id=employee_id,
+                department=department,
+                created_at=datetime.now()
+            )
+            
+            session.add(person)
+            session.commit()
+            
+            person_id = person.id
+            
+            # Create folder for images
+            person_folder = self.image_storage_path / f"person_{person_id}_{name.lower().replace(' ', '_')}"
+            person_folder.mkdir(parents=True, exist_ok=True)
+            
+            print(f"✅ Person added: {name} (ID: {person_id})")
+            print(f"   Employee ID: {employee_id}")
+            print(f"   Department: {department}")
+            print(f"   Image folder: {person_folder}")
+            
+            return person_id
+            
+        except Exception as e:
+            session.rollback()
+            raise Exception(f"Failed to add person: {e}")
+        finally:
+            session.close()
+
     
-    def capture_face(self, person_id: str, image: np.ndarray, 
-                    angle: str = 'frontal', validate: bool = True) -> Optional[str]:
+    def capture_face(self, person_id: int, image: np.ndarray, 
+                    angle: str = 'frontal', validate: bool = True) -> Optional[int]:
         """
-        Capture and save a face image
+        Capture and save a face image to database
         
         Args:
-            person_id: Person ID
+            person_id: Person database ID
             image: Face image
             angle: Image angle (frontal, left, right)
             validate: Whether to validate image quality
             
         Returns:
-            Path to saved image, or None if validation failed
+            FaceImage database ID, or None if validation failed
         """
-        person_dir = self.dataset_root / person_id
+        session = self.db.get_session()
         
-        if not person_dir.exists():
-            raise ValueError(f"Person not found: {person_id}")
-        
-        # Validate if requested
-        if validate:
-            is_valid, msg = self.validate_face_image(image)
-            if not is_valid:
-                print(f"Validation failed: {msg}")
-                return None
-        
-        # Generate filename
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"{angle}_{timestamp}.jpg"
-        filepath = person_dir / filename
-        
-        # Save image
-        cv2.imwrite(str(filepath), image)
-        
-        # Update metadata
-        self.metadata['people'][person_id]['image_count'] += 1
-        self._save_metadata()
-        
-        return str(filepath)
+        try:
+            # Get person
+            person = session.query(Person).filter_by(id=person_id).first()
+            if not person:
+                raise ValueError(f"Person not found: {person_id}")
+            
+            # Validate if requested
+            if validate:
+                is_valid, msg, quality_score = self.validate_face_image(image)
+                if not is_valid:
+                    print(f"❌ Validation failed: {msg}")
+                    return None
+            else:
+                quality_score = 0.0
+            
+            # Generate filename
+            person_folder = self.image_storage_path / f"person_{person_id}_{person.name.lower().replace(' ', '_')}"
+            person_folder.mkdir(parents=True, exist_ok=True)
+            
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+            filename = f"{angle}_{timestamp}.jpg"
+            filepath = person_folder / filename
+            
+            # Save image file
+            cv2.imwrite(str(filepath), image)
+            
+            # Save to database
+            face_image = FaceImage(
+                person_id=person_id,
+                image_path=str(filepath),
+                angle=angle,
+                quality_score=quality_score,
+                captured_at=datetime.now()
+            )
+            
+            session.add(face_image)
+            session.commit()
+            
+            face_image_id = face_image.id
+            
+            print(f"✅ Face captured: {filename} (Quality: {quality_score:.2f})")
+            
+            return face_image_id
+            
+        except Exception as e:
+            session.rollback()
+            print(f"❌ Failed to capture face: {e}")
+            return None
+        finally:
+            session.close()
+
     
-    def get_person_images(self, person_id: str) -> List[str]:
+    def get_person_images(self, person_id: int) -> List[Dict]:
         """
-        Get all images for a person
+        Get all images for a person from database
         
         Args:
-            person_id: Person ID
+            person_id: Person database ID
             
         Returns:
-            List of image paths
+            List of image dictionaries with metadata
         """
-        person_dir = self.dataset_root / person_id
+        session = self.db.get_session()
         
-        if not person_dir.exists():
-            return []
-        
-        # Get all image files
-        image_extensions = ['.jpg', '.jpeg', '.png']
-        images = []
-        
-        for ext in image_extensions:
-            images.extend(person_dir.glob(f"*{ext}"))
-        
-        return [str(img) for img in sorted(images)]
+        try:
+            person = session.query(Person).filter_by(id=person_id).first()
+            if not person:
+                return []
+            
+            images = []
+            for face_image in person.face_images:
+                images.append({
+                    'id': face_image.id,
+                    'path': face_image.image_path,
+                    'angle': face_image.angle,
+                    'quality_score': face_image.quality_score,
+                    'captured_at': face_image.captured_at.isoformat() if face_image.captured_at else None
+                })
+            
+            return images
+            
+        finally:
+            session.close()
+
     
-    def remove_person(self, person_id: str) -> bool:
+    def remove_person(self, person_id: int, remove_images: bool = True) -> bool:
         """
-        Remove a person from dataset
+        Remove a person from database
         
         Args:
-            person_id: Person ID
+            person_id: Person database ID
+            remove_images: Whether to also remove image files
             
         Returns:
             True if removed, False if not found
         """
-        person_dir = self.dataset_root / person_id
+        session = self.db.get_session()
         
-        if not person_dir.exists():
+        try:
+            person = session.query(Person).filter_by(id=person_id).first()
+            if not person:
+                return False
+            
+            person_name = person.name
+            
+            # Remove image files if requested
+            if remove_images:
+                person_folder = self.image_storage_path / f"person_{person_id}_{person.name.lower().replace(' ', '_')}"
+                if person_folder.exists():
+                    import shutil
+                    shutil.rmtree(person_folder)
+                    print(f"🗑️  Removed image folder: {person_folder}")
+            
+            # Delete from database (cascade will delete face_images and face_encodings)
+            session.delete(person)
+            session.commit()
+            
+            print(f"✅ Person removed: {person_name} (ID: {person_id})")
+            
+            return True
+            
+        except Exception as e:
+            session.rollback()
+            print(f"❌ Failed to remove person: {e}")
             return False
-        
-        # Remove directory and all images
-        import shutil
-        shutil.rmtree(person_dir)
-        
-        # Remove from metadata
-        if person_id in self.metadata['people']:
-            del self.metadata['people'][person_id]
-            self._save_metadata()
-        
-        return True
+        finally:
+            session.close()
+
     
     def validate_face_image(self, image: np.ndarray, 
-                           min_size: int = 100) -> Tuple[bool, str]:
+                           min_size: int = 100) -> Tuple[bool, str, float]:
         """
         Validate face image quality
         
@@ -181,223 +264,332 @@ class DatasetManager:
             min_size: Minimum image dimension
             
         Returns:
-            Tuple of (is_valid, message)
+            Tuple of (is_valid, message, quality_score)
         """
         if image is None:
-            return False, "Image is None"
+            return False, "Image is None", 0.0
         
         # Check dimensions
         height, width = image.shape[:2]
         
         if width < min_size or height < min_size:
-            return False, f"Image too small: {width}x{height}"
+            return False, f"Image too small: {width}x{height}", 0.0
         
-        # Check if image is too dark
+        # Convert to grayscale if needed
         if len(image.shape) == 3:
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         else:
             gray = image
         
+        # Check brightness
         mean_brightness = np.mean(gray)
         if mean_brightness < 40:
-            return False, f"Image too dark: brightness={mean_brightness:.1f}"
+            return False, f"Image too dark: brightness={mean_brightness:.1f}", 0.0
+        if mean_brightness > 220:
+            return False, f"Image too bright: brightness={mean_brightness:.1f}", 0.0
         
         # Check blur (Laplacian variance)
         laplacian_var = cv2.Laplacian(gray, cv2.CV_64F).var()
         if laplacian_var < 100:
-            return False, f"Image too blurry: variance={laplacian_var:.1f}"
+            return False, f"Image too blurry: variance={laplacian_var:.1f}", 0.0
         
-        return True, "Image quality OK"
+        # Calculate quality score (0-1)
+        # Based on brightness (0.4), sharpness (0.6)
+        brightness_score = min(mean_brightness / 150.0, 1.0)
+        sharpness_score = min(laplacian_var / 500.0, 1.0)
+        quality_score = (brightness_score * 0.4) + (sharpness_score * 0.6)
+        
+        return True, "Image quality OK", quality_score
+
     
     def validate_dataset(self) -> Dict:
         """
-        Validate entire dataset
+        Validate entire dataset from database
         
         Returns:
             Validation report
         """
-        report = {
-            'total_people': len(self.metadata['people']),
-            'total_images': 0,
-            'issues': [],
-            'valid_people': 0
-        }
+        session = self.db.get_session()
         
-        for person_id, person_data in self.metadata['people'].items():
-            images = self.get_person_images(person_id)
-            image_count = len(images)
+        try:
+            all_persons = session.query(Person).all()
             
-            report['total_images'] += image_count
+            report = {
+                'total_people': len(all_persons),
+                'total_images': 0,
+                'total_encodings': 0,
+                'issues': [],
+                'valid_people': 0
+            }
             
-            if image_count == 0:
-                report['issues'].append(f"{person_id}: No images")
-            elif image_count < 3:
-                report['issues'].append(f"{person_id}: Only {image_count} images (recommend 5+)")
-            else:
-                report['valid_people'] += 1
-        
-        return report
+            for person in all_persons:
+                image_count = len(person.face_images)
+                encoding_count = len(person.face_encodings)
+                
+                report['total_images'] += image_count
+                report['total_encodings'] += encoding_count
+                
+                if image_count == 0:
+                    report['issues'].append(f"{person.name}: No images")
+                elif image_count < 5:
+                    report['issues'].append(f"{person.name}: Only {image_count} images (recommend 20+)")
+                else:
+                    report['valid_people'] += 1
+                
+                if encoding_count == 0:
+                    report['issues'].append(f"{person.name}: No encodings generated")
+            
+            return report
+            
+        finally:
+            session.close()
+
     
-    def export_encodings(self, recognizer_class) -> str:
+    def generate_encodings(self, person_id: int = None, model_name: str = 'Facenet512') -> int:
         """
-        Generate face encodings for all dataset images
+        Generate face encodings for person(s) using DeepFace
         
         Args:
-            recognizer_class: FaceRecognizer class instance
+            person_id: Specific person ID, or None for all people
+            model_name: DeepFace model ('Facenet512', 'ArcFace', 'SFace')
             
         Returns:
-            Path to encodings file
+            Number of encodings generated
         """
-        encodings_file = self.dataset_root / "encodings.pkl"
-        all_encodings = []
-        all_names = []
-        all_metadata = []
+        from deepface import DeepFace
         
-        for person_id, person_data in self.metadata['people'].items():
-            images = self.get_person_images(person_id)
+        session = self.db.get_session()
+        count = 0
+        
+        try:
+            # Get persons to process
+            if person_id:
+                persons = [session.query(Person).filter_by(id=person_id).first()]
+                if not persons[0]:
+                    print(f"❌ Person not found: {person_id}")
+                    return 0
+            else:
+                persons = session.query(Person).all()
             
-            for image_path in images:
-                # Load image
-                image = cv2.imread(image_path)
-                if image is None:
+            print(f"🔧 Generating encodings with {model_name}...")
+            
+            for person in persons:
+                if not person:
                     continue
                 
-                # Generate encoding
-                encoding = recognizer_class.encode_face(image)
-                if encoding is not None:
-                    all_encodings.append(encoding)
-                    all_names.append(person_data['name'])
-                    all_metadata.append({
-                        'person_id': person_id,
-                        'employee_id': person_data.get('employee_id'),
-                        'department': person_data.get('department')
-                    })
-        
-        # Save encodings
-        data = {
-            'encodings': all_encodings,
-            'names': all_names,
-            'metadata': all_metadata,
-            'created_at': datetime.now().isoformat()
-        }
-        
-        with open(encodings_file, 'wb') as f:
-            pickle.dump(data, f)
-        
-        print(f"Exported {len(all_encodings)} encodings for {len(set(all_names))} people")
-        return str(encodings_file)
+                print(f"\n📊 Processing: {person.name} (ID: {person.id})")
+                
+                # Delete old encodings for this person
+                session.query(FaceEncoding).filter_by(person_id=person.id).delete()
+                
+                for face_image in person.face_images:
+                    try:
+                        # Generate encoding
+                        embeddings = DeepFace.represent(
+                            img_path=face_image.image_path,
+                            model_name=model_name,
+                            enforce_detection=False
+                        )
+                        
+                        if embeddings and len(embeddings) > 0:
+                            encoding_array = np.array(embeddings[0]['embedding'])
+                            encoding_bytes = pickle.dumps(encoding_array)
+                            
+                            # Save to database
+                            face_encoding = FaceEncoding(
+                                person_id=person.id,
+                                encoding_data=encoding_bytes,
+                                model_name=model_name,
+                                generated_at=datetime.now()
+                            )
+                            
+                            session.add(face_encoding)
+                            count += 1
+                            
+                            print(f"   ✅ Encoded: {Path(face_image.image_path).name}")
+                        
+                    except Exception as e:
+                        print(f"   ❌ Failed: {Path(face_image.image_path).name} - {e}")
+                        continue
+                
+                session.commit()
+                print(f"   Total: {len(person.face_encodings)} encodings")
+            
+            print(f"\n✅ Generated {count} encodings total")
+            return count
+            
+        except Exception as e:
+            session.rollback()
+            print(f"❌ Encoding generation failed: {e}")
+            return 0
+        finally:
+            session.close()
+
     
     def get_statistics(self) -> Dict:
         """
-        Get dataset statistics
+        Get dataset statistics from database
         
         Returns:
             Statistics dictionary
         """
-        stats = {
-            'total_people': len(self.metadata['people']),
-            'total_images': 0,
-            'people_by_department': {},
-            'images_per_person': {}
-        }
+        session = self.db.get_session()
         
-        for person_id, person_data in self.metadata['people'].items():
-            image_count = len(self.get_person_images(person_id))
-            stats['total_images'] += image_count
-            stats['images_per_person'][person_id] = image_count
+        try:
+            stats = self.db.get_statistics()
             
-            dept = person_data.get('department', 'Unknown')
-            stats['people_by_department'][dept] = stats['people_by_department'].get(dept, 0) + 1
-        
-        return stats
+            # Add department breakdown
+            persons = session.query(Person).all()
+            dept_counts = {}
+            
+            for person in persons:
+                dept = person.department or 'Unknown'
+                dept_counts[dept] = dept_counts.get(dept, 0) + 1
+            
+            stats['people_by_department'] = dept_counts
+            
+            return stats
+            
+        finally:
+            session.close()
     
     def list_people(self) -> List[Dict]:
         """
-        List all people in dataset
+        List all people in database
         
         Returns:
             List of people with metadata
         """
-        people = []
+        session = self.db.get_session()
         
-        for person_id, person_data in self.metadata['people'].items():
-            person_info = {
-                'person_id': person_id,
-                'name': person_data['name'],
-                'employee_id': person_data.get('employee_id'),
-                'department': person_data.get('department'),
-                'image_count': len(self.get_person_images(person_id)),
-                'created_at': person_data.get('created_at')
-            }
-            people.append(person_info)
-        
-        return people
+        try:
+            persons = session.query(Person).all()
+            people = []
+            
+            for person in persons:
+                person_info = {
+                    'id': person.id,
+                    'name': person.name,
+                    'employee_id': person.employee_id,
+                    'department': person.department,
+                    'image_count': len(person.face_images),
+                    'encoding_count': len(person.face_encodings),
+                    'created_at': person.created_at.isoformat() if person.created_at else None
+                }
+                people.append(person_info)
+            
+            return people
+            
+        finally:
+            session.close()
+    
+    def close(self):
+        """Close database connection"""
+        self.db.close()
+
 
 
 # Example usage and testing
 if __name__ == "__main__":
-    print("Dataset Manager Module - Week 4 Project")
-    print("="*50)
+    print("Dataset Manager Module - Week 4 Project (Database Mode)")
+    print("="*60)
     
-    # Create manager
-    manager = DatasetManager(dataset_root="test_dataset")
-    print("\n1. Dataset manager initialized")
-    print(f"   Dataset root: {manager.dataset_root}")
-    
-    # Add people
-    print("\n2. Adding people...")
-    alice_id = manager.add_person("Alice Smith", employee_id="EMP001", department="IT")
-    bob_id = manager.add_person("Bob Johnson", employee_id="EMP002", department="HR")
-    print(f"   Added: {alice_id}, {bob_id}")
-    
-    # Create test images
-    print("\n3. Creating test face images...")
-    test_face = np.ones((200, 200, 3), dtype=np.uint8) * 180
-    cv2.circle(test_face, (70, 80), 10, (0, 0, 0), -1)
-    cv2.circle(test_face, (130, 80), 10, (0, 0, 0), -1)
-    cv2.ellipse(test_face, (100, 130), (30, 15), 0, 0, 180, (0, 0, 0), 2)
-    
-    # Capture faces
-    print("\n4. Capturing faces...")
-    path1 = manager.capture_face(alice_id, test_face, angle='frontal')
-    path2 = manager.capture_face(alice_id, test_face, angle='left')
-    path3 = manager.capture_face(bob_id, test_face, angle='frontal')
-    print(f"   Captured 3 images")
-    
-    # Get person images
-    print("\n5. Getting person images...")
-    alice_images = manager.get_person_images(alice_id)
-    print(f"   Alice has {len(alice_images)} images")
-    
-    # Validate dataset
-    print("\n6. Validating dataset...")
-    report = manager.validate_dataset()
-    print(f"   Total people: {report['total_people']}")
-    print(f"   Total images: {report['total_images']}")
-    print(f"   Valid people: {report['valid_people']}")
-    if report['issues']:
-        print(f"   Issues: {report['issues']}")
-    
-    # Statistics
-    print("\n7. Dataset statistics...")
-    stats = manager.get_statistics()
-    for key, value in stats.items():
-        if isinstance(value, dict):
-            print(f"   {key}:")
-            for k, v in value.items():
-                print(f"     {k}: {v}")
-        else:
-            print(f"   {key}: {value}")
-    
-    # List people
-    print("\n8. Listing people...")
-    people = manager.list_people()
-    for person in people:
-        print(f"   {person['name']} ({person['person_id']}): {person['image_count']} images")
-    
-    print("\n" + "="*50)
-    print("Module ready for integration!")
-    print("\nIntegration path:")
-    print("  1. Copy to ../../core/dataset_manager.py")
-    print("  2. Import in week 5: recognition_service.py")
-    print("  3. Use in API: api/persons.py")
+    try:
+        # Initialize manager
+        print("\n1. Initializing DatasetManager...")
+        manager = DatasetManager(
+            connection_string="mysql+pymysql://root:@localhost:3306/face_recognition_db",
+            image_storage_path="project_dataset"
+        )
+        
+        # Add people
+        print("\n2. Adding people...")
+        alice_id = manager.add_person("Alice Smith", employee_id="EMP001", department="IT")
+        bob_id = manager.add_person("Bob Johnson", employee_id="EMP002", department="HR")
+        
+        # Create test images
+        print("\n3. Creating test face images...")
+        test_face = np.ones((200, 200, 3), dtype=np.uint8) * 180
+        cv2.circle(test_face, (70, 80), 10, (0, 0, 0), -1)
+        cv2.circle(test_face, (130, 80), 10, (0, 0, 0), -1)
+        cv2.ellipse(test_face, (100, 130), (30, 15), 0, 0, 180, (0, 0, 0), 2)
+        
+        # Capture faces
+        print("\n4. Capturing faces...")
+        img1_id = manager.capture_face(alice_id, test_face, angle='frontal')
+        img2_id = manager.capture_face(alice_id, test_face, angle='left')
+        img3_id = manager.capture_face(bob_id, test_face, angle='frontal')
+        print(f"   Captured 3 images")
+        
+        # Get person images
+        print("\n5. Getting person images from database...")
+        alice_images = manager.get_person_images(alice_id)
+        print(f"   Alice has {len(alice_images)} images")
+        for img in alice_images:
+            print(f"      - {Path(img['path']).name} (Quality: {img['quality_score']:.2f})")
+        
+        # Validate dataset
+        print("\n6. Validating dataset...")
+        report = manager.validate_dataset()
+        print(f"   Total people: {report['total_people']}")
+        print(f"   Total images: {report['total_images']}")
+        print(f"   Total encodings: {report['total_encodings']}")
+        print(f"   Valid people: {report['valid_people']}")
+        if report['issues']:
+            print(f"   Issues:")
+            for issue in report['issues']:
+                print(f"      - {issue}")
+        
+        # Generate encodings
+        print("\n7. Generating encodings with DeepFace...")
+        try:
+            count = manager.generate_encodings(model_name='Facenet512')
+            print(f"   Generated {count} encodings")
+        except ImportError:
+            print("   ⚠️  DeepFace not installed (pip install deepface)")
+        
+        # Statistics
+        print("\n8. Dataset statistics...")
+        stats = manager.get_statistics()
+        print(f"   Total persons: {stats.get('total_persons', 0)}")
+        print(f"   Total images: {stats.get('total_images', 0)}")
+        print(f"   Total encodings: {stats.get('total_encodings', 0)}")
+        if 'people_by_department' in stats:
+            print(f"   By department:")
+            for dept, count in stats['people_by_department'].items():
+                print(f"      {dept}: {count}")
+        
+        # List people
+        print("\n9. Listing people...")
+        people = manager.list_people()
+        for person in people:
+            print(f"   {person['name']} (ID: {person['id']})")
+            print(f"      Employee ID: {person['employee_id']}")
+            print(f"      Department: {person['department']}")
+            print(f"      Images: {person['image_count']}, Encodings: {person['encoding_count']}")
+        
+        # Close connection
+        manager.close()
+        
+        print("\n" + "="*60)
+        print("✅ Module ready for integration!")
+        print("\nDatabase Integration:")
+        print("  - Storage: MySQL (face_recognition_db)")
+        print("  - Tables: Person, FaceImage, FaceEncoding")
+        print("  - View in HeidiSQL: Press F5 to refresh")
+        print("\nNext steps:")
+        print("  1. Use in Week 5: recognition_service.py")
+        print("  2. Use in Week 6: attendance_system.py")
+        print("  3. Use in Week 7: Desktop GUI")
+        
+    except ConnectionError as e:
+        print(f"\n❌ {e}")
+        print("\n💡 Setup Instructions:")
+        print("   1. Start XAMPP → MySQL")
+        print("   2. Open HeidiSQL")
+        print("   3. Run Week 4 Lesson 2 first to create database")
+    except Exception as e:
+        print(f"\n❌ Error: {e}")
+        import traceback
+        traceback.print_exc()
+
