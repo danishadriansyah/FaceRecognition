@@ -1,36 +1,32 @@
-# Minggu 5 - Learning: Recognition Service with Database Integration
+# Minggu 5 - Learning: Recognition Service & Face Matching
 
 ## 📚 Overview
-Week 5 mengintegrasikan semua module dari Week 1-4 menjadi **complete recognition service** dengan database backend. Anda akan belajar membangun sistem recognition real-time yang menggunakan MySQL database untuk menyimpan dan mencocokkan face encodings.
+Week 5 mengintegrasikan semua dari Week 1-4 menjadi **complete recognition service**. Anda akan belajar generate face encodings dari dataset captured di Week 4, lalu build real-time face recognition service yang match wajah dengan database lokal.
 
 ---
 
-## ⚠️ PREREQUISITES - WAJIB DISELESAIKAN DULU!
+## ⚠️ PREREQUISITES - Minimal Setup Diperlukan!
 
 Sebelum memulai Week 5, pastikan **SEMUA** hal berikut sudah selesai:
 
 ### ✅ 1. Week 4 HARUS Sudah Selesai
 **Yang harus sudah ada:**
-- ✅ XAMPP MySQL sudah terinstall dan running
-- ✅ Database `face_recognition_db` sudah dibuat
 - ✅ Week 4 Lesson 1: Sudah capture faces (minimal 2-3 orang, 20 foto per orang)
-- ✅ Week 4 Lesson 2: Sudah store data ke database (persons & face_images tables terisi)
+- ✅ Faces tersimpan di `minggu-4-dataset-database/project/dataset/person_name/`
+
+**Cara setup Week 4:**
+```bash
+cd minggu-4-dataset-database
+python setup_week4.py
+# Pilih opsi [1] untuk capture faces
+# Atau jalankan: python learning/lesson-1/main.py
+```
 
 **Cara mengecek:**
 ```bash
-1. Buka XAMPP Control Panel → MySQL harus hijau (Running)
-2. Buka HeidiSQL → Connect ke localhost
-3. Check database: face_recognition_db
-4. Check tables:
-   ✅ persons - harus ada minimal 2-3 records
-   ✅ face_images - harus ada minimal 40-60 records (20 per person)
-   ✅ face_encodings - boleh kosong (akan diisi di Lesson 1)
-```
-
-**❌ Jika belum selesai Week 4:**
-```bash
-cd minggu-4-dataset-database/learning
-# Selesaikan Lesson 1 & 2 dulu!
+dir minggu-4-dataset-database\project\dataset\
+# Harus ada folder per person (alice, bob, etc)
+# Minimal 20 .jpg files per folder
 ```
 
 ---
@@ -39,39 +35,19 @@ cd minggu-4-dataset-database/learning
 
 **Check apakah sudah install:**
 ```bash
-pip list | findstr "opencv-python deepface mediapipe sqlalchemy pymysql"
+pip list | findstr "opencv-python deepface mediapipe"
 ```
 
 **Jika belum ada, install:**
 ```bash
 pip install opencv-python==4.8.1.78
-pip install mediapipe==0.10.8
 pip install deepface==0.0.89
 pip install tensorflow==2.15.0
-pip install sqlalchemy==2.0.23
-pip install pymysql==1.1.0
 ```
 
 **Note:** 
 - DeepFace akan download model Facenet512 (~100MB) saat pertama kali run
-- Tensorflow cukup besar (~500MB), pastikan koneksi internet stabil
-
----
-
-### ✅ 3. XAMPP MySQL Running
-
-**Before starting ANY lesson:**
-```bash
-1. Buka XAMPP Control Panel
-2. Klik "Start" di MySQL (jika belum running)
-3. Tunggu hingga hijau (Running)
-4. Test: Buka HeidiSQL, connect ke localhost (root, no password)
-```
-
-**❌ Jika MySQL gagal start:**
-- Port 3306 mungkin dipakai aplikasi lain
-- Restart XAMPP as Administrator
-- Check error log di XAMPP\mysql\data\
+- Pastikan internet stabil saat pertama kali run
 
 ---
 
@@ -79,14 +55,12 @@ pip install pymysql==1.1.0
 
 ```
 learning/
-├── README.md (file ini - BACA DULU!)
-├── lesson-1/          # Generate face encodings from database
+├── README.md (file ini)
+├── lesson-1/          # Generate face encodings from dataset
 │   ├── main.py
-│   ├── encoding_generator.py
 │   └── README.md
 └── lesson-2/          # Real-time recognition service
     ├── main.py
-    ├── recognition_service.py
     └── README.md
 ```
 
@@ -94,22 +68,22 @@ learning/
 
 ## 🎯 Learning Path - HARUS URUT!
 
-### 📍 Lesson 1: Generate Face Encodings dari Database
+### 📍 Lesson 1: Generate Face Encodings dari Dataset
 **Tujuan:** Generate 512-dimensional face encodings menggunakan DeepFace Facenet512
 
 **⏱️ Estimasi waktu:** 30-45 menit (termasuk download model)
 
 **Prerequisites:**
-- ✅ Week 4 Lesson 2 sudah selesai (database ada data)
-- ✅ XAMPP MySQL running
+- ✅ Week 4 Lesson 1 sudah selesai (faces ada di dataset folder)
+- ✅ Minimal 20 foto per person captured
 - ✅ DeepFace & dependencies sudah install
 
 **Yang akan dipelajari:**
-1. Load persons dari database (Week 4)
+1. Load images dari dataset folder
 2. Generate face encodings dengan DeepFace Facenet512
-3. Store encodings ke table `face_encodings`
+3. Save encodings ke pickle file (encodings.pkl)
 4. Understand embedding vectors (512-dimensional)
-5. Measure encoding generation time
+5. Create metadata file (JSON) untuk person info
 
 **Cara menjalankan:**
 ```bash
@@ -119,7 +93,7 @@ python main.py
 
 **Expected output:**
 ```
-✅ Database connected
+✅ Loading dataset...
 ✅ DeepFace model loaded (Facenet512)
 ✅ Found 2 persons with 40 images
 
@@ -132,19 +106,19 @@ Generating encodings...
 
 Total: 40 encodings generated
 Average: 0.142s per image
+Encodings saved to: output/encodings.pkl
 ```
 
 **Troubleshooting:**
-- **Error: Database connection failed** → Check XAMPP MySQL running
-- **Error: No persons found** → Week 4 Lesson 2 belum selesai
+- **Error: Dataset not found** → Check Week 4 Lesson 1 dataset folder
+- **Error: No images found** → Verify .jpg files in dataset/person_name/ folders
 - **Error: DeepFace module not found** → `pip install deepface tensorflow`
 - **Download stuck** → Check internet connection (Facenet512 ~100MB)
 
 **✅ Check hasil:**
-1. Buka HeidiSQL
-2. Refresh database
-3. Table `face_encodings` harus terisi (~40 records)
-4. Setiap record punya `encoding_data` (BLOB) dan `model_name` (Facenet512)
+1. Buka folder `lesson-1/output/`
+2. Verify `encodings.pkl` ada (file size ~1-2MB untuk 40 faces)
+3. Verify `metadata.json` ada dengan person info
 
 ---
 
@@ -154,13 +128,12 @@ Average: 0.142s per image
 **⏱️ Estimasi waktu:** 45-60 menit
 
 **Prerequisites:**
-- ✅ Lesson 1 sudah selesai (encodings sudah di database)
-- ✅ XAMPP MySQL running
+- ✅ Lesson 1 sudah selesai (encodings.pkl sudah ada)
 - ✅ Webcam available
 - ✅ MediaPipe sudah install
 
 **Yang akan dipelajari:**
-1. Load encodings dari database
+1. Load encodings dari pickle file
 2. Real-time face detection dengan MediaPipe
 3. Generate encoding untuk unknown face
 4. Compare encodings (Euclidean distance)
@@ -175,7 +148,7 @@ python main.py
 
 **Workflow:**
 ```
-1. Load known encodings from database → In-memory cache
+1. Load known encodings from pickle → In-memory cache
 2. Open webcam
 3. For each frame:
    a. MediaPipe detect faces (10-15ms)
@@ -245,57 +218,27 @@ DeepFace Recognition: 100-150ms (accurate, 97%+)
 =
 Total: 110-165ms per face = 6-9 FPS (real-time capable!)
 ```
-
----
-
-## 📊 Database Schema (Review)
-
-Yang digunakan di Week 5:
-
-```sql
--- Dari Week 4
-persons (
-    id,
-    employee_id,
-    name,
-    department
-)
-
-face_images (
-    id,
-    person_id,  -- FK to persons
-    image_path,
-    quality_score
-)
-
--- Diisi di Lesson 1
-face_encodings (
-    id,
-    person_id,  -- FK to persons
-    encoding_data,  -- BLOB (512 floats)
-    model_name      -- 'Facenet512'
-)
 ```
 
 **Integration:**
 - Lesson 1: Read `persons` + `face_images`, Write `face_encodings`
-- Lesson 2: Read `face_encodings` for recognition
+- Lesson 2: Load encodings untuk recognition
 
 ---
 
 ## ✅ Checklist Progress
 
 ### Before Starting:
-- [ ] Week 4 Lesson 1 & 2 complete
-- [ ] XAMPP MySQL running
-- [ ] HeidiSQL: `persons` table has 2+ records
-- [ ] HeidiSQL: `face_images` table has 40+ records
-- [ ] Dependencies installed (opencv, mediapipe, deepface)
+- [ ] Week 4 Lesson 1 complete (faces captured)
+- [ ] Dataset folder ada di `minggu-4-dataset-database/project/dataset/`
+- [ ] Minimal 2-3 persons dengan 20+ photos each
+- [ ] Dependencies installed (opencv, deepface, tensorflow)
 
 ### Lesson 1:
 - [ ] DeepFace model downloaded (Facenet512)
 - [ ] Encodings generated untuk semua persons
-- [ ] HeidiSQL: `face_encodings` table terisi
+- [ ] File `output/encodings.pkl` ada (~1-2MB)
+- [ ] File `output/metadata.json` ada
 - [ ] Average encoding time ~0.14s per image
 
 ### Lesson 2:
@@ -309,20 +252,22 @@ face_encodings (
 
 ## 🐛 Common Issues & Solutions
 
-### ❌ "Database connection failed"
+### ❌ "Dataset not found"
 **Solution:**
 ```bash
-1. Check XAMPP MySQL is running (green)
-2. HeidiSQL: Test connection (root, no password, localhost:3306)
-3. Database 'face_recognition_db' exists
+# Week 4 belum selesai capture faces!
+cd minggu-4-dataset-database
+python setup_week4.py
+# Pilih opsi [1] Capture faces
 ```
 
-### ❌ "No persons found in database"
+### ❌ "No images found in dataset"
 **Solution:**
 ```bash
-# Week 4 belum selesai!
-cd minggu-4-dataset-database/learning
-# Complete Lesson 1 & 2 first
+# Check dataset folder structure
+dir minggu-4-dataset-database\project\dataset\
+# Harus ada: dataset\alice\, dataset\bob\, etc
+# Dalam folder harus ada: .jpg files (minimal 20 per person)
 ```
 
 ### ❌ "DeepFace/TensorFlow not found"

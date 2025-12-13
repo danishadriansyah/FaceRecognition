@@ -1,9 +1,27 @@
-# Minggu 4: Dataset Collection & Database Setup
+# Minggu 4: Dataset Collection & Management (File-Based)
+
+## 🚀 Quick Setup
+
+**Auto-setup dengan interactive menu:**
+```bash
+cd minggu-4-dataset-database
+python setup_week4.py
+```
+
+Setup script akan:
+- ✅ Create folder structure (dataset, rejected, backups)
+- ✅ Create template person folders
+- ✅ Interactive menu: **1) Capture faces** atau **2) Skip**
+- ✅ Show next steps untuk generate encodings
+
+**Tinggal pilih nomor!** Script akan handle sisanya.
+
+---
 
 ## Tujuan Pembelajaran
 - Systematic face data collection dengan quality control
-- Setup MySQL database untuk face recognition
-- Store dataset ke database dengan metadata
+- Organize dataset dengan folder structure
+- Store dataset ke file system dengan metadata (JSON/pickle)
 - Data quality validation & organization
 
 ## Struktur Folder
@@ -18,12 +36,10 @@ minggu-4-dataset-database/
 │   │   ├── README.md
 │   │   ├── captured_faces/
 │   │   └── rejected/
-│   └── lesson-2/      # Database setup + Store dataset to DB (NEW!)
+│   └── lesson-2/      # Generate encodings to pickle (NEW!)
 │       ├── main.py
 │       ├── README.md
-│       ├── database.py
-│       ├── models.py
-│       └── dataset/
+│       └── output/
 ├── project/           # Module untuk progressive build
 │   ├── dataset_manager.py
 │   ├── face_detector.py
@@ -45,40 +61,41 @@ minggu-4-dataset-database/
    - Auto-organize per person
    - Reject bad photos automatically
 
-2. **Lesson 2** - Database setup & store dataset (NEW COMBINED!)
-   - Setup MySQL database
-   - Create database models (Person, FaceImage, FaceEncoding)
-   - Store captured faces to database
-   - Generate metadata & basic CRUD
-   - **Benefit:** Dataset langsung tersimpan di database untuk week 5-7!
+2. **Lesson 2** - Generate face encodings to pickle
+   - Generate face encodings dengan DeepFace Facenet512
+   - Store encodings ke pickle file (.pkl)
+   - Save metadata ke JSON file
+   - Auto-load captured faces dari Lesson 1
+   - **Benefit:** Encodings siap untuk recognition system Week 5-7!
 
 ### Konsep Utama
 - Face capture dengan validation
 - Multiple angles (frontal, left, right)
 - Quality metrics (blur, brightness, size)
-- **Database design:** Person, FaceImage, FaceEncoding tables
-- **SQLAlchemy ORM:** Object-relational mapping
-- **Data persistence:** Store images & metadata to MySQL
-- **Integration ready:** Database siap untuk recognition system
+- **File organization:** dataset/person_name/images/
+- **Pickle storage:** Face encodings saved to .pkl
+- **JSON metadata:** Person info, timestamps, quality scores
+- **Integration ready:** Files siap untuk recognition system
 
 ## Project Development
 
 ### Module: `dataset_manager.py`
-Production-ready dataset management module dengan fungsi:
-- `DatasetManager` class - Manage face datasets
-- `capture_face()` - Capture with validation
-- `add_person()` - Add new person to dataset
-- `remove_person()` - Remove person from dataset
-- `get_person_images()` - Get all images for person
-- `validate_dataset()` - Check dataset quality
-- `export_encodings()` - Generate encodings for dataset
+Production-ready dataset management module (file-based):
+- `DatasetManager` class - Manage face datasets locally
+- `add_person(name, employee_id)` - Add new person dengan metadata JSON
+- `capture_faces(person_id, count)` - Capture with validation
+- `generate_encodings(model_name)` - Generate & save encodings to pickle
+- `load_encodings()` - Load encodings from pickle
+- `get_person_list()` - List all persons in dataset
+- `get_statistics()` - Dataset statistics
+- `export_metadata(output_file)` - Export dataset info to JSON
 
 ### Integration
-Uses Week 2 `face_detector.py` and Week 3 `face_recognizer.py`.  
+Uses Week 2 `face_detector.py` (MediaPipe) and Week 3 `face_recognizer.py` (DeepFace).  
 Module ini akan digunakan oleh:
-- Week 5: Recognition system training
-- Week 6: Attendance database seeding
-- Week 7-8: Desktop GUI for person registration
+- Week 5: Recognition system (load encodings)
+- Week 6: Attendance system (recognition backend)
+- Week 7: Desktop GUI (person registration)
 
 ## Cara Penggunaan
 
@@ -91,10 +108,10 @@ cd lesson-1
 python main.py
 # Capture 20+ photos per person dengan quality check
 
-# Lesson 2: Database Setup & Store Dataset
+# Lesson 2: Generate Face Encodings
 cd ../lesson-2
 python main.py
-# Setup database, store captured faces, generate metadata
+# Generate encodings from captured faces, save to pickle
 ```
 
 ### Project Development
@@ -115,38 +132,38 @@ python dataset_manager.py
 
 ```
 dataset/
-├── person_1/
-│   ├── frontal_1.jpg
-│   ├── frontal_2.jpg
-│   ├── left_angle.jpg
-│   ├── right_angle.jpg
-│   └── encodings.pkl
-├── person_2/
+├── metadata.json           # Person info, image counts
+├── encodings.pkl           # All face encodings (512-d vectors)
+├── alice/
+│   ├── alice_001.jpg
+│   ├── alice_002.jpg
 │   └── ...
-└── metadata.json
+└── bob/
+    ├── bob_001.jpg
+    └── ...
 ```
 
 ## Deliverables
 
 ### Learning
 - ✅ Lesson 1: Captured faces dengan quality check (20+ photos per person)
-- ✅ Lesson 2: MySQL database setup + faces stored to database
+- ✅ Lesson 2: Face encodings generated and saved to pickle
 
 ### Tugas
-- ✅ `dataset_manager_template.py` - Fill 6 blanks untuk dataset + database operations
+- ✅ `dataset_manager_template.py` - Fill 6 blanks untuk dataset operations
 
 ### Project
-- ✅ `dataset_manager.py` - Production-ready dataset + database management
-- ✅ `database.py` - Database connection & session management
-- ✅ `models.py` - SQLAlchemy models (Person, FaceImage, FaceEncoding)
-- ✅ `test_dataset.py` - Unit tests
-- ✅ Sample dataset: 3+ people, 20+ photos each, stored in MySQL
+- ✅ `dataset_manager.py` - Production-ready file-based dataset management
+- ✅ `test_dataset.py` - Unit tests for file operations
+- ✅ Sample dataset: 3+ people, 20+ photos each
+- ✅ Encodings: face_encodings.pkl with 512-d vectors
 
 ## Next Week Preview
 
-**Minggu 5: Face Recognition with Hybrid Approach**
-- Introduction to Hybrid (MediaPipe + DeepFace)
-- Generate face encodings dengan Facenet512
+**Minggu 5: Face Recognition System**
+- Load encodings from pickle file
+- Real-time recognition dengan MediaPipe + DeepFace
+- Recognition service integration
 - Build recognition service (97%+ accuracy)
 - Real-time recognition pipeline
 

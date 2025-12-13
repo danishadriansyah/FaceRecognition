@@ -69,20 +69,72 @@ if distance <= threshold:
 
 ## Prerequisites
 ```bash
-# All dependencies from Week 4-5
+# All dependencies from Week 5
 pip install opencv-python mediapipe deepface
 ```
 
-**Database Requirements:**
-- XAMPP MySQL running
-- Database `face_recognition_db` dengan data
-- Table `face_encodings` sudah berisi encodings (dari Lesson 1)
-- Check di HeidiSQL: Pastikan ada encodings untuk setiap person
+**Local Files Required:**
+- Encodings file dari Lesson 1 (check `dataset/encodings.pkl`)
+- Dataset folder dengan person images
+- Webcam/camera device
+
+**Setup Dataset:**
+```bash
+# Copy encodings from Lesson 1
+Copy-Item ..\lesson-1\output\encodings.pkl dataset\ -Force
+Copy-Item ..\lesson-1\output\metadata.json dataset\ -Force
+
+# Or copy entire dataset from Lesson 1
+Copy-Item ..\lesson-1\dataset\* dataset\ -Recurse -Force
+```
+
+## Cara Menjalankan
+
+### Step 1: Persiapan Encodings
+```bash
+# Masuk ke folder lesson 2
+cd minggu-5-recognition-system\learning\lesson-2
+
+# Copy encodings dari Lesson 1
+Copy-Item ..\lesson-1\output\* dataset\ -Force
+
+# Atau copy seluruh dataset dari Lesson 1
+Copy-Item ..\lesson-1\dataset\* dataset\ -Recurse -Force
+```
+
+### Step 2: Verifikasi Prerequisites
+```bash
+# Check encodings file ada
+Test-Path dataset\encodings.pkl
+
+# Test camera
+python -c "import cv2; cap=cv2.VideoCapture(0); print('Camera OK' if cap.isOpened() else 'No camera'); cap.release()"
+```
+
+### Step 3: Install Dependencies (jika belum)
+```bash
+pip install opencv-python mediapipe deepface
+```
+
+### Step 4: Jalankan Recognition
+```bash
+python main.py
+```
+
+Program akan:
+1. Load encodings dari dataset
+2. Show recognized persons
+3. Tanya untuk press ENTER
+4. Buka webcam untuk recognition
+5. Press 'q' untuk keluar
+
+### Step 5: Lihat Statistics
+Setelah quit, akan muncul session statistics (FPS, processing time, dll)
 
 ## Langkah
-1. **Start XAMPP MySQL** (pastikan running)
-2. **Check di HeidiSQL**: Table `face_encodings` harus ada data
-3. **Complete Lesson 1 first** jika belum ada encodings
+1. **Complete Lesson 1 first** (generate encodings)
+2. **Copy encodings to this lesson** (see commands above)
+3. **Check encodings exist**: `Test-Path dataset\encodings.pkl`
 4. **Run recognition service**: `python main.py`
 5. **Camera selection**: 
    - Script auto-detect available cameras

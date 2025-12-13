@@ -1,7 +1,7 @@
-# Minggu 4 - Learning: Dataset Collection & Database Setup
+# Minggu 4 - Learning: Dataset Collection & Face Encoding
 
 ## 📚 Overview
-Folder ini berisi 2 lessons: (1) face capture dengan quality control, (2) database setup dan store dataset ke MySQL. **Minggu 4 ini gabungan dataset collection + database foundation** sehingga student langsung bisa simpan data untuk recognition system di minggu 5-7.
+Folder ini berisi 2 lessons: (1) face capture dengan quality control, (2) generate face encodings dari dataset dan save ke pickle file. **Minggu 4 ini fokus pada data collection dan encoding generation** untuk recognition system di minggu 5-7.
 
 ## 📁 File Structure
 
@@ -11,16 +11,11 @@ learning/
 ├── lesson-1/          # Face capture dengan quality check
 │   ├── main.py
 │   ├── README.md
-│   ├── captured_faces/  # Output: captured faces per person
-│   ├── rejected/        # Rejected photos (bad quality)
-│   └── output/
-└── lesson-2/          # Database setup + Store dataset (NEW!)
+│   └── dataset/        # Captured faces per person
+└── lesson-2/          # Generate face encodings
     ├── main.py
     ├── README.md
-    ├── database.py      # Database connection & session
-    ├── models.py        # SQLAlchemy models
-    ├── dataset/         # Organized dataset
-    └── output/
+    └── output/        # encodings.pkl + metadata.json
 ```
 
 ---
@@ -39,20 +34,26 @@ learning/
 - Organize captured faces per person
 - Progress tracking
 
-**Cara menggunakan:**
+**💡 RECOMMENDED:** Use setup script instead!
+```bash
+cd minggu-4-dataset-database
+python setup_week4.py
+# Pilih opsi [1] Capture faces
+```
+
+**Atau jalankan lesson langsung:**
 ```bash
 cd minggu-4-dataset-database/learning/lesson-1
 python main.py
 ```
 
 **Workflow:**
-1. Input nama person
+1. Input nama person (Alice, Bob, etc)
 2. Webcam akan terbuka
 3. Press **SPACE** untuk capture photo
 4. Target: 20+ photos per person
 5. Gerakkan wajah (frontal, kiri, kanan) untuk variasi
-6. Photos tersimpan di `captured_faces/person_name/`
-7. Bad quality photos otomatis ke `rejected/`
+6. Photos tersimpan di `dataset/person_name/`
 
 **Quality Checks:**
 - ✅ Minimum face size: 100x100 pixels
@@ -62,41 +63,46 @@ python main.py
 
 **Output yang diharapkan:**
 ```
-captured_faces/
+dataset/
 ├── alice/
-│   ├── photo_001.jpg  ✅ Good
-│   ├── photo_002.jpg  ✅ Good
+│   ├── alice_001.jpg  ✅ Good
+│   ├── alice_002.jpg  ✅ Good
 │   └── ...
 └── bob/
+    └── bob_001.jpg
     └── ...
-
-rejected/
-├── alice_blur_001.jpg      ❌ Too blurry
-└── bob_dark_002.jpg        ❌ Too dark
 ```
 
 **Tips untuk capture bagus:**
-- 💡 Lighting bagus (cahaya dari depan, bukan dari belakang)
-- 💡 Vary angles: frontal, slight left, slight right
+- 💡 Lighting bagus (cahaya dari depan)
+- 💡 Vary angles: frontal, left, right
 - 💡 Vary expressions: neutral, smile
 - 💡 Keep face centered di frame
 - 💡 Target minimal 20 photos per person
 
 ---
 
-### Lesson 2: Database Setup & Store Dataset (NEW!)
+### Lesson 2: Generate Face Encodings
 **File:** `lesson-2/main.py`
 
-**Tujuan:** Setup MySQL database dan store captured faces dengan metadata lengkap
-
-**🔥 NEW: Gabungan Dataset + Database!**
+**Tujuan:** Convert captured faces menjadi 512-dimensional face embeddings using DeepFace
 
 **Apa yang dipelajari:**
-1. **Database Setup**
-   - Setup MySQL connection dengan SQLAlchemy
-   - Create database models (Person, FaceImage, FaceEncoding)
-   - Database migration basics
-   - Session management
+1. **Face Encoding**
+   - Load images dari dataset
+   - Generate embeddings menggunakan DeepFace (Facenet512)
+   - Save ke pickle file format
+   - Create metadata file (JSON)
+
+2. **File-Based Storage**
+   - Understand pickle format untuk encoding
+   - JSON metadata untuk person info
+   - Efficient encoding storage
+
+3. **Encoding Verification**
+   - Check berapa banyak encodings
+   - Verify file integrity
+   - Load dan inspect encodings
 
 2. **Store Dataset to Database**
    - Load captured faces dari Lesson 1

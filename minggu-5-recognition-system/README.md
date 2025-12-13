@@ -1,11 +1,29 @@
-# Minggu 5: Recognition Service with Database Integration
+# Minggu 5: Complete Face Recognition System (File-Based)
+
+## 🚀 Quick Setup
+
+**Auto-setup dengan interactive menu:**
+```bash
+cd minggu-5-recognition-system
+python setup_week5.py
+```
+
+Setup script akan:
+- ✅ Create folder structure untuk lesson 1 & 2
+- ✅ Interactive menu: **1) Capture faces** / **2) Copy dari Week 4** / **3) Skip**
+- ✅ Auto-copy dataset jika pilih copy
+- ✅ Show next steps untuk generate encodings
+
+**Tinggal pilih nomor!** Script akan auto-copy atau launch camera.
+
+---
 
 ## Tujuan Pembelajaran
-- **Database-Backed Recognition:** MySQL integration dengan Week 4
-- Build recognition service yang terhubung ke database
-- Real-time face recognition dengan webcam
-- Performance tracking dan statistics
-- Complete recognition pipeline
+- **Complete Recognition Pipeline:** Integrasikan Week 1-4 tanpa database
+- Capture faces → Generate encodings → Real-time recognition
+- File-based storage (pickle) untuk simplicity
+- Production-ready recognition system
+- Real-time webcam recognition dengan confidence scores
 
 ## Struktur Folder
 
@@ -14,90 +32,87 @@ minggu-5-recognition-system/
 ├── README.md
 ├── learning/          # Tutorial dan latihan
 │   ├── README.md
-│   ├── lesson-1/      # Database integration
-│   └── lesson-2/      # Recognition service
+│   ├── lesson-1/      # Capture & encode faces
+│   │   ├── main.py
+│   │   ├── known_faces/     # Foto yang di-capture
+│   │   ├── encodings.pkl    # Face encodings
+│   │   └── README.md
+│   └── lesson-2/      # Real-time recognition
+│       ├── main.py
+│       ├── recognition_service.py
+│       └── README.md
 └── project/           # Module untuk progressive build
-    ├── recognition_service.py (Database-backed)
-    ├── face_detector.py (dari Week 2)
-    ├── face_recognizer.py (dari Week 3)
-    ├── dataset_manager.py (dari Week 4)
-    ├── image_utils.py (dari Week 1)
+    ├── recognition_service.py (Complete pipeline)
     ├── test_recognition.py
     └── README.md
 ```
 
-## 🔧 Tech Stack: Database Integration
+## 🔧 Tech Stack: Complete Integration
 
-**Week 5 Focus: Recognition Service**
+**Week 5 Focus: End-to-End Recognition**
 
-Recognition service yang mengintegrasikan semua modules dari Week 1-4 dengan database backend:
+File-based recognition system yang simple dan production-ready:
 
 ```
-Input → Face Detection (Week 2) → Face Recognition (Week 3) → 
-Database Match (Week 4) → Recognition Service (Week 5) → Result
+Capture Faces → Save Photos → Generate Encodings → Save to Pickle →
+Load from Pickle → Real-time Recognition → Display Results
 ```
 
 **Key Features:**
-- ✅ MySQL database backend (XAMPP)
-- ✅ Encoding matching dari database
-- ✅ Real-time processing
-- ✅ Statistics tracking
-- ✅ Modular & scalable design
+- ✅ No database needed (file-based storage)
+- ✅ Capture faces langsung dari webcam
+- ✅ Automatic encoding generation (DeepFace Facenet512)
+- ✅ Real-time recognition dengan confidence scores
+- ✅ Simple & portable (no SQL setup)
 
 ## Learning Goals
 
 ### Tutorial Materials (learning/)
-1. **Lesson 1** - Database Integration
-   - Connect recognition service to MySQL
-   - Load encodings dari database
-   - Implement matching logic
+1. **Lesson 1** - Capture & Encode Faces
+   - Capture wajah dari webcam (10-20 foto per orang)
+   - Generate 512-d encodings (DeepFace)
+   - Simpan ke pickle file
+   - Quality validation
 
-2. **Lesson 2** - Complete Service
-   - Build RecognitionService class
+2. **Lesson 2** - Real-time Recognition
+   - Load encodings dari pickle
    - Real-time webcam recognition
-   - Performance monitoring
-   - Error handling
+   - Display name + confidence
+   - FPS monitoring
 
 ### Konsep Utama
-- **Database Integration:** Load face encodings dari MySQL
-- **Encoding Matching:** Euclidean distance untuk matching
-- **Confidence Scoring:** Distance to confidence conversion
-- **Real-time Processing:** Frame-by-frame recognition
-- **Statistics:** Track total processed, recognized, unknown
-- **Modularity:** Integration dengan Week 1-4 modules
+- **Face Capture:** Multi-angle capture untuk accuracy
+- **Encoding Generation:** 512-dimensional embeddings
+- **Pickle Storage:** Serialize/deserialize encodings
+- **Real-time Recognition:** 6-9 FPS capable
+- **Confidence Scoring:** Euclidean distance threshold
+- **No Database:** Portable & easy deployment
 
 ## Project Development
 
 ### Module: `recognition_service.py`
-Production-ready recognition service dengan database backend:
+Production-ready recognition service (file-based):
 
 **Core Components:**
-- `RecognitionService(connection_string)` - Initialize dengan database
-- `set_detector_recognizer(detector, recognizer)` - Set modules dari Week 2-3
-- `_load_encodings_from_database()` - Load encodings dari MySQL
-- `generate_encodings_for_all(model)` - Generate encodings for all people
-- `_find_best_match(encoding, threshold)` - Match encoding ke database
-- `process_image(image)` - Process single image
-- `process_webcam_frame(frame)` - Process webcam frame dengan visualization
-- `get_statistics()` - Performance statistics
+- `RecognitionService()` - Initialize dengan pickle file
+- `capture_faces(name)` - Capture faces dari webcam
+- `generate_encodings()` - Generate encodings untuk semua faces
+- `save_encodings(filepath)` - Save ke pickle
+- `load_encodings(filepath)` - Load dari pickle
+- `recognize_face(image)` - Recognize single image
+- `recognize_webcam()` - Real-time recognition
+- `get_statistics()` - Performance stats
 
-**Database Connection:**
-- Default: `mysql+pymysql://root:@localhost:3306/face_recognition_db`
-- Uses SQLAlchemy + PyMySQL
-- Requires XAMPP/MySQL running
+**Storage:**
+- Folder: `known_faces/{name}/photo_001.jpg`
+- Encodings: `encodings.pkl` (pickle file)
+- No SQL required!
 
 ### Integration
-Mengintegrasikan modules dari Week 1-4:
+Uses modules dari Week 1-3:
 - `image_utils.py` (Week 1) - Image preprocessing
-- `face_detector.py` (Week 2) - Face detection & cropping
-- `face_recognizer.py` (Week 3) - Encoding generation
-- `dataset_manager.py` (Week 4) - Database operations
-
-**Database Tables Used:**
-- `people` - Person information
-- `face_encodings` - Face embeddings (512-dim)
-- `images` - Image references
-- `employees` - Employee data
+- `face_detector.py` (Week 2) - MediaPipe detection
+- `face_recognizer.py` (Week 3) - DeepFace encoding
 
 Module ini akan digunakan oleh:
 - Week 6: Attendance system (recognition + recording)

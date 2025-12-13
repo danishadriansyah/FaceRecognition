@@ -1,10 +1,9 @@
 """
 Recognition Service Module
-Week 5 Project Module - Progressive Web Application (Database Mode)
+Week 5 Project Module - Progressive Web Application (File-Based Mode)
 
 This module integrates all previous modules into a complete recognition pipeline.
-Integrates: face_detector (Week 2), face_recognizer (Week 3), and database-backed dataset manager (Week 4).
-Loads person encodings from MySQL database for recognition.
+Uses MediaPipe for BOTH detection AND recognition for faster performance.
 """
 
 import cv2
@@ -13,78 +12,69 @@ import time
 import sys
 import os
 import pickle
+import json
 from typing import List, Dict, Optional, Tuple
 from pathlib import Path
 from datetime import datetime
+import mediapipe as mp
 
 # Import Week 2 face_detector (MediaPipe)
 week2_path = os.path.join(os.path.dirname(__file__), '..', '..', 'minggu-2-face-detection', 'project')
+week2_path = os.path.abspath(week2_path)
+
+# Remove any existing paths that might conflict
+sys.path = [p for p in sys.path if 'minggu-' not in p.lower()]
+
+# Insert Week 2 for FaceDetector (MediaPipe)
 sys.path.insert(0, week2_path)
 
-# Import Week 3 face_recognizer (DeepFace)
-week3_path = os.path.join(os.path.dirname(__file__), '..', '..', 'minggu-3-face-recognition', 'project')
-sys.path.insert(0, week3_path)
-
-# Import database modules from Week 4 project
-week4_path = os.path.join(os.path.dirname(__file__), '..', '..', 'minggu-4-dataset-database', 'project')
-sys.path.insert(0, week4_path)
-
 from face_detector import FaceDetector
-from face_recognizer import FaceRecognizer
-from dataset_manager import DatasetManager
+
+print(f"🔍 Using MediaPipe for detection AND recognition")
 
 
 class RecognitionService:
     """
-    Complete face recognition service with database integration
+    Complete face recognition service using MediaPipe (fast and accurate)
     """
     
-    def __init__(self, connection_string: str = None, tolerance: float = 0.6):
+    def __init__(self, dataset_path: str = "dataset", tolerance: float = 0.6):
         """
-        Initialize recognition service with database
+        Initialize recognition service with MediaPipe
         
         Args:
-            connection_string: MySQL connection string (default: XAMPP local)
+            dataset_path: Path to dataset folder (default: "dataset")
             tolerance: Recognition tolerance threshold (default: 0.6)
         """
-        # Database connection (XAMPP default)
-        if connection_string is None:
-            connection_string = "mysql+pymysql://root:@localhost:3306/face_recognition_db"
-        
-        self.connection_string = connection_string
+        self.dataset_path = Path(dataset_path)
+        self.encodings_file = self.dataset_path / "encodings.pkl"
         self.tolerance = tolerance
         
-        # Initialize dataset manager (database-backed)
-        try:
-            self.dataset_manager = DatasetManager(
-                connection_string=connection_string,
-                image_storage_path="recognition_images"
-            )
-            print("✅ RecognitionService initialized (Database mode)")
-        except ConnectionError as e:
-            raise Exception(f"❌ Failed to connect to database: {e}")
+        # Initialize MediaPipe Face Detection (optimized)
+        self.mp_face_detection = mp.solutions.face_detection
+        self.face_detection = self.mp_face_detection.FaceDetection(
+            model_selection=0,  # 0 for close-range (2m), 1 for full-range (5m)
+            min_detection_confidence=0.3  # Lower = more sensitive
+        )
         
-        # Initialize face detector (Week 2 - MediaPipe)
-        try:
-            self.face_detector = FaceDetector(model_selection=1, min_detection_confidence=0.7)
-            print("✅ FaceDetector loaded (MediaPipe)")
-        except Exception as e:
-            print(f"⚠️  FaceDetector initialization warning: {e}")
-            self.face_detector = None
+        # Initialize MediaPipe Face Mesh for landmarks (used for encoding)
+        self.mp_face_mesh = mp.solutions.face_mesh
+        self.face_mesh = self.mp_face_mesh.FaceMesh(
+            static_image_mode=False,
+            max_num_faces=5,
+            refine_landmarks=True,
+            min_detection_confidence=0.3,
+            min_tracking_confidence=0.3
+        )
         
-        # Initialize face recognizer (Week 3 - DeepFace)
-        try:
-            self.face_recognizer = FaceRecognizer(tolerance=tolerance, model='Facenet512')
-            print("✅ FaceRecognizer loaded (DeepFace Facenet512)")
-        except Exception as e:
-            print(f"⚠️  FaceRecognizer initialization warning: {e}")
-            self.face_recognizer = None
+        print("✅ MediaPipe Face Detection loaded (Confidence: 0.3 - More Sensitive)")
+        print("✅ MediaPipe Face Mesh loaded (for encoding)")
         
-        # Load encodings from database
+        # Load encodings from pickle file
         self.known_encodings = []
         self.known_names = []
         self.known_metadata = []
-        self._load_encodings_from_database()
+        self._load_encodings_from_file()
         
         # Statistics tracking
         self.stats = {
@@ -93,260 +83,388 @@ class RecognitionService:
             'total_unknown': 0,
             'avg_processing_time': 0
         }
+        
+        print(f"✅ RecognitionService initialized (MediaPipe Full Mode)")
     
-    def _load_encodings_from_database(self):
+    def _extract_face_encoding_mediapipe(self, image: np.ndarray) -> Optional[np.ndarray]:
         """
-        Load person encodings from database
-        Uses encodings stored during dataset creation
+        Extract face encoding using MediaPipe Face Mesh landmarks
+        Returns 468 landmarks x 3 coordinates = 1404 dimensional vector
         """
         try:
-            self.known_encodings = []
-            self.known_names = []
-            self.known_metadata = []
+            # Convert BGR to RGB
+            rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             
-            # Get all people from database
-            people = self.dataset_manager.get_all_people()
+            # Process with Face Mesh
+            results = self.face_mesh.process(rgb_image)
             
-            # Load encodings for each person
-            for person in people:
-                # Get first encoding for this person
-                # In production, could use all encodings and average them
-                encodings = self.dataset_manager.get_person_encodings(person['id'])
-                
-                if encodings:
-                    # Use first encoding (or average if multiple)
-                    encoding = encodings[0]  # In numpy format from database
-                    self.known_encodings.append(encoding)
-                    self.known_names.append(person['name'])
-                    self.known_metadata.append({
-                        'person_id': person['id'],
-                        'employee_id': person['employee_id'],
-                        'department': person['department']
-                    })
+            if not results.multi_face_landmarks:
+                return None
             
-            print(f"✅ Loaded {len(self.known_names)} encodings from database\n")
+            # Get first face landmarks
+            face_landmarks = results.multi_face_landmarks[0]
+            
+            # Extract landmarks as encoding (468 landmarks x 3 coords)
+            encoding = []
+            for landmark in face_landmarks.landmark:
+                encoding.extend([landmark.x, landmark.y, landmark.z])
+            
+            return np.array(encoding)
             
         except Exception as e:
-            print(f"⚠️  Warning: Could not load encodings from database: {e}")
+            return None
+    
+    def _load_encodings_from_file(self):
+        """
+        Load person encodings from pickle file
+        """
+        if not self.encodings_file.exists():
+            print("⚠️  No encodings file found")
+            print(f"   Looking for: {self.encodings_file.absolute()}")
+            print("   💡 Run DatasetManager.generate_encodings() first")
+            return
+        
+        try:
+            with open(self.encodings_file, 'rb') as f:
+                data = pickle.load(f)
+            
+            self.known_encodings = [np.array(enc) for enc in data["encodings"]]
+            self.known_names = data["names"]
+            self.known_metadata = data.get("metadata", [])
+            
+            print(f"✅ Loaded {len(self.known_names)} encodings from file")
+            print(f"   Model: {data.get('model', 'Unknown')}")
+            print(f"   Generated: {data.get('generated_at', 'Unknown')}\n")
+            
+        except Exception as e:
+            print(f"⚠️  Warning: Could not load encodings from file: {e}")
             print("   Encodings will be generated on first use")
-
     
-    def generate_encodings_for_all(self, model_name: str = 'Facenet512'):
+    def reload_encodings(self):
         """
-        Generate encodings for all people in database
+        Reload encodings from file (useful after adding new persons)
+        """
+        print("🔄 Reloading encodings...")
+        self._load_encodings_from_file()
+    
+    def recognize_faces(self, image: np.ndarray, return_frames: bool = False) -> List[Dict]:
+        """
+        Recognize faces in an image using MediaPipe
         
         Args:
-            model_name: DeepFace model name
+            image: Input image (BGR format from cv2)
+            return_frames: If True, return cropped face images
             
         Returns:
-            Number of encodings generated
+            List of recognition results
         """
-        try:
-            count = self.dataset_manager.generate_encodings(model_name=model_name)
-            # Reload encodings after generation
-            self._load_encodings_from_database()
-            return count
-        except Exception as e:
-            print(f"❌ Failed to generate encodings: {e}")
-            return 0
-    
-    def _find_best_match(self, encoding: np.ndarray, threshold: float = 0.6) -> Dict:
-        """
-        Find best match for encoding in known encodings
+        start_time = time.time()
+        results = []
         
-        Args:
-            encoding: Person encoding (512-dim for Facenet512)
-            threshold: Match threshold
-            
-        Returns:
-            Match result dictionary
-        """
+        if image is None or image.size == 0:
+            return results
+        
+        # Check if we have loaded encodings
         if len(self.known_encodings) == 0:
-            return {
-                "person_id": None,
-                "name": "Unknown",
-                "confidence": 0.0
-            }
+            return results
         
-        # Calculate distances using euclidean distance
-        distances = []
-        for known_encoding in self.known_encodings:
-            distance = np.linalg.norm(encoding - known_encoding)
-            distances.append(distance)
+        # Convert BGR to RGB for MediaPipe
+        rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        h, w = image.shape[:2]
         
-        min_distance = min(distances)
-        best_match_index = distances.index(min_distance)
+        # Step 1: Detect faces with MediaPipe
+        detection_results = self.face_detection.process(rgb_image)
         
-        # Convert distance to confidence (lower distance = higher confidence)
-        confidence = 1 - (min_distance / 2.0)  # Normalize to 0-1
+        if not detection_results.detections:
+            return results
         
-        if min_distance < threshold:
-            return {
-                "person_id": self.known_metadata[best_match_index]['person_id'],
-                "name": self.known_names[best_match_index],
-                "confidence": float(confidence),
-                "metadata": self.known_metadata[best_match_index]
-            }
-        else:
-            return {
-                "person_id": None,
-                "name": "Unknown",
-                "confidence": 0.0
-            }
-    
-    def process_image(self, image: np.ndarray, 
-                     return_faces: bool = True) -> Dict:
-        """
-        Process image with detection and recognition
-        
-        Args:
-            image: Input image (BGR format from OpenCV)
-            return_faces: Include face regions in output
+        # Step 2: Process each detected face
+        for detection in detection_results.detections:
+            # Get bounding box
+            bbox = detection.location_data.relative_bounding_box
+            x = int(bbox.xmin * w)
+            y = int(bbox.ymin * h)
+            width = int(bbox.width * w)
+            height = int(bbox.height * h)
             
-        Returns:
-            Dictionary with recognized people and their faces
-        """
-        if self.face_detector is None or self.face_recognizer is None:
-            raise Exception("Face detector or recognizer not initialized!")
-        
-        try:
-            # Detect faces using Week 2 MediaPipe detector
-            faces = self.face_detector.detect_faces(image)
+            # Ensure coordinates are within image bounds
+            x = max(0, x)
+            y = max(0, y)
+            width = min(width, w - x)
+            height = min(height, h - y)
             
-            if len(faces) == 0:
-                return {
-                    "people": [],
-                    "faces": [],
-                    "count": 0,
-                    "timestamp": self.get_timestamp()
-                }
+            if width <= 0 or height <= 0:
+                continue
             
-            recognized_people = []
+            # Extract face ROI
+            face_roi = image[y:y+height, x:x+width]
             
-            for face_idx, (x, y, w, h) in enumerate(faces):
-                # Generate encoding using Week 3 DeepFace recognizer
-                encoding = self.face_recognizer.encode_face(image, face_location=(x, y, w, h))
-                
-                if encoding is None:
-                    continue
-                
-                # Match against database
-                match_result = self._find_best_match(encoding, threshold=self.tolerance)
-                
-                recognized_people.append({
-                    "face_idx": face_idx,
-                    "person_id": match_result["person_id"],
-                    "name": match_result["name"],
-                    "confidence": match_result["confidence"],
-                    "position": {"x": int(x), "y": int(y), "w": int(w), "h": int(h)}
+            if face_roi.size == 0:
+                continue
+            
+            # Generate encoding using MediaPipe landmarks
+            face_encoding = self._extract_face_encoding_mediapipe(face_roi)
+            
+            if face_encoding is None:
+                results.append({
+                    'name': 'Unknown',
+                    'confidence': 0.0,
+                    'bbox': (x, y, width, height),
+                    'metadata': {},
+                    'face_image': face_roi if return_frames else None
                 })
+                continue
+            
+            # Compare with known encodings using cosine similarity
+            best_match = None
+            best_distance = float('inf')
+            
+            for idx, known_encoding in enumerate(self.known_encodings):
+                # Normalize vectors for cosine similarity
+                face_norm = face_encoding / (np.linalg.norm(face_encoding) + 1e-6)
+                known_norm = known_encoding / (np.linalg.norm(known_encoding) + 1e-6)
                 
-                # Update stats
-                if match_result["person_id"] is not None:
-                    self.stats['total_recognized'] += 1
-                else:
-                    self.stats['total_unknown'] += 1
+                # Cosine distance = 1 - cosine similarity
+                similarity = np.dot(face_norm, known_norm)
+                distance = 1.0 - similarity
+                
+                if distance < best_distance:
+                    best_distance = distance
+                    best_match = idx
             
-            result = {
-                "people": recognized_people,
-                "count": len(recognized_people),
-                "timestamp": self.get_timestamp()
-            }
+            # Check if match is within tolerance
+            if best_match is not None and best_distance <= self.tolerance:
+                confidence = 1.0 - (best_distance / self.tolerance)
+                confidence = max(0.0, min(1.0, confidence))
+                
+                result = {
+                    'name': self.known_names[best_match],
+                    'confidence': confidence,
+                    'distance': best_distance,
+                    'bbox': (x, y, width, height),
+                    'metadata': self.known_metadata[best_match] if best_match < len(self.known_metadata) else {},
+                    'face_image': face_roi if return_frames else None
+                }
+                
+                self.stats['total_recognized'] += 1
+            else:
+                result = {
+                    'name': 'Unknown',
+                    'confidence': 0.0,
+                    'distance': best_distance if best_match is not None else float('inf'),
+                    'bbox': (x, y, width, height),
+                    'metadata': {},
+                    'face_image': face_roi if return_frames else None
+                }
+                
+                self.stats['total_unknown'] += 1
             
-            if return_faces:
-                result["faces"] = detected_faces
-            
-            self.stats['total_processed'] += 1
-            return result
-            
-        except Exception as e:
-            print(f"❌ Error processing image: {e}")
-            return {
-                "people": [],
-                "faces": [],
-                "count": 0,
-                "error": str(e)
-            }
+            results.append(result)
+        
+        # Update stats
+        processing_time = time.time() - start_time
+        self.stats['total_processed'] += len(results)
+        
+        if self.stats['total_processed'] > 0:
+            old_avg = self.stats['avg_processing_time']
+            self.stats['avg_processing_time'] = (old_avg * (self.stats['total_processed'] - len(results)) + processing_time) / self.stats['total_processed']
+        
+        return results
     
-    def process_webcam_frame(self, frame: np.ndarray,
-                            draw_boxes: bool = True,
-                            draw_labels: bool = True) -> Tuple[np.ndarray, List[Dict]]:
+    def recognize_from_file(self, image_path: str) -> List[Dict]:
         """
-        Process webcam frame with visualization
+        Recognize faces from image file
         
         Args:
-            frame: Input frame (BGR format)
-            draw_boxes: Draw bounding boxes
-            draw_labels: Draw labels and confidence
+            image_path: Path to image file
             
         Returns:
-            Tuple of (annotated frame, recognition results)
+            List of recognition results
         """
-        result = self.process_image(frame, return_faces=False)
-        annotated_frame = frame.copy()
+        image = cv2.imread(image_path)
         
-        try:
-            for person in result['people']:
-                pos = person['position']
-                x, y, w, h = pos['x'], pos['y'], pos['w'], pos['h']
-                name = person['name']
-                confidence = person['confidence']
-                
-                # Choose color based on recognition
-                if person['person_id'] is not None:
-                    color = (0, 255, 0)  # Green for known
-                else:
-                    color = (0, 0, 255)  # Red for unknown
-                
-                if draw_boxes:
-                    cv2.rectangle(annotated_frame, (x, y), (x + w, y + h), color, 2)
-                
-                if draw_labels:
-                    label = name
-                    if person['person_id'] is not None:
-                        label += f" ({confidence:.2f})"
-                    
-                    # Draw background for text
-                    font = cv2.FONT_HERSHEY_SIMPLEX
-                    font_scale = 0.6
-                    thickness = 2
-                    (text_w, text_h), baseline = cv2.getTextSize(label, font, font_scale, thickness)
-                    
-                    cv2.rectangle(annotated_frame,
-                                (x, y - text_h - 10),
-                                (x + text_w, y),
-                                color, -1)
-                    cv2.putText(annotated_frame, label,
-                              (x, y - 5),
-                              font, font_scale, (255, 255, 255), thickness)
+        if image is None:
+            raise ValueError(f"Cannot read image: {image_path}")
         
-        except Exception as e:
-            print(f"⚠️  Error drawing on frame: {e}")
-        
-        return annotated_frame, result['people']
+        return self.recognize_faces(image)
     
-    def get_timestamp(self) -> str:
-        """Get current timestamp in ISO format"""
-        return datetime.now().isoformat()
+    def recognize_from_camera(self, camera_id: int = 0, duration: int = 30, 
+                            save_results: bool = True, output_dir: str = "output"):
+        """
+        Run recognition from camera feed
+        
+        Args:
+            camera_id: Camera device ID
+            duration: Duration in seconds (0 for infinite)
+            save_results: Save annotated frames
+            output_dir: Output directory for saved frames
+        """
+        cap = cv2.VideoCapture(camera_id)
+        
+        if not cap.isOpened():
+            raise RuntimeError(f"Cannot open camera {camera_id}")
+        
+        if save_results:
+            output_path = Path(output_dir)
+            output_path.mkdir(exist_ok=True)
+        
+        start_time = time.time()
+        frame_count = 0
+        
+        print(f"\n📹 Starting camera recognition...")
+        print(f"   Duration: {duration}s (press 'q' to quit)")
+        print(f"   Known persons: {len(set(self.known_names))}")
+        print(f"   Known encodings: {len(self.known_encodings)}\n")
+        
+        while True:
+            ret, frame = cap.read()
+            if not ret:
+                break
+            
+            # Check duration
+            if duration > 0 and (time.time() - start_time) > duration:
+                break
+            
+            # Recognize faces
+            results = self.recognize_faces(frame)
+            
+            # Draw results
+            display_frame = self.draw_results(frame, results)
+            
+            # Show FPS
+            fps = frame_count / (time.time() - start_time) if time.time() > start_time else 0
+            cv2.putText(display_frame, f"FPS: {fps:.1f}", (10, 30),
+                       cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+            
+            # Show stats
+            cv2.putText(display_frame, f"Recognized: {self.stats['total_recognized']}", (10, 70),
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+            cv2.putText(display_frame, f"Unknown: {self.stats['total_unknown']}", (10, 100),
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+            
+            cv2.imshow('Face Recognition', display_frame)
+            
+            # Save frame if requested
+            if save_results and frame_count % 30 == 0:  # Save every 30 frames
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                save_path = output_path / f"recognition_{timestamp}_{frame_count}.jpg"
+                cv2.imwrite(str(save_path), display_frame)
+            
+            frame_count += 1
+            
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+        
+        cap.release()
+        cv2.destroyAllWindows()
+        
+        print(f"\n✅ Recognition complete")
+        print(f"   Frames processed: {frame_count}")
+        print(f"   Total faces: {self.stats['total_processed']}")
+        print(f"   Recognized: {self.stats['total_recognized']}")
+        print(f"   Unknown: {self.stats['total_unknown']}")
+    
+    def draw_results(self, image: np.ndarray, results: List[Dict]) -> np.ndarray:
+        """
+        Draw recognition results on image
+        
+        Args:
+            image: Input image
+            results: Recognition results
+            
+        Returns:
+            Annotated image
+        """
+        output = image.copy()
+        
+        for result in results:
+            x, y, w, h = result['bbox']
+            name = result['name']
+            confidence = result['confidence']
+            
+            # Choose color based on recognition
+            if name == 'Unknown':
+                color = (0, 0, 255)  # Red
+                label = "Unknown"
+            else:
+                color = (0, 255, 0)  # Green
+                label = f"{name} ({confidence:.2f})"
+            
+            # Draw bounding box
+            cv2.rectangle(output, (x, y), (x+w, y+h), color, 2)
+            
+            # Draw label background
+            label_size, _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)
+            cv2.rectangle(output, (x, y - label_size[1] - 10), (x + label_size[0], y), color, -1)
+            
+            # Draw label text
+            cv2.putText(output, label, (x, y - 5),
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+        
+        return output
     
     def get_statistics(self) -> Dict:
-        """Get recognition statistics"""
+        """
+        Get recognition statistics
+        
+        Returns:
+            Statistics dictionary
+        """
         return {
-            "total_processed": self.stats['total_processed'],
-            "total_recognized": self.stats['total_recognized'],
-            "total_unknown": self.stats['total_unknown'],
-            "recognition_rate": (
-                self.stats['total_recognized'] / self.stats['total_processed']
-                if self.stats['total_processed'] > 0 else 0
-            ),
-            "avg_processing_time": self.stats['avg_processing_time']
+            **self.stats,
+            'known_persons': len(set(self.known_names)),
+            'known_encodings': len(self.known_encodings),
+            'dataset_path': str(self.dataset_path.absolute()),
+            'encodings_file': str(self.encodings_file)
         }
     
-    def reset_statistics(self):
-        """Reset all statistics"""
-        self.stats = {
-            'total_processed': 0,
-            'total_recognized': 0,
-            'total_unknown': 0,
-            'avg_processing_time': 0
+    def save_log(self, results: List[Dict], log_file: str = "logs/recognition_log.json"):
+        """
+        Save recognition results to JSON log
+        
+        Args:
+            results: Recognition results
+            log_file: Path to log file
+        """
+        log_path = Path(log_file)
+        log_path.parent.mkdir(exist_ok=True)
+        
+        log_entry = {
+            'timestamp': datetime.now().isoformat(),
+            'results': [
+                {
+                    'name': r['name'],
+                    'confidence': r['confidence'],
+                    'bbox': r['bbox'],
+                    'metadata': r.get('metadata', {})
+                }
+                for r in results
+            ]
         }
+        
+        # Append to log file
+        logs = []
+        if log_path.exists():
+            with open(log_path, 'r', encoding='utf-8') as f:
+                logs = json.load(f)
+        
+        logs.append(log_entry)
+        
+        with open(log_path, 'w', encoding='utf-8') as f:
+            json.dump(logs, f, indent=2, ensure_ascii=False)
+
+
+# Example usage
+if __name__ == "__main__":
+    print("Recognition Service Module - Week 5 Project (File-Based)")
+    print("="*60)
+    
+    # Initialize service
+    service = RecognitionService(dataset_path="dataset", tolerance=0.6)
+    
+    print("\n💡 Available methods:")
+    print("   results = service.recognize_from_file('photo.jpg')")
+    print("   service.recognize_from_camera(camera_id=0, duration=30)")
+    print("   service.reload_encodings()  # After adding new persons")
+    print("   stats = service.get_statistics()")
+    print("   service.save_log(results, 'logs/recognition.json')")

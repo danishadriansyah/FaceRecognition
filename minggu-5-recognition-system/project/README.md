@@ -1,53 +1,53 @@
-# Minggu 5 - Project: RecognitionService Class (Database Mode)
+# Minggu 5 - Project: RecognitionService Class (File-Based Mode)
 
 ## 📚 Overview
-Production-ready `RecognitionService` class dengan **MySQL database integration**. Mengintegrasikan semua modules dari Week 1-4 untuk membuat complete face recognition system yang tersambung ke database.
+Production-ready `RecognitionService` class dengan **file-based storage** (pickle + JSON). Mengintegrasikan semua modules dari Week 1-4 untuk membuat complete face recognition system tanpa database.
 
 **🔥 Key Features:**
-- ✅ Database-backed recognition (MySQL + SQLAlchemy)
-- ✅ Auto-load encodings dari database
+- ✅ File-based storage (Pickle for encodings, JSON for metadata)
+- ✅ Auto-load encodings from pickle file
 - ✅ Real-time face recognition
 - ✅ Statistics tracking
 - ✅ Modular design (compatible dengan Week 2-3 modules)
+- ✅ No database setup required!
 
 ## 📁 Project Files
 
 ```
 project/
 ├── README.md (file ini)
-├── recognition_service.py ✨ (Database-backed service)
+├── recognition_service.py ✨ (File-based service)
 ├── test_recognition.py (7 comprehensive tests)
-├── dataset_manager.py (auto-imported from Week 4)
+├── dataset/ (dataset folder with encodings)
+│   ├── encodings.pkl (face encodings)
+│   ├── metadata.json (person info)
+│   └── person_name/ (person folders)
 └── image_utils.py (from Week 1)
 ```
 
 **Note:** 
-- `dataset_manager.py` di-import dari Week 4 project secara otomatis
 - `face_detector.py` dan `face_recognizer.py` di-import dari Week 2-3 project
-
----
-
+- `dataset_manager.py` dapat digunakan untuk generate encodings (from Week 4)
 ## ⚠️ Prerequisites
 
 **WAJIB diselesaikan sebelum menggunakan project ini:**
 
-1. ✅ **Week 4 Complete** - Database setup & data population
-2. ✅ **XAMPP MySQL Running** - Database must be accessible
-3. ✅ **Learning Lesson 1 Complete** - Face encodings generated
-4. ✅ **Dependencies Installed** - See requirements below
+1. ✅ **Week 4 Complete** - Dataset with generated encodings
+2. ✅ **Encodings File** - encodings.pkl must exist in dataset folder
+3. ✅ **Dependencies Installed** - See requirements below
 
 ### Check Prerequisites:
 ```bash
-# 1. Check XAMPP MySQL
-# XAMPP Control Panel → MySQL should be green (Running)
+# 1. Check dataset structure
+ls dataset/
+# Should see: encodings.pkl, metadata.json, person_name/
 
-# 2. Check database via HeidiSQL
-# Connect to localhost → Database: face_recognition_db
-# Tables should have data:
-#   - persons: 2+ records
-#   - face_images: 40+ records  
-#   - face_encodings: 40+ records (from Learning Lesson 1)
+# 2. Check encodings file
+python -c "import pickle; data=pickle.load(open('dataset/encodings.pkl','rb')); print(f'Loaded {len(data[\"encodings\"])} encodings')"
 
+# 3. Check dependencies
+pip list | findstr "opencv-python deepface mediapipe"
+```
 # 3. Check dependencies
 pip list | findstr "opencv-python deepface sqlalchemy pymysql"
 ```
@@ -60,35 +60,33 @@ pip list | findstr "opencv-python deepface sqlalchemy pymysql"
 
 ```python
 from recognition_service import RecognitionService
+### Initialization
 
-# Basic initialization (uses default XAMPP connection)
+```python
+from recognition_service import RecognitionService
+
+# Basic initialization (uses default dataset path)
 service = RecognitionService()
 
-# Custom database connection
+# Custom dataset path and tolerance
 service = RecognitionService(
-    connection_string="mysql+pymysql://root:@localhost:3306/face_recognition_db",
+    dataset_path="dataset",
     tolerance=0.6
 )
 ```
 
 **Parameters:**
-- `connection_string` (str): MySQL connection URL (default: XAMPP local)
-  - Default: `"mysql+pymysql://root:@localhost:3306/face_recognition_db"`
+- `dataset_path` (str): Path to dataset folder (default: "dataset")
+  - Must contain: encodings.pkl
 - `tolerance` (float): Recognition distance threshold (default: 0.6)
   - Lower = stricter matching
   - Higher = more lenient matching
 
 **What happens during initialization:**
-1. ✅ Connect to MySQL database
-2. ✅ Initialize DatasetManager (from Week 4)
-3. ✅ Auto-initialize FaceDetector (Week 2 - MediaPipe)
-4. ✅ Auto-initialize FaceRecognizer (Week 3 - DeepFace Facenet512)
-5. ✅ Load known encodings from `face_encodings` table
-6. ✅ Initialize statistics tracking
-
----
-
-## 🔧 Core Methods
+1. ✅ Auto-initialize FaceDetector (Week 2 - MediaPipe)
+2. ✅ Auto-initialize FaceRecognizer (Week 3 - DeepFace Facenet512)
+3. ✅ Load known encodings from `encodings.pkl`
+4. ✅ Initialize statistics tracking
 
 ### 1. generate_encodings_for_all()
 **Purpose:** Generate face encodings untuk semua orang di database
@@ -96,14 +94,12 @@ service = RecognitionService(
 ```python
 # Generate encodings using default model (Facenet512)
 count = service.generate_encodings_for_all()
+### 1. reload_encodings()
+**Purpose:** Reload face encodings from pickle file (useful after adding new persons)
 
-# Generate with specific model
-count = service.generate_encodings_for_all(model_name='ArcFace')
-```
-
-**Parameters:**
-- `model_name` (str): DeepFace model name (default: 'Facenet512')
-  - Options: Facenet512, ArcFace, SFace
+```python
+# Reload encodings after updating dataset
+service.reload_encodings()ce, SFace
 
 **Returns:** `int` - Number of encodings generated
 

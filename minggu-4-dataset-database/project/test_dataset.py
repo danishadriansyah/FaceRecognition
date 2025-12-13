@@ -1,14 +1,15 @@
 """
 Test Dataset Manager
-Week 4 Project Module - Progressive Web Application (Database Mode)
+Week 4 Project Module - Progressive Web Application (File-Based Mode)
 
-Tests for dataset management functionality with MySQL database
+Tests for dataset management functionality with local file storage
 """
 
 import sys
 import os
 import numpy as np
 import cv2
+from pathlib import Path
 
 # Add current directory to path
 sys.path.insert(0, os.path.dirname(__file__))
@@ -16,36 +17,28 @@ sys.path.insert(0, os.path.dirname(__file__))
 from dataset_manager import DatasetManager
 
 
-# Database connection string (XAMPP default)
-TEST_DB_CONNECTION = "mysql+pymysql://root:@localhost:3306/face_recognition_db"
-
-
 def test_initialization():
     """Test dataset manager initialization"""
     print("Test 1: Initialization")
     
     try:
-        manager = DatasetManager(
-            connection_string=TEST_DB_CONNECTION,
-            image_storage_path="test_output/test_images"
-        )
-        print("✓ Dataset manager initialized (Database mode)")
-        print(f"  Database: face_recognition_db")
-        print(f"  Image storage: test_output/test_images")
-        manager.close()
+        manager = DatasetManager(dataset_path="test_output/test_dataset")
+        print("✓ Dataset manager initialized (File-based mode)")
+        print(f"  Dataset path: {manager.dataset_path.absolute()}")
+        print(f"  Metadata file: {manager.metadata_file.name}")
+        print(f"  Encodings file: {manager.encodings_file.name}")
         return True
-    except ConnectionError as e:
-        print(f"✗ Connection failed: {e}")
-        print("  💡 Make sure XAMPP MySQL is running")
+    except Exception as e:
+        print(f"✗ Initialization failed: {e}")
         return False
 
 
 def test_add_person():
-    """Test adding person to database"""
-    print("\nTest 2: Add Person to Database")
+    """Test adding person to dataset"""
+    print("\nTest 2: Add Person to Dataset")
     
     try:
-        manager = DatasetManager(TEST_DB_CONNECTION, "test_output/test_images")
+        manager = DatasetManager("test_output/test_dataset")
         
         person_id = manager.add_person(
             name="Test User Alice",
@@ -54,106 +47,50 @@ def test_add_person():
         )
         
         assert person_id is not None
-        print(f"✓ Person added to database with ID: {person_id}")
+        print(f"✓ Person added with ID: {person_id}")
         
-        people = manager.list_people()
-        print(f"✓ Total people in database: {len(people)}")
+        # Check folder created
+        person_folder = manager.dataset_path / person_id
+        assert person_folder.exists()
+        print(f"✓ Person folder created: {person_folder}")
         
-        manager.close()
+        # Check metadata
+        people = manager.get_person_list()
+        print(f"✓ Total people in dataset: {len(people)}")
+        
         return True
     except Exception as e:
         print(f"✗ Test failed: {e}")
         return False
 
 
-def test_capture_face():
-    """Test capturing face image to database"""
-    print("\nTest 3: Capture Face to Database")
+def test_save_face_image():
+    """Test saving face image to person folder"""
+    print("\nTest 3: Save Face Image")
     
     try:
-        manager = DatasetManager(TEST_DB_CONNECTION, "test_output/test_images")
+        manager = DatasetManager("test_output/test_dataset")
         
         # Add person first
         person_id = manager.add_person("Test User Bob", "TEST002", "HR")
         
         # Create test face image
         test_face = np.ones((200, 200, 3), dtype=np.uint8) * 180
-        cv2.circle(test_face, (70, 80), 10, (0, 0, 0), -1)
-        cv2.circle(test_face, (130, 80), 10, (0, 0, 0), -1)
+        cv2.rectangle(test_face, (50, 50), (150, 150), (100, 150, 200), -1)
         
-        # Capture face
-        image_id = manager.capture_face(person_id, test_face, angle="frontal")
+        # Save to person folder
+        person_folder = manager.dataset_path / person_id
+        image_path = person_folder / f"{person_id}_001.jpg"
+        cv2.imwrite(str(image_path), test_face)
         
-        assert image_id is not None
-        print(f"✓ Face captured and saved to database (ID: {image_id})")
+        assert image_path.exists()
+        print(f"✓ Image saved: {image_path.name}")
         
-        # Verify in database
-        images = manager.get_person_images(person_id)
-        print(f"✓ Verified: {len(images)} images in database for person {person_id}")
+        # Verify can load
+        loaded = cv2.imread(str(image_path))
+        assert loaded is not None
+        print(f"✓ Image verified: {loaded.shape}")
         
-        manager.close()
-        return True
-    except Exception as e:
-        print(f"✗ Test failed: {e}")
-        return False
-
-
-def test_validate_face_image():
-    """Test face image validation"""
-    print("\nTest 4: Validate Face Image")
-    
-    try:
-        manager = DatasetManager(TEST_DB_CONNECTION, "test_output/test_images")
-        
-        # Good image
-        good_image = np.ones((200, 200, 3), dtype=np.uint8) * 150
-        is_valid, msg, score = manager.validate_face_image(good_image)
-        print(f"✓ Good image validation: {is_valid}, score: {score:.2f}")
-        
-        # Too small
-        small_image = np.ones((50, 50, 3), dtype=np.uint8) * 150
-        is_valid, msg, score = manager.validate_face_image(small_image)
-        print(f"✓ Small image validation: {is_valid}, reason: {msg}")
-        assert not is_valid
-        
-        # Too dark
-        dark_image = np.ones((200, 200, 3), dtype=np.uint8) * 20
-        is_valid, msg, score = manager.validate_face_image(dark_image)
-        print(f"✓ Dark image validation: {is_valid}, reason: {msg}")
-        assert not is_valid
-        
-        manager.close()
-        return True
-    except Exception as e:
-        print(f"✗ Test failed: {e}")
-        return False
-
-
-def test_get_person_images():
-    """Test getting person images from database"""
-    print("\nTest 5: Get Person Images from Database")
-    
-    try:
-        manager = DatasetManager(TEST_DB_CONNECTION, "test_output/test_images")
-        
-        # Add person and capture multiple faces
-        person_id = manager.add_person("Test User Charlie", "TEST003", "Engineering")
-        
-        test_face = np.ones((200, 200, 3), dtype=np.uint8) * 180
-        cv2.circle(test_face, (70, 80), 10, (0, 0, 0), -1)
-        cv2.circle(test_face, (130, 80), 10, (0, 0, 0), -1)
-        
-        manager.capture_face(person_id, test_face, angle="frontal")
-        manager.capture_face(person_id, test_face, angle="left")
-        manager.capture_face(person_id, test_face, angle="right")
-        
-        images = manager.get_person_images(person_id)
-        assert len(images) == 3
-        print(f"✓ Retrieved {len(images)} images for person {person_id}")
-        for img in images:
-            print(f"  - {img['angle']}: quality={img['quality_score']:.2f}")
-        
-        manager.close()
         return True
     except Exception as e:
         print(f"✗ Test failed: {e}")
@@ -161,30 +98,62 @@ def test_get_person_images():
 
 
 def test_generate_encodings():
-    """Test generating encodings with DeepFace"""
-    print("\nTest 6: Generate Encodings with DeepFace")
+    """Test generating encodings from images"""
+    print("\nTest 4: Generate Face Encodings")
     
     try:
-        manager = DatasetManager(TEST_DB_CONNECTION, "test_output/test_images")
+        manager = DatasetManager("test_output/test_dataset")
         
-        # Get all people
-        people = manager.list_people()
-        if len(people) == 0:
-            print("⚠️  No people in database, skipping encoding test")
-            manager.close()
+        # Check if we have persons with images
+        stats = manager.get_statistics()
+        
+        if stats["total_persons"] == 0:
+            print("⚠️  No persons in dataset, skipping encoding test")
             return True
         
-        print(f"  Generating encodings for {len(people)} people...")
+        print(f"  Found {stats['total_persons']} persons")
+        print(f"  Total images: {stats['total_images']}")
+        
+        # Generate encodings
+        print("  Generating encodings (this may take a moment)...")
         count = manager.generate_encodings(model_name='Facenet512')
         
+        assert count > 0
         print(f"✓ Generated {count} encodings")
-        print("  💡 View in HeidiSQL: SELECT * FROM face_encodings;")
         
-        manager.close()
+        # Check encodings file
+        assert manager.encodings_file.exists()
+        print(f"✓ Encodings saved to: {manager.encodings_file.name}")
+        
         return True
-    except ImportError:
-        print("⚠️  DeepFace not installed")
-        print("  Install: pip install deepface tensorflow")
+    except Exception as e:
+        print(f"✗ Test failed: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+
+
+def test_load_encodings():
+    """Test loading encodings from file"""
+    print("\nTest 5: Load Face Encodings")
+    
+    try:
+        manager = DatasetManager("test_output/test_dataset")
+        
+        if not manager.encodings_file.exists():
+            print("⚠️  No encodings file found, skipping load test")
+            return True
+        
+        encodings, names, metadata = manager.load_encodings()
+        
+        assert len(encodings) > 0
+        assert len(encodings) == len(names)
+        assert len(encodings) == len(metadata)
+        
+        print(f"✓ Loaded {len(encodings)} encodings")
+        print(f"  Unique persons: {len(set(names))}")
+        print(f"  Encoding shape: {np.array(encodings[0]).shape}")
+        
         return True
     except Exception as e:
         print(f"✗ Test failed: {e}")
@@ -192,131 +161,98 @@ def test_generate_encodings():
 
 
 def test_get_statistics():
-    """Test dataset statistics from database"""
-    print("\nTest 7: Get Statistics from Database")
+    """Test getting dataset statistics"""
+    print("\nTest 6: Get Dataset Statistics")
     
     try:
-        manager = DatasetManager(TEST_DB_CONNECTION, "test_output/test_images")
+        manager = DatasetManager("test_output/test_dataset")
         
         stats = manager.get_statistics()
+        
         print(f"✓ Dataset statistics:")
-        print(f"  - Total persons: {stats.get('total_persons', 0)}")
-        print(f"  - Total images: {stats.get('total_images', 0)}")
-        print(f"  - Total encodings: {stats.get('total_encodings', 0)}")
+        print(f"  Total persons: {stats['total_persons']}")
+        print(f"  Total images: {stats['total_images']}")
+        print(f"  Total encodings: {stats['total_encodings']}")
+        print(f"  Has encodings file: {stats['has_encodings']}")
+        print(f"  Dataset path: {stats['dataset_path']}")
         
-        if 'people_by_department' in stats:
-            print(f"  - By department:")
-            for dept, count in stats['people_by_department'].items():
-                print(f"      {dept}: {count}")
-        
-        manager.close()
         return True
     except Exception as e:
         print(f"✗ Test failed: {e}")
         return False
 
 
-def test_validate_dataset():
-    """Test dataset validation"""
-    print("\nTest 8: Validate Dataset")
+def test_export_metadata():
+    """Test exporting metadata to JSON"""
+    print("\nTest 7: Export Metadata")
     
     try:
-        manager = DatasetManager(TEST_DB_CONNECTION, "test_output/test_images")
+        manager = DatasetManager("test_output/test_dataset")
         
-        report = manager.validate_dataset()
-        print(f"✓ Validation report:")
-        print(f"  - Total people: {report['total_people']}")
-        print(f"  - Total images: {report['total_images']}")
-        print(f"  - Total encodings: {report['total_encodings']}")
-        print(f"  - Valid people: {report['valid_people']}")
+        export_file = manager.export_metadata("test_output/dataset_export.json")
         
-        if report['issues']:
-            print(f"  - Issues ({len(report['issues'])}):")
-            for issue in report['issues'][:5]:  # Show first 5
-                print(f"      {issue}")
+        assert Path(export_file).exists()
+        print(f"✓ Metadata exported to: {export_file}")
         
-        manager.close()
+        # Verify can read
+        import json
+        with open(export_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        assert "dataset_path" in data
+        assert "statistics" in data
+        assert "persons" in data
+        
+        print(f"✓ Export file verified")
+        
         return True
     except Exception as e:
         print(f"✗ Test failed: {e}")
         return False
 
 
-def cleanup():
-    """Cleanup test images (keep database for Week 5)"""
-    print("\nCleanup: Removing test image files...")
-    import shutil
-    if os.path.exists("test_output"):
-        shutil.rmtree("test_output")
-        print("✓ Test images removed")
-    print("💡 Database entries kept for Week 5 integration")
-    print("   To clear database: Use HeidiSQL or run Week 4 Lesson 2")
-
-
-if __name__ == "__main__":
+def run_all_tests():
+    """Run all tests"""
     print("="*60)
-    print("Dataset Manager Tests - Database Mode (Week 4 Project)")
+    print("DATASET MANAGER TESTS (File-Based Mode)")
     print("="*60)
     
-    print("\n💡 Prerequisites:")
-    print("   1. XAMPP MySQL running")
-    print("   2. Database 'face_recognition_db' created")
-    print("   3. Run Week 4 Lesson 2 first")
-    print("   4. Check HeidiSQL: Tables should exist")
-    
-    response = input("\nPress Enter to start tests, or 'q' to quit: ")
-    if response.lower() == 'q':
-        print("Tests cancelled")
-        sys.exit(0)
-    
-    # Run tests
     tests = [
         test_initialization,
         test_add_person,
-        test_capture_face,
-        test_validate_face_image,
-        test_get_person_images,
+        test_save_face_image,
         test_generate_encodings,
+        test_load_encodings,
         test_get_statistics,
-        test_validate_dataset
+        test_export_metadata
     ]
     
-    passed = 0
-    failed = 0
-    
+    results = []
     for test_func in tests:
         try:
             result = test_func()
-            if result:
-                passed += 1
-            else:
-                failed += 1
-        except KeyboardInterrupt:
-            print("\n\nTests interrupted by user")
-            break
+            results.append(result)
         except Exception as e:
-            print(f"✗ Unexpected error: {e}")
-            failed += 1
+            print(f"✗ Test crashed: {e}")
+            results.append(False)
+        print()
     
-    print("\n" + "="*60)
-    print(f"Test Results: {passed} passed, {failed} failed")
+    # Summary
     print("="*60)
+    passed = sum(results)
+    total = len(results)
+    print(f"RESULTS: {passed}/{total} tests passed")
     
-    if failed == 0:
+    if passed == total:
         print("✅ All tests passed!")
-        print("\nNext steps:")
-        print("  1. Verify in HeidiSQL: Press F5 to refresh")
-        print("  2. Check tables: persons, face_images, face_encodings")
-        print("  3. Use in Week 5: RecognitionService")
     else:
-        print("⚠️  Some tests failed")
-        print("\nTroubleshooting:")
-        print("  1. Check XAMPP MySQL is running")
-        print("  2. Verify database exists in HeidiSQL")
-        print("  3. Run Week 4 Lesson 2 to create tables")
+        print(f"⚠️  {total - passed} test(s) failed")
     
-    # Ask for cleanup
-    response = input("\nCleanup test images? (y/n): ")
-    if response.lower() == 'y':
-        cleanup()
+    print("="*60)
 
+
+if __name__ == "__main__":
+    # Create test output directory
+    Path("test_output/test_dataset").mkdir(parents=True, exist_ok=True)
+    
+    run_all_tests()

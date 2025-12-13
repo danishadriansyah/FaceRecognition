@@ -1,1129 +1,295 @@
 # AI-Based Face Recognition Attendance System
-## Progressive Learning - 7 Week Learning + 1.5 Week Project
+## Progressive Learning - 7 Minggu Pembelajaran Terstruktur
 
-![Python](https://img.shields.io/badge/Python-3.11.9-blue.svg)
+![Python](https://img.shields.io/badge/Python-3.11-blue.svg)
 ![OpenCV](https://img.shields.io/badge/OpenCV-4.8.1-green.svg)
-![MediaPipe](https://img.shields.io/badge/MediaPipe-0.10.8-red.svg)
+![MediaPipe](https://img.shields.io/badge/MediaPipe-0.10.9-red.svg)
 
-Sistem absensi berbasis face recognition yang dikembangkan secara progressive dalam 7 minggu pembelajaran intensif + 1.5 minggu fokus project. Dari pembelajaran dasar hingga desktop application yang production-ready. Sistem ini dapat mengenali hingga 200 wajah dan berjalan di komputer lokal.
-
----
-
-## 📋 Table of Contents
-
-- [Deskripsi Project](#deskripsi-project)
-- [Quick Start](#quick-start)
-- [Instalasi & Setup](#instalasi--setup)
-- [Learning Path](#learning-path)
-- [Struktur Project](#struktur-project)
-- [Desktop Application Features](#desktop-application-features)
-- [Testing](#testing)
-- [Running the Application](#running-the-application)
-- [FAQ](#faq)
-- [Roadmap Detail](#roadmap-detail)
+Sistem absensi berbasis face recognition yang dikembangkan secara progressive dalam 7 minggu pembelajaran terstruktur. Menggunakan **MediaPipe Face Detection + Face Mesh** untuk performa real-time yang cepat dan akurat.
 
 ---
 
-## 🎯 Deskripsi Project
+## 🎯 Fitur Utama
 
-### Fitur Utama
-- ✅ **Hybrid Face Recognition:** MediaPipe Detection + DeepFace Recognition
-- ✅ **High Accuracy:** 97%+ dengan Facenet512
-- ✅ **Real-time Performance:** 6-9 FPS (110-165ms per face)
-- ✅ Database MySQL (robust & scalable)
-- ✅ Real-time attendance tracking dari webcam
-- ✅ Desktop GUI dengan Tkinter (simple & user-friendly)
-- ✅ Export laporan ke Excel/CSV
-- ✅ Support 200+ persons
-- ✅ Berjalan di komputer lokal - no cloud needed
-- ✅ No dlib dependency - easy installation
-
-### Untuk Siapa Project Ini?
-- **Students** yang ingin belajar AI face recognition
-- **Beginners** dalam computer vision dan desktop development
-- **Self-learners** yang suka belajar step-by-step
-- Siapa saja yang mau build **production-ready attendance system**
-
-### Tech Stack
-**Core:**  
-- Python 3.11.9
-- OpenCV 4.8.1 (Computer Vision)
-- **MediaPipe 0.10.8** (Fast Face Detection - 10-15ms)
-- **DeepFace 0.0.89** (Accurate Face Recognition - 97%+)
-- **TensorFlow 2.15.0** (DeepFace backend)
-
-**Hybrid Approach (Minggu 4-7):**
-- Detection: MediaPipe (⚡ 30+ FPS)
-- Recognition: DeepFace Facenet512 (🎯 97%+ accuracy)
-- Pipeline: 110-165ms per face (real-time capable)
-
-**GUI:** Tkinter (built-in Python 3.11)  
-**Database:** MySQL 8.0+ dengan SQLAlchemy 2.0.23 ORM  
-**Data Processing:** NumPy 1.26.2, Pandas 2.1.4  
-**Export:** openpyxl 3.1.2, xlsxwriter 3.1.9  
-**Deployment:** PyInstaller 6.3.0
-
-**Why Hybrid?**
-- ✅ 2x lebih cepat dari pure DeepFace
-- ✅ Real-time performance (6-9 FPS)
-- ✅ Production-ready accuracy (97%+)
-- ✅ No dlib/C++ compiler needed
+- ✅ **MediaPipe Face Recognition:** Detection + Face Mesh (1404-dim landmarks)
+- ✅ **Super Fast:** 60+ FPS real-time (0.01s per face)
+- ✅ **High Accuracy:** Cosine similarity matching
+- ✅ **Lightweight:** ~150MB install (no TensorFlow!)
+- ✅ **File-Based Storage:** Pickle + JSON + CSV (no database needed!)
+- ✅ Real-time attendance tracking via webcam
+- ✅ Desktop GUI dengan Tkinter
+- ✅ Export reports ke CSV/JSON
+- ✅ Support 100-200+ persons
+- ✅ Berjalan offline - no internet needed
 
 ---
 
 ## 🚀 Quick Start
 
-### Path 1: Complete Beginner (7 Minggu Belajar + 1.5 Minggu Project)
-**Cocok untuk:** Pemula yang belum pernah belajar face recognition
-
-```bash
-# 1. Clone & setup
-git clone <repository-url>
-cd ExtraQueensya
-python -m venv venv
-venv\Scripts\activate  # Windows
-pip install -r requirements.txt
-
-# 2. Mulai dari week 1
-cd minggu-1-python-basics/learning
-python 01_hello_opencv.py
-
-# 3. Follow week-by-week (Minggu 1-7)
-# Baca tutorial → Praktik coding → Jalankan test
-
-# 4. Minggu 7.5-8: FOKUS PROJECT
-# Build complete attendance system dari scratch
-```
-
-**Timeline:** 7 minggu learning (2-3 jam/hari) + 1.5 minggu intensive project
-
-### Path 2: Fast Track (2-3 Minggu)
-**Cocok untuk:** Yang sudah punya dasar Python
-
-```bash
-# Week 1-2: Skim tutorial, fokus ke project
-# Week 3-5: Face recognition + dataset
-# Week 6-7: Database + Desktop GUI
-# Week 8: Final app + testing
-```
-
-**Timeline:** 2-3 minggu intensif (4-5 jam/hari)
-
-### Path 3: Express (3-5 Hari)
-**Cocok untuk:** Developer berpengalaman
-
-```bash
-# 1. Review concepts
-cd minggu-1-python-basics
-
-# 2. Setup dataset
-cd ../minggu-4-dataset-database
-python learning/01_capture_faces.py  # Capture 5-10 orang
-
-# 3. Run desktop app
-cd ../minggu-7-desktop-gui
-python project/main_app.py
-```
-
-**Timeline:** 3-5 hari full-time
-
----
-
-## 📦 Instalasi & Setup
-
 ### Prerequisites
 
-1. **Python 3.11.9** (Recommended & Tested)
+1. **Python 3.11+**
 ```bash
-python --version  # Should show: Python 3.11.9
+python --version  # Harus 3.11 atau lebih
 ```
-Download dari: https://python.org/downloads/  
-**PENTING Windows:** Centang "Add Python to PATH" saat install
+Download: https://python.org/downloads/ (Centang "Add to PATH"!)
 
-2. **MySQL 8.0+**
+2. **Webcam** - Built-in atau USB camera
+
+### Installation
+
 ```bash
-# Windows
-Download: https://dev.mysql.com/downloads/installer/
-Install MySQL Community Server + MySQL Workbench
-
-# Mac (Homebrew)
-brew install mysql
-brew services start mysql
-
-# Linux (Ubuntu/Debian)
-sudo apt-get install mysql-server
-sudo systemctl start mysql
-```
-
-3. **Git** (Optional)
-Download dari: https://git-scm.com/
-
-### Step-by-Step Installation
-
-**Step 1: Download Project**
-```bash
-# Option A: Using Git
-git clone <repository-url>
+# 1. Clone/Download project
+git clone <repo-url>
 cd ExtraQueensya
 
-# Option B: Download ZIP
-# Extract ZIP → Open terminal di folder
-```
-
-**Step 2: Create Virtual Environment**
-```bash
-# Windows PowerShell
+# 2. Create virtual environment
 python -m venv venv
-.\venv\Scripts\Activate.ps1
+venv\Scripts\activate  # Windows
+# source venv/bin/activate  # Mac/Linux
 
-# Windows CMD
-python -m venv venv
-venv\Scripts\activate.bat
-
-# Linux/Mac
-python3 -m venv venv
-source venv/bin/activate
-```
-
-**Step 3: Install Dependencies**
-```bash
-# Upgrade pip first
-python -m pip install --upgrade pip
-
-# Install all at once (5-10 menit)
+# 3. Install dependencies
 pip install -r requirements.txt
+
+# 4. Verify
+python -c "import cv2, mediapipe; print('✅ Ready!')"
 ```
 
-**Step 3 (Alternative): Install Manual Satu-Satu**
-
-Jika `pip install -r requirements.txt` bermasalah, install manual:
-
+**Setup per-week dengan Interactive Menu:**
 ```bash
-# 1. Database packages
-pip install SQLAlchemy==2.0.23
-pip install alembic==1.13.1
-pip install mysqlclient==2.2.4
-pip install pymysql==1.1.0
-pip install cryptography==41.0.7
-
-# 2. Computer Vision & Face Recognition (CEPAT - <1 menit!)
-pip install opencv-python==4.8.1.78
-pip install opencv-contrib-python==4.8.1.78
-pip install mediapipe==0.10.8  # No compile needed!
-
-# 3. Data Processing
-pip install numpy==1.26.2
-pip install Pillow==10.1.0
-pip install pandas==2.1.4
-
-# 4. Excel/CSV Export
-pip install openpyxl==3.1.2
-pip install xlsxwriter==3.1.9
-
-# 5. Utilities
-pip install cmake==3.27.9
-pip install imutils==0.5.4
-pip install tqdm==4.66.1
-pip install python-dateutil==2.8.2
-
-# 6. Desktop GUI Distribution
-pip install pyinstaller==6.3.0
-
-# 7. Testing
-pip install pytest==7.4.3
-pip install pytest-cov==4.1.0
-
-# 8. Development Tools
-pip install black==23.12.1
-pip install flake8==6.1.0
+# Week 4-7: Auto-setup dataset
+cd minggu-X-xxxxx
+python setup_weekX.py
+# Interactive menu akan muncul dengan pilihan:
+#   [1] Copy dataset dari week sebelumnya (otomatis!)
+#   [2] Capture faces dengan camera
+#   [3] Skip (populate manual nanti)
+# Tinggal ketik nomor, no manual commands needed!
 ```
 
-**Tips Install Manual:**
-- Install satu-satu supaya bisa track package mana yang error
-- Semua install cepat dengan MediaPipe (total <5 menit) ☕
-- Kalau ada error di package tertentu, skip dulu, lanjut ke package lain
-- Package yang **WAJIB**: opencv-python, mediapipe, SQLAlchemy, mysqlclient
-- Package yang **OPTIONAL**: pytest, black, flake8 (untuk development)
-
-**Step 4: Setup MySQL Database**
+**Setup All Weeks (4-7) Sekaligus:**
 ```bash
-# Login ke MySQL
-mysql -u root -p
-
-# Buat database
-CREATE DATABASE attendance_system;
-
-# Buat user (optional, untuk security)
-CREATE USER 'attendance_user'@'localhost' IDENTIFIED BY 'your_password';
-GRANT ALL PRIVILEGES ON attendance_system.* TO 'attendance_user'@'localhost';
-FLUSH PRIVILEGES;
-EXIT;
-```
-
-**Step 5: Verify Installation**
-```bash
-python -c "import cv2; print('OpenCV:', cv2.__version__)"
-python -c "import mediapipe; print('MediaPipe: OK')"
-python -c "import tkinter; print('Tkinter: OK')"
-python -c "import MySQLdb; print('MySQL: OK')"  # or import pymysql
-```
-
-Jika semua print tanpa error, **BERHASIL!** ✅
-
-### Troubleshooting
-
-❌ **Error: "No module named cv2"**
-```bash
-pip install opencv-python
-```
-
-✅ **Project Now Uses MediaPipe (No dlib Needed!)**
-
-Kami sudah **migrate semua module** dari `face_recognition` ke **MediaPipe** (Google's face detection library).
-
-**Keuntungan MediaPipe:**
-- ✅ **No C++ compilation** - Install langsung, no Build Tools needed
-- ✅ **Super fast** - 30+ FPS real-time processing
-- ✅ **90%+ accuracy** - Cukup akurat untuk attendance system
-- ✅ **Lightweight** - ~50MB, bisa run di laptop lama
-- ✅ **Google product** - Well-maintained, frequently updated
-
-**Installation Mudah:**
-```bash
-pip install -r requirements.txt
-# atau manual:
-pip install mediapipe opencv-python
-```
-
-**Sudah di-update:**
-- ✅ `requirements.txt` - MediaPipe included
-- ✅ `minggu-1 to minggu-7` - Semua file pakai MediaPipe
-- ✅ `face_recognizer.py` - Use MediaPipe FaceMesh untuk encoding
-- ✅ `face_detector.py` - Pakai MediaPipe untuk detection
-
-**Test Installation:**
-```bash
-python -c "import mediapipe; print('✅ MediaPipe ready!')"
-```
-
-**Yang berubah di code:**
-```python
-# BEFORE (dengan face_recognition library):
-import face_recognition
-face_locations = face_recognition.face_locations(image)
-face_encodings = face_recognition.face_encodings(image)
-
-# AFTER (dengan MediaPipe + face_recognizer module):
-from face_recognizer import FaceRecognizer
-recognizer = FaceRecognizer()
-encoding = recognizer.encode_face(image)
-result = recognizer.recognize_face(encoding)
-```
-
-Semua sudah di-update! Tinggal install requirements.txt dan langsung bisa mulai. 🚀
-
-❌ **ImportError: DLL load failed**
-Install Visual C++ Redistributable:  
-https://aka.ms/vs/17/release/vc_redist.x64.exe
-
-❌ **Webcam not detected**
-- Close aplikasi lain (Zoom, Skype)
-- Try different camera index: `cv2.VideoCapture(0)` → try 0, 1, or 2
-
-❌ **MySQL Connection Error**
-```bash
-# Check MySQL service running
-# Windows: Services → MySQL → Start
-# Mac: brew services list
-# Linux: sudo systemctl status mysql
-
-# Test connection
-mysql -u root -p
-```
-
-❌ **Error: "No module named 'MySQLdb'" atau mysqlclient install failed**
-```bash
-# Windows: Download Visual C++ Redistributable
-# https://aka.ms/vs/17/release/vc_redist.x64.exe
-
-# Alternative: Use pymysql instead
-pip uninstall mysqlclient
-pip install pymysql
-
-# Then add to your code:
-import pymysql
-pymysql.install_as_MySQLdb()
-```
-
-❌ **Packages conflict atau dependency error**
-```bash
-# Create fresh virtual environment
-deactivate  # Exit current venv
-rm -rf venv  # Delete old venv
-python -m venv venv  # Create new venv
-venv\Scripts\activate  # Activate
-
-# Install clean
-pip install --upgrade pip
-pip install -r requirements.txt
+python setup_all_weeks.py
+# Create folder structure untuk semua week
+# Kemudian run setup_weekX.py untuk interactive dataset population
 ```
 
 ---
 
-## 📚 Learning Path
+## 📚 Learning Path (7 Minggu)
 
-### Struktur Folder
 ```
-ExtraQueensya/
-├── minggu-1-python-basics/       ← START HERE
-│   ├── learning/                 ← Tutorial files (baca dulu)
-│   │   ├── 01_hello_opencv.py
-│   │   ├── 02_image_operations.py
-│   │   └── ... (5 files)
-│   ├── project/                  ← Project code (praktik)
-│   │   ├── image_utils.py       ← Main module
-│   │   └── test_utils.py        ← Test file
-│   └── README.md                 ← Week 1 instructions
-│
-├── minggu-2-face-detection/      ← Week 2 (4 tutorials)
-├── minggu-3-face-recognition/    ← Week 3 (3 tutorials)
-├── minggu-4-dataset-database/     ← Week 4 (3 tutorials)
-├── minggu-5-recognition-system/  ← Week 5 (2 tutorials)
-├── minggu-6-attendance-system/    ← Week 6 (3 tutorials)
-├── minggu-7-desktop-gui/         ← Week 7 (2 tutorials + GUI)
-└── minggu-8-final-testing/       ← Week 8 (3 tutorials + dist)
+minggu-1-python-basics/       ← START: OpenCV basics
+├── learning/                 ← Tutorial & teori
+├── project/                  ← Implementation & tests
+└── README.md
+
+minggu-2-face-detection/      ← Face detection (MediaPipe)
+minggu-3-face-recognition/    ← Face recognition (MediaPipe Face Mesh)
+minggu-4-dataset-database/    ← Dataset management
+minggu-5-recognition-system/  ← Recognition service integration
+minggu-6-attendance-system/   ← Attendance logic & reports
+minggu-7-desktop-gui/         ← Desktop application
 ```
 
 ### Cara Belajar
 
-**Step 1: Baca Tutorial**
-```bash
-cd minggu-1-python-basics/learning
-python 01_hello_opencv.py  # Penjelasan konsep
-```
+**Setiap minggu:**
+1. Baca `learning/README.md` → Pahami konsep
+2. Jalankan tutorial files di `learning/` → Praktik
+3. Baca `project/README.md` → Understand implementation
+4. Run tests di `project/` → Validasi
 
-**Step 2: Praktik Coding**
-```bash
-cd ../project
-python image_utils.py  # Lihat implementasi
-```
-
-**Step 3: Jalankan Test**
-```bash
-python test_utils.py
-# Expected: All tests passed! ✓
-```
-
-**Step 4: Lanjut ke Week Berikutnya**
-```bash
-cd ../../minggu-2-face-detection
-# Ulangi step 1-3
-```
-
-### Timeline per Minggu
-
-| Week | Topic | Tutorials | Difficulty | Time |
-|------|-------|-----------|------------|------|
-| 1 | Python & OpenCV Basics | 5 files | 🟢 Easy | 6-7 hari |
-| 2 | Face Detection | 4 files | 🟡 Medium | 6-7 hari |
-| 3 | Face Recognition | 3 files | 🟠 Medium | 7-8 hari |
-| 4 | Dataset Management | 3 files | 🔴 Medium-Hard | 6-7 hari |
-| 5 | System Integration | 2 files | 🟣 Hard | 6-7 hari |
-| 6 | Database & Attendance | 3 files | 🔵 Hard | 7-8 hari |
-| 7 | Desktop GUI | 2 files | 🟤 Medium | 5-6 hari |
-| 8 | Final App & Testing | 3 files | ⚫ Medium | 5-6 hari |
-
-**Total:** 25 tutorial files + 1.5 minggu final project, 8.5 minggu (flexible)
+**Timeline:** 2-3 jam/hari × 7 minggu = Complete attendance system
 
 ---
 
-## 🏗️ Struktur Project
+## 🏗️ Tech Stack
 
-### Final Desktop Application Structure
-```
-ExtraQueensya/
-├── main_app.py                     # Main desktop application
-├── config.py                       # Configuration
-├── requirements.txt                # Dependencies
-│
-├── core/                           # Core modules
-│   ├── image_utils.py             # Image processing
-│   ├── face_detector.py           # Face detection
-│   ├── face_recognizer.py         # Face recognition
-│   └── dataset_manager.py         # Dataset management
-│
-├── database/                       # Database & models
-│   ├── db_manager.py              # MySQL operations
-│   ├── models.py                  # Person & Attendance models (SQLAlchemy)
-│   └── config.py                  # Database connection config
-│
-├── gui/                            # GUI components (Tkinter)
-│   ├── main_window.py             # Main application window
-│   ├── register_window.py         # Register new person
-│   ├── attendance_window.py       # Mark attendance
-│   └── reports_window.py          # View & export reports
-│
-├── data/                           # Data storage
-│   ├── dataset/                   # Face images dataset
-│   │   ├── person_001/
-│   │   └── person_002/
-│   ├── encodings/                 # Face encodings (pickle files)
-│   └── exports/                   # Exported reports (Excel/CSV)
-│
-└── minggu-X/                       # Weekly learning materials
-    ├── learning/                   # Tutorials
-    └── project/                    # Progressive builds
-```
+**Core:**
+- **Python 3.11** - Programming language
+- **OpenCV 4.8.1** - Image processing & video capture
+- **MediaPipe 0.10.9** - Face Detection + Face Mesh
+  - Face Detection: `min_detection_confidence=0.3` (configurable)
+  - Face Mesh: 468 landmarks × 3 coordinates = 1404-dim encoding
+- **NumPy 1.26.2** - Cosine similarity matching
 
-### Progressive Duplication Concept
-Setiap minggu **standalone** (tidak import dari minggu lain):
+**Storage & Export:**
+- Pickle (face encodings - 1404-dim vectors)
+- JSON (metadata)
+- CSV (attendance logs)
+- Tkinter (GUI)
 
-- **Week 1:** 1 module (`image_utils`)
-- **Week 2:** 2 modules (`image_utils` + `face_detector`)
-- **Week 3:** 3 modules (week 2 + `face_recognizer`)
-- **Week 4:** 4 modules (week 3 + `dataset_manager`)
-- **Week 5:** 5 modules (week 4 + `recognition_service`)
-- **Week 6:** 6 modules (week 5 + `attendance_system` + `db_manager`)
-- **Week 7:** 7 modules (week 6 + GUI components dengan Tkinter)
-
-Baca `PROGRESSIVE_MODULES.md` untuk detail konsep ini.
+**Why MediaPipe?**
+- ✅ Super fast: 60+ FPS real-time (25x faster than DeepFace)
+- ✅ Lightweight: ~150MB install vs ~500MB with TensorFlow
+- ✅ No heavy dependencies
+- ✅ Easy setup: 2-3 min install
+- ✅ Google-maintained, production-ready
 
 ---
 
-## 🖥️ Desktop Application Features
+## 📖 Week-by-Week Roadmap
 
-### Main Window
-- **Live Webcam Preview** - Real-time camera feed
-- **Face Recognition Status** - Shows detected/recognized faces
-- **Quick Actions** - Register person, mark attendance, view reports
-- **Database Stats** - Total persons, today's attendance count
+| Week | Topic | Files | Output | Time |
+|------|-------|-------|--------|------|
+| 1 | Python & OpenCV | 5 tutorials | `image_utils.py` | 6-7 hari |
+| 2 | Face Detection | 4 tutorials | `face_detector.py` | 6-7 hari |
+| 3 | Face Recognition | 3 tutorials | `face_recognizer.py` (MediaPipe) | 7-8 hari |
+| 4 | Dataset Management | 3 tutorials | `dataset_manager.py` | 6-7 hari |
+| 5 | System Integration | 2 tutorials | `recognition_service.py` | 6-7 hari |
+| 6 | Attendance System | 2 lessons | `attendance_system.py` | 6-7 hari |
+| 7 | Desktop GUI | 2 lessons | `main_app.py` | 5-6 hari |
 
-### Register Person Module
-- **Capture Photos** - Take 20+ photos with different angles
-- **Auto Quality Check** - Validates lighting, sharpness, face size
-- **Person Info Form** - Name, employee ID, department, email
-- **Preview Dataset** - Review captured photos before saving
-
-### Attendance Tracking
-- **Auto Check-in** - Recognize face → Mark attendance automatically
-- **Manual Override** - Force check-in/check-out if needed
-- **Duplicate Prevention** - One check-in per person per day
-- **Live Notifications** - Toast messages for successful/failed recognition
-
-### Reports & Analytics
-- **Daily Report** - Today's attendance list with timestamps
-- **Monthly Summary** - Attendance statistics per person
-- **Search & Filter** - By name, date range, department
-- **Export Options** - Excel (.xlsx) or CSV format
-
-### Settings
-- **Camera Selection** - Choose webcam (if multiple cameras)
-- **Recognition Threshold** - Adjust tolerance (0.4 - 0.6)
-- **Database Backup** - Export/import database & encodings
-- **Theme Options** - Light/dark mode (optional)
+**Total:** ~50 hari pembelajaran terstruktur
 
 ---
 
-## ✅ Testing
+## 🎮 Running the Application
 
-### Run Tests
+### Week 1-3: Learning Mode
 ```bash
-# Run all tests
-pytest
-
-# Run specific test
-pytest tests/test_recognition.py
-
-# With coverage
-pytest --cov=core tests/
-
-# Verbose output
-pytest -v
+cd minggu-X-xxxxx/learning
+python lesson-X/main.py
 ```
 
-### Test Structure
-- **Unit Tests:** Test individual modules (7 files)
-- **Integration Tests:** Test component interaction (4 files)
-- **Coverage Target:** 80%+
-
----
-
-## 🚀 Running the Application
-
-### Quick Run (After Setup)
+### Week 4+: Project Mode
 ```bash
-# Activate virtual environment
-venv\Scripts\activate  # Windows
-source venv/bin/activate  # Mac/Linux
+# Setup dataset first
+cd minggu-X-xxxxx
+python setup_weekX.py
 
-# Run main application
+# Run learning
+cd learning/lesson-1
+python main.py
+```
+
+### Week 7: Desktop App
+```bash
+cd minggu-7-desktop-gui/project
 python main_app.py
-```
-
-### First Time Setup
-```bash
-# 1. Setup database config
-# Edit database/config.py dengan MySQL credentials
-MYSQL_HOST = 'localhost'
-MYSQL_USER = 'attendance_user'
-MYSQL_PASSWORD = 'your_password'
-MYSQL_DATABASE = 'attendance_system'
-
-# 2. Initialize database tables
-python -c "from database.db_manager import init_database; init_database()"
-
-# 3. Register first person
-python main_app.py
-# Click "Register New Person" → Capture photos → Save
-
-# 4. Test recognition
-# Main window will show live webcam feed
-# Your face should be recognized automatically
-```
-
-### Distribusi ke Komputer Lain
-
-**Option 1: Python Environment (Recommended for Development)**
-```bash
-# Copy folder project ke komputer target
-# Install Python 3.8+
-# Install MySQL Server
-# Install dependencies: pip install -r requirements.txt
-# Setup database config & initialize tables
-# Run: python main_app.py
-```
-
-**Option 2: Executable (.exe) - Windows Only**
-```bash
-# Install PyInstaller
-pip install pyinstaller
-
-# Create executable
-pyinstaller --onefile --windowed main_app.py
-
-# Hasil di folder dist/
-# Copy dist/main_app.exe + folder data/ ke komputer lain
-# Double-click main_app.exe untuk run
-```
-
-**Option 3: Portable Bundle**
-```bash
-# Bundle semua (Python + dependencies + app)
-# Use PyInstaller dengan --onedir
-pyinstaller --onedir --windowed main_app.py
-
-# Copy seluruh folder dist/ ke flashdisk/komputer lain
-# Run tanpa install Python
 ```
 
 ---
 
 ## ❓ FAQ
 
-### Tentang Project
+**Q: Harus mulai dari Week 1?**  
+A: Pemula → Ya. Intermediate → Skip ke Week 3. Advanced → Week 5.
 
-**Q: Apakah susah?**  
-A: Tidak jika kamu ikuti step-by-step. Week 1-2 mudah (Python basics), Week 3-6 medium (AI + database), Week 7-8 medium (Desktop GUI + distribution). Yang penting consistent!
+**Q: Berapa lama per minggu?**  
+A: Flexible! 2-3 jam/hari santai, atau 1-2 hari intensif.
 
-**Q: Harus mulai dari minggu 1?**  
-A: 
-- **Pemula:** Ya, mulai dari week 1
-- **Intermediate:** Bisa mulai week 2-3
-- **Advanced:** Skip ke week 5-6
+**Q: Kenapa pakai MediaPipe?**  
+A: Super fast (60+ FPS), lightweight (~150MB), no heavy dependencies, Google-maintained.
 
-**Q: Berapa lama 1 minggu harus selesai?**  
-A: Fleksibel! 
-- Santai: 1 week = 1 minggu kalender (2-3 jam/hari)
-- Medium: 1 week = 3-4 hari (4-5 jam/hari)
-- Intensif: 1 week = 1-2 hari (full-time)
+**Q: Bisa offline?**  
+A: Ya! Semua berjalan lokal, no cloud/internet needed.
 
-### Setup & Installation
+**Q: Face detection tidak akurat?**  
+A: Check lighting, distance (50-100cm), frontal face. Atau tuning confidence di Week 6 README.
 
-**Q: Kenapa pakai MediaPipe dan bukan face_recognition?**  
-A: MediaPipe lebih cepat install (no compile!), ringan, dan fast. Perfect untuk learning! ☕
-
-**Q: MediaPipe akurat?**  
-A: 90%+ accuracy untuk attendance system. Lebih dari cukup untuk production use!
-
-**Q: Bisa pakai Python 3.7?**  
-A: Tidak recommended. Minimal **Python 3.8+**.
-
-### Pembelajaran
-
-**Q: Apa bedanya folder `learning/` dan `project/`?**  
-A:
-- **learning/** = Tutorial files (teori + konsep)
-- **project/** = Implementation files (praktik coding + test)
-
-Flow: Baca `learning/` → Praktik di `project/` → Run tests
-
-**Q: Kenapa ada file yang sama di beda minggu?**  
-A: Konsep **progressive duplication**! Tiap week standalone (tidak import dari week lain). Baca `PROGRESSIVE_MODULES.md`.
-
-**Q: Harus hafal semua code?**  
-A: Tidak! Yang penting **paham konsep** dan **bisa baca code**.
-
-### Coding
-
-**Q: Boleh edit file tutorial?**  
-A: Boleh! Malah encouraged untuk eksperimen.
-
-**Q: Test file harus dijalankan?**  
-A: **Ya!** Test penting untuk validasi code kamu benar. Run setiap kali edit code: `python test_*.py`
-
-**Q: Kalau test FAILED?**  
-A: Normal! Baca error message, fix bug, run test lagi.
-
-### Database
-
-**Q: Kenapa pakai MySQL?**  
-A: MySQL lebih robust dan scalable dibanding SQLite:
-- Support concurrent users (multiple desktop apps)
-- Better performance untuk dataset besar (500+ persons)
-- Professional database management
-- Industry standard untuk production apps
-
-**Q: Bisa pakai database lain?**  
-A: Bisa! SQLAlchemy support PostgreSQL, SQLite, dll. Tinggal ganti connection string.
-
-### Running & Distribution
-
-**Q: Harus online untuk run aplikasi?**  
-A: **Tidak!** Aplikasi run di localhost. MySQL server berjalan di komputer lokal, tidak perlu internet.
-
-**Q: Bisa run di komputer lain tanpa install Python?**  
-A: **Bisa!** Pakai PyInstaller untuk bikin .exe file (Windows) atau bundle portable.
-
-### Common Issues
-
-**Q: "ModuleNotFoundError: No module named 'cv2'"**  
-A: `pip install opencv-python`
-
-**Q: Face detection tidak akurat**  
-A: Check lighting, distance, frontal face, kualitas kamera
-
-**Q: Aplikasi lambat**  
-A: Resize gambar ke 640x480, process tiap 3 frame, gunakan HOG model
-
-**Q: Setelah 8 minggu dapat apa?**  
-A: 
-- ✅ Working desktop app dengan face recognition
-- ✅ Aplikasi yang bisa dijalankan di komputer mana saja
-- ✅ Portfolio project untuk CV
-- ✅ Skills: Python, AI, Computer Vision, GUI, Database
-
-**Q: Bisa untuk skripsi?**  
-A: **Bisa banget!** Production-ready, tinggal customize.
-
-**Q: Bisa handle berapa orang?**  
-A: Development: 50-100, Production: 200-500, Enterprise: 1000+ (butuh scaling)
+**Q: Cara tuning sensitivity/confidence?**  
+A: Lihat section "⚙️ Configuration & Tuning" di `minggu-6-attendance-system/README.md`.
 
 ---
 
-## 🗺️ Roadmap Detail
+## 📂 Progressive Modules Architecture
 
-### Week 1: Python Basics & OpenCV (6-7 hari)
-**Objectives:**
-- [ ] Setup environment
-- [ ] Understand OpenCV basics
-- [ ] Master image operations
-- [ ] Access webcam
+Setiap minggu **standalone** dengan copy modules dari minggu sebelumnya:
+- Week 1: `image_utils.py`
+- Week 2: Week 1 + `face_detector.py`
+- Week 3: Week 2 + `face_recognizer.py` (MediaPipe Face Mesh)
+- Week 4: Week 3 + `dataset_manager.py`
+- Week 5: Week 4 + `recognition_service.py`
+- Week 6: Week 5 + `attendance_system.py`
+- Week 7: Week 6 + GUI (`main_app.py`)
 
-**Deliverables:** `image_utils.py` module + tests passing
-
----
-
-### Week 2: Face Detection (6-7 hari)
-**Objectives:**
-- [ ] Understand Haar Cascade
-- [ ] Detect faces in images
-- [ ] Real-time webcam detection
-- [ ] Optimize parameters
-
-**Deliverables:** `face_detector.py` module + tests passing
+**Why Duplicate?** Student bisa langsung run tanpa import issues atau dependency ke folder lain. Setiap week bisa dibuka sebagai standalone project.
 
 ---
 
-### Week 3: Face Recognition (7-8 hari)
-**Objectives:**
-- [ ] Understand face encodings (128-d vectors)
-- [ ] Learn distance calculation
-- [ ] Build recognition database
-- [ ] Handle unknown faces
+## 🎯 Expected Results
 
-**Deliverables:** `face_recognizer.py` module + tests passing
-
----
-
-### Week 4: Dataset Management (6-7 hari)
-**Objectives:**
-- [ ] Build dataset collection system
-- [ ] Implement quality validation
-- [ ] Manage multiple persons
-- [ ] Export/import database
-
-**Deliverables:** `dataset_manager.py` module + tests passing
+Setelah 7 minggu, kamu akan punya:
+- ✅ Working attendance system dengan face recognition
+- ✅ Desktop application dengan GUI
+- ✅ Super fast real-time recognition (60+ FPS)
+- ✅ Report export (CSV/JSON)
+- ✅ Portfolio-ready project
+- ✅ Understanding of confidence tuning & optimization
+- ✅ Skills: Python, OpenCV, MediaPipe, AI, Computer Vision, GUI
 
 ---
 
-### Week 5: System Integration (6-7 hari)
-**Objectives:**
-- [ ] Integrate all components
-- [ ] Build complete pipeline
-- [ ] Optimize performance
-- [ ] Add metrics & monitoring
+## 📞 Resources
 
-**Deliverables:** `recognition_service.py` module + full pipeline working
+### Documentation
+- **Main README** (ini) - Overview & quick start
+- **Weekly READMEs** - 14 detailed READMEs (learning + project per minggu)
+- **KUNCI_JAWABAN_TUGAS.md** - Answer keys untuk tugas (after trying!)
+- **Setup Scripts** - `setup_week4.py` sampai `setup_week7.py` dengan interactive menus
+- **Configuration Guide** - Week 6 README section "⚙️ Configuration & Tuning"
 
----
+### External
+- OpenCV Docs: https://docs.opencv.org/
+- MediaPipe Docs: https://google.github.io/mediapipe/
+- MediaPipe Face Detection: https://google.github.io/mediapipe/solutions/face_detection
+- MediaPipe Face Mesh: https://google.github.io/mediapipe/solutions/face_mesh
 
-### Week 6: Database & Attendance (7-8 hari)
-**Objectives:**
-- [ ] Design database schema
-- [ ] Implement SQLAlchemy models
-- [ ] Build attendance logic
-- [ ] Create reports & analytics
-
-**Deliverables:** `attendance_system.py` module + database working
-
----
-
-### Week 7: Desktop GUI (5-6 hari)
-**Objectives:**
-- [ ] Build desktop interface with Tkinter
-- [ ] Create main window with webcam preview
-- [ ] Implement register person module
-- [ ] Build attendance tracking interface
-- [ ] Add reports & export functionality
-
-**Deliverables:** `main_app.py` + GUI modules + working desktop app
-
----
-
-### Week 8: Final App & Testing (5-6 hari)
-**Objectives:**
-- [ ] Polish UI/UX
-- [ ] Add error handling & validations
-- [ ] Write unit tests
-- [ ] Create distributable executable (.exe)
-- [ ] Complete documentation
-
-**Deliverables:** Production-ready desktop app + executable + complete docs
-
----
-
-### Progress Checklist
-
-Copy this untuk track progress:
-
-```
-Week 1: [ ] Read tutorials [ ] Complete module [ ] Tests passing
-Week 2: [ ] Read tutorials [ ] Complete module [ ] Tests passing
-Week 3: [ ] Read tutorials [ ] Complete module [ ] Tests passing
-Week 4: [ ] Read tutorials [ ] Complete module [ ] Tests passing
-Week 5: [ ] Read tutorials [ ] Complete module [ ] Tests passing
-Week 6: [ ] Read tutorials [ ] Complete module [ ] Tests passing
-Week 7: [ ] Read tutorials [ ] Complete module [ ] Tests passing
-Week 8: [ ] Write tests [ ] Deploy app [ ] App accessible via URL
-```
+### Need Help?
+1. Baca README di week yang sedang dikerjakan
+2. Run `python setup_weekX.py` untuk interactive setup
+3. Check Week 6 README untuk confidence tuning
+4. Google error message
+5. Review tutorial files di `learning/`
 
 ---
 
 ## 💪 Tips untuk Sukses
 
 1. **Consistency > Intensity** - 2 jam/hari lebih baik dari 14 jam/weekend
-2. **Understand, Don't Memorize** - Pahami konsep, bukan hafal code
-3. **Test Everything** - Run test setiap kali edit code
-4. **Take Notes** - Catat konsep penting & trick yang kamu temukan
-5. **Build Portfolio** - Screenshot, record demo, tulis blog
-6. **Ask for Help** - Stuck > 1 jam? Google, read tutorial lagi, atau istirahat
-7. **Celebrate Small Wins** - Test passed? API working? Celebrate! 🎉
+2. **Understand > Memorize** - Pahami konsep, jangan hafal code
+3. **Test Everything** - Run test setelah setiap perubahan
+4. **Take Notes** - Catat konsep penting & insights
+5. **Build Portfolio** - Screenshot, demo video, write blog
+6. **Ask for Help** - Stuck > 1 jam? Take break atau cari bantuan
 
 ---
 
-## 🎯 Expected Results
-
-Setelah 8 minggu:
-- ✅ Working desktop application dengan face recognition
-- ✅ Database MySQL dengan 500+ persons capacity
-- ✅ Real-time attendance tracking (10-15 FPS)
-- ✅ User-friendly GUI dengan Tkinter
-- ✅ Executable file yang bisa run di komputer mana saja
-- ✅ Export reports ke Excel/CSV
-- ✅ Complete documentation
-- ✅ Portfolio-ready project
-
-### Skills Gained:
-- Python programming
-- Computer Vision (OpenCV)
-- Machine Learning (Face Recognition)
-- GUI Development (Tkinter)
-- Database design & management (MySQL, SQLAlchemy)
-- Data processing (NumPy, Pandas)
-- Desktop application development
-- Software distribution (PyInstaller)
-
----
-
-## � Folder Structure & Organization
-
-### Complete Folder Structure
-
-Setiap minggu memiliki struktur folder terorganisir untuk memisahkan input, output, dan project data:
-
-#### Minggu 1-3: Basics
-```
-minggu-X/
-├── learning/
-│   ├── images/          # Sample images untuk latihan
-│   ├── output/          # Hasil output dari tutorial
-│   └── *.py            # Tutorial files
-└── project/
-    ├── test_images/     # Test images untuk module
-    ├── output/          # Hasil testing
-    └── *.py            # Project modules
-```
-
-#### Minggu 4: Dataset Management
-```
-minggu-4/
-├── learning/
-│   ├── captured_faces/  # Hasil capture dari webcam
-│   ├── rejected/        # Foto yang ditolak quality check
-│   └── output/
-└── project/
-    ├── dataset/         # Dataset production terorganisir
-    ├── backups/         # Backup dataset
-    └── rejected/
-```
-
-#### Minggu 5: System Integration
-```
-minggu-5/
-├── learning/
-│   ├── output/
-│   └── videos/          # Recorded videos (optional)
-└── project/
-    ├── dataset/
-    ├── logs/            # System logs
-    └── output/
-```
-
-#### Minggu 6: Database & Attendance
-```
-minggu-6/
-└── project/
-    ├── dataset/
-    ├── logs/
-    ├── backups/         # Database backups
-    ├── reports/         # Generated attendance reports
-    └── attendance.db
-```
-
-#### Minggu 7: Desktop GUI
-```
-minggu-7/
-└── project/
-    ├── dataset/
-    ├── logs/
-    ├── backups/
-    ├── reports/
-    ├── snapshots/       # Captured face snapshots
-    └── attendance.db
-```
-
-#### Minggu 8: Final Testing
-```
-minggu-8/
-└── project/
-    ├── dataset/
-    ├── logs/
-    ├── backups/
-    ├── reports/
-    ├── tests/           # Test files
-    ├── deployment/      # Deployment configs
-    ├── dist/            # Built executables
-    └── attendance.db
-```
-
-### Path Management Best Practices
-
-#### ❌ JANGAN Hardcode Paths
-```python
-cv2.imwrite('C:/Users/Username/output.jpg', image)
-```
-
-#### ✅ GUNAKAN Relative Paths
-```python
-import os
-output_dir = os.path.join(os.path.dirname(__file__), 'output')
-os.makedirs(output_dir, exist_ok=True)
-cv2.imwrite(os.path.join(output_dir, 'output.jpg'), image)
-```
-
-### File Organization Guidelines
-
-**1. Input Files (Images/Videos)**
-- Letakkan di `learning/images/` atau `project/test_images/`
-
-**2. Output Files (Results)**  
-- Simpan ke `learning/output/` atau `project/output/` (otomatis dibuat)
-
-**3. Dataset (Week 4+)**
-- Production dataset di `project/dataset/`
-- Organized per person: `dataset/person_001_alice/`
-
-**4. Logs (Week 5+)**
-- Auto generated ke `project/logs/`
-- Separate logs: `app.log`, `api.log`, `gui.log`
-
-**5. Backups (Week 4+)**
-- Save backups ke `project/backups/`
-- Naming: `backup_20251114_153045.zip`
-
-**6. Reports (Week 6+)**
-- Export ke `project/reports/`
-- Format: `daily_2025-11-14.csv`, `monthly_2025-11.xlsx`
-
-### Quick Folder Reference
-
-| Minggu | Input | Output | Special Folders |
-|--------|-------|--------|-----------------|
-| 1-3 | `images/` | `output/` | `test_images/` |
-| 4 | - | `output/` | `dataset/`, `backups/`, `rejected/`, `captured_faces/` |
-| 5 | - | `output/` | `dataset/`, `logs/`, `videos/` |
-| 6 | - | - | `dataset/`, `logs/`, `backups/`, `reports/` |
-| 7 | - | - | All week 6 + `snapshots/` |
-| 8 | - | - | All week 7 + `tests/`, `dist/`, `deployment/` |
-
-**Dengan struktur ini, semua output tetap rapi di folder minggu masing-masing!** 📂
-
----
-
-## 🎯 Setup Complete - Ready to Learn!
-
-### ✅ Yang Sudah Tersedia
-
-**1. Dokumentasi Lengkap (16 README Files + Guides)**
-- Setiap minggu (1-8) punya 2 README: `learning/README.md` dan `project/README.md`
-- Total ~40,000 kata penjelasan step-by-step dalam Bahasa Indonesia
-- Code examples, API references, troubleshooting guides
-- **`XAMPP_HEIDISQL_GUIDE.md`** - Complete database setup guide dengan HeidiSQL
-
-**2. Struktur Folder (42 Directories)**
-- Minggu 1-3: Basic folders (output, images, test_images)
-- Minggu 4-8: Advanced folders (dataset, logs, backups, reports, etc.)
-- Semua output tetap dalam folder mingguannya!
-- No hardcoding paths, semua menggunakan relative paths
-
-**3. Database Setup (Week 4+)**
-- MySQL dengan XAMPP (easy setup)
-- HeidiSQL GUI untuk manage database
-- SQLAlchemy ORM untuk Python code
-- See: `XAMPP_HEIDISQL_GUIDE.md` untuk complete instructions
-
-### 🚀 Cara Mulai Belajar
-
-**Step 1: Activate Virtual Environment**
-```bash
-venv\Scripts\activate  # Windows
-source venv/bin/activate  # Mac/Linux
-```
-
-**Step 2: Baca README**
-```bash
-# Buka minggu-1-python-basics/learning/README.md
-```
-
-**Step 3: Mulai Tutorial**
-```bash
-cd minggu-1-python-basics/learning
-python 01_hello_opencv.py
-```
-
-**Step 4: Follow Step-by-Step**
-- Baca `learning/README.md` → Pahami konsep
-- Jalankan tutorial files → Praktik
-- Baca `project/README.md` → Understand implementation  
-- Jalankan test files → Validasi
-- Lanjut ke minggu berikutnya
-
-### 📋 Progress Tracking Checklist
-
-```
-Week 1: [ ] Read READMEs [ ] Complete tutorials [ ] Run tests [ ] Tests passed
-Week 2: [ ] Read READMEs [ ] Complete tutorials [ ] Run tests [ ] Tests passed
-Week 3: [ ] Read READMEs [ ] Complete tutorials [ ] Run tests [ ] Tests passed
-Week 4: [ ] Read READMEs [ ] Complete tutorials [ ] Run tests [ ] Tests passed
-Week 5: [ ] Read READMEs [ ] Complete tutorials [ ] Run tests [ ] Tests passed
-Week 6: [ ] Read READMEs [ ] Complete tutorials [ ] Run tests [ ] Tests passed
-Week 7: [ ] Read READMEs [ ] Complete tutorials [ ] Run tests [ ] Tests passed
-Week 8: [ ] Read READMEs [ ] Complete tutorials [ ] Deploy app [ ] Final tests
-```
-
-### 💡 Tips untuk Sukses
-
-1. **Baca README Dulu** - Jangan langsung coding, pahami konsep dulu
-2. **Follow Folder Structure** - Input → `images/`, Output → `output/`, gunakan relative paths
-3. **Run Tests!** - Test adalah validasi, kalau passed = code benar
-4. **Jangan Skip Minggu** - Tiap minggu build on previous week
-5. **Practice & Experiment** - Edit code, coba parameter berbeda
-
----
-
-## 📞 Support & Resources
-
-### Documentation
-- **Main README** (ini) - Complete all-in-one guide
-- **Weekly READMEs** - Detailed per-week instructions:
-  - Each week has 2 READMEs: `learning/README.md` (tutorials) & `project/README.md` (project code)
-  - Total: 16 comprehensive READMEs dengan penjelasan detail
-- **`PROGRESSIVE_MODULES.md`** - Konsep duplication
-
-### External Resources
-- **OpenCV Docs:** https://docs.opencv.org/
-- **MediaPipe:** https://google.github.io/mediapipe/
-- **Flask Tutorial:** https://flask.palletsprojects.com/
-
-### Need Help?
-1. Baca ulang tutorial di `learning/` folder
-2. Lihat code di `project/` folder sebagai contoh
-3. Baca README.md di week yang sedang dikerjakan
-4. Google error message (seriously helpful!)
-
----
-
-## 🎉 Ready to Start?
+## 🚀 Ready to Start?
 
 ### Complete Beginner:
 ```bash
-cd minggu-1-python-basics
-python learning/01_hello_opencv.py
+cd minggu-1-python-basics/learning
+python lesson-1/main.py
 ```
 
 ### Intermediate:
 ```bash
-cd minggu-3-face-recognition
-python learning/01_face_recognition_basic.py
+cd minggu-3-face-recognition/learning
+python lesson-1/main.py
 ```
 
-### Want Desktop App:
+### Want Quick Demo:
 ```bash
-# Install dependencies first
-pip install -r requirements.txt
+# Setup Week 6 first
+cd minggu-6-attendance-system
+python setup_week6.py  # Pilih [1] Copy dari Week 5
 
-# Run main desktop application
-python main_app.py
+# Run attendance demo
+cd learning/lesson-1
+python main.py
 ```
 
 ---
 
-**Happy Learning! 🚀**
+**Happy Learning! 🎉**
 
-*Remember: Everyone starts from zero. Yang penting keep learning dan jangan give up!*
+*Remember: Everyone starts from zero. Keep learning, don't give up!*
 
 ---
 
-**Last Updated:** November 14, 2025  
-**Version:** 2.0  
+**Last Updated:** December 13, 2025  
+**Version:** 3.0  
 **License:** Educational purposes

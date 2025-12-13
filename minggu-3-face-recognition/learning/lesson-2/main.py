@@ -10,7 +10,9 @@ import time
 
 # Add parent path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../project'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../../minggu-2-face-detection/project'))
 from face_recognizer import FaceRecognizer  # type: ignore
+from face_detector import FaceDetector  # type: ignore
 
 def detect_available_cameras(max_cameras=5):
     """Detect available cameras"""
@@ -69,8 +71,9 @@ def main():
     output_dir = os.path.join(script_dir, 'output')
     os.makedirs(output_dir, exist_ok=True)
     
-    # Initialize MediaPipe recognizer
-    print("\n1. Initializing MediaPipe recognizer...")
+    # Initialize MediaPipe detector and recognizer
+    print("\n1. Initializing MediaPipe detector and recognizer...")
+    detector = FaceDetector(model_selection=0, min_detection_confidence=0.5)
     recognizer = FaceRecognizer(tolerance=0.6)
     
     # Load known faces
@@ -127,7 +130,7 @@ def main():
         # Process every 3rd frame for speed (MediaPipe sudah cepat!)
         if frame_count % 3 == 0:
             # Recognize faces in frame
-            results = recognizer.recognize_faces_in_image(frame)
+            results = recognizer.recognize_faces_in_image(frame, detector)
         
         frame_count += 1
         

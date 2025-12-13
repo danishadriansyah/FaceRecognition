@@ -57,15 +57,72 @@ pip install tensorflow==2.15.0
 pip install tf-keras==2.15.0
 ```
 
-**Database from Week 4:**
-- Pastikan XAMPP MySQL running
-- Database `face_recognition_db` sudah ada
-- Tables `persons` dan `face_images` sudah berisi data
-- Check di HeidiSQL: persons table harus ada minimal 1 person dengan images
+**Local Dataset:**
+- Dataset folder dengan person images (check `dataset/` folder)
+- Minimal 1 person dengan 3+ images
+- Images format: JPG atau PNG
+- Check README di dataset folder untuk cara populate
+
+**Cek Dataset:**
+```bash
+# Check person folders
+Get-ChildItem dataset -Directory
+
+# Count images
+Get-ChildItem dataset\* -Include *.jpg,*.png -Recurse | Measure-Object | Select-Object -ExpandProperty Count
+```
+
+## Cara Menjalankan
+
+### Step 1: Persiapan Dataset
+```bash
+# Masuk ke folder lesson 1
+cd minggu-5-recognition-system\learning\lesson-1
+
+# Pilih salah satu cara populate dataset:
+
+# OPTION A: Copy dari Week 4
+Copy-Item ..\..\..\minggu-4-dataset-database\project\dataset\* dataset\ -Recurse -Force
+
+# OPTION B: Gunakan camera helper
+cd c:\Ngoding\Kerja\ExtraQueensya
+python camera_helper.py
+Move-Item captured_faces\* minggu-5-recognition-system\learning\lesson-1\dataset\ -Force
+cd minggu-5-recognition-system\learning\lesson-1
+```
+
+### Step 2: Verifikasi Dataset
+```bash
+# Check apakah ada person folders
+Get-ChildItem dataset -Directory
+
+# Count total images
+(Get-ChildItem dataset\* -Include *.jpg,*.png -Recurse).Count
+```
+
+### Step 3: Install Dependencies (jika belum)
+```bash
+pip install deepface==0.0.89 tensorflow==2.15.0 tf-keras==2.15.0
+```
+
+### Step 4: Jalankan Encoding Generator
+```bash
+python main.py
+```
+
+### Step 5: Verifikasi Output
+```bash
+# Check output files created
+Test-Path output\encodings.pkl
+Test-Path output\metadata.json
+
+# View metadata
+Get-Content output\metadata.json
+```
 
 ## Langkah
-1. **Start XAMPP MySQL** (pastikan running)
-2. **Check database di HeidiSQL**: Pastikan `persons` dan `face_images` ada data
+1. **Populate dataset folder** (see `dataset/README.md` for options)
+2. **Check dataset**: Pastikan ada minimal 1 person folder dengan images
 3. **Run encoding generator**: `python main.py`
 4. **Wait for model download** (first run only, ~100MB Facenet512 model)
 5. **Check encodings di HeidiSQL**: 

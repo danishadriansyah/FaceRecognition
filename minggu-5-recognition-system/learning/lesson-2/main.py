@@ -4,24 +4,25 @@ Real-time webcam recognition with hybrid approach
 """
 import os
 import sys
+from pathlib import Path
 
-# Add Week 4 modules
-week4_path = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'minggu-4-dataset-database', 'learning', 'lesson-2')
-sys.path.insert(0, week4_path)
+# Add project modules
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'project'))
 
 from recognition_service import RecognitionService
 
 def main():
     print("="*60)
-    print("LESSON 2: Real-time Recognition with Hybrid Approach")
+    print("LESSON 2: Real-time Recognition (File-Based)")
     print("="*60)
+    
+    # Setup paths
+    script_dir = Path(__file__).parent
+    dataset_path = script_dir / 'dataset'
     
     # Step 1: Initialize Recognition Service
     print("\n📊 Step 1: Initialize Recognition Service")
     print("-" * 60)
-    
-    # XAMPP Default: root user, no password
-    connection_string = "mysql+pymysql://root:@localhost:3306/face_recognition_db"
     
     print("💡 Initializing hybrid system:")
     print("   - MediaPipe: Detection (10-15ms)")
@@ -30,37 +31,32 @@ def main():
     
     try:
         service = RecognitionService(
-            db_connection_string=connection_string,
-            model_name='Facenet512',
-            threshold=0.6  # Adjust for accuracy
+            dataset_path=str(dataset_path),
+            tolerance=0.6  # Adjust for accuracy
         )
     except Exception as e:
         print(f"\n❌ Failed to initialize service: {e}")
         print("\n💡 Troubleshooting:")
-        print("   1. XAMPP MySQL running")
-        print("   2. Week 4 Lesson 2 completed (database with persons)")
-        print("   3. Week 5 Lesson 1 completed (encodings generated)")
-        print("   4. Check HeidiSQL: face_encodings table has data")
-        print("   5. Install: pip install deepface mediapipe")
+        print("   1. Week 5 Lesson 1 completed (encodings generated)")
+        print("   2. Check: dataset/encodings.pkl exists")
+        print("   3. Install: pip install deepface mediapipe")
         return
     
     # Step 2: Check loaded data
     print("\n📊 Step 2: Loaded Data")
     print("-" * 60)
     
-    if len(service.known_persons) == 0:
-        print("❌ No persons found in database!")
+    if not service.known_encodings:
+        print("❌ No encodings found!")
         print("\n💡 Complete these first:")
-        print("   1. Week 4 Lesson 1: Capture faces")
-        print("   2. Week 4 Lesson 2: Store to database")
-        print("   3. Week 5 Lesson 1: Generate encodings")
-        service.close()
+        print("   1. Create dataset folder with person images")
+        print("   2. Run Week 5 Lesson 1: Generate encodings")
         return
     
     print(f"✅ Ready for recognition!")
-    print(f"   Known persons: {len(service.known_persons)}")
+    print(f"   Known persons: {len(set(service.known_names))}")
     print(f"   Total encodings: {len(service.known_encodings)}")
-    print(f"   Recognition threshold: {service.threshold}")
+    print(f"   Recognition tolerance: {service.tolerance}")
     
     # Step 3: Threshold explanation
     print("\n📊 Step 3: Understanding Threshold")
