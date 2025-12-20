@@ -77,7 +77,7 @@ Module ini akan digunakan oleh:
 - Week 4: Dataset collection
 - Week 5: Full recognition system
 - Week 6: Attendance system
-- Week 7-8: Desktop GUI application
+- Week 7: Desktop GUI application
 
 ## Cara Penggunaan
 

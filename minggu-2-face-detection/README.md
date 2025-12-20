@@ -60,7 +60,7 @@ Module ini akan digunakan oleh:
 - Week 3: Face recognition (preprocessing)
 - Week 4: Dataset collection (validasi wajah)
 - Week 5-6: Recognition system dan attendance
-- Week 7-8: Desktop GUI application
+- Week 7: Desktop GUI application
 
 ## Cara Penggunaan
 

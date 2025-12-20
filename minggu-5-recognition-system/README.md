@@ -124,10 +124,10 @@ Module ini akan digunakan oleh:
 ```bash
 cd minggu-5-recognition-system/learning
 
-# Lesson 1: Database Integration
+# Lesson 1: Face Capture & Encoding
 cd lesson-1
 python main.py
-# Learn about database connection and encoding loading
+# Learn about face capture and encoding generation
 
 # Lesson 2: Recognition Service
 cd ../lesson-2
@@ -150,7 +150,7 @@ service.set_detector_recognizer(detector, recognizer)
 result = service.process_image(image)
 ```
 
-## Architecture - Database Integration
+## Architecture - File-Based Recognition
 
 ```
 Input Image/Video
@@ -163,9 +163,9 @@ Crop Face Regions
     ↓
 Face Recognition - Generate Encoding  [Week 3]
     ↓
-Database Manager - Load Known Encodings  [Week 4]
+Dataset Manager - Load Known Encodings from pickle  [Week 4]
     ↓
-Match Encoding to Database
+Match Encoding to Known Faces
     (Euclidean distance matching)
     ↓
 Recognition Service  [Week 5]
@@ -175,7 +175,7 @@ Recognition Result + Confidence Score
 ```
 
 **Integration Benefits:**
-- ✅ Centralized database management
+- ✅ File-based storage (no database setup)
 - ✅ Scalable to many people
 - ✅ Easy to add new people
 - ✅ Persistent storage
@@ -184,21 +184,21 @@ Recognition Result + Confidence Score
 ## Deliverables
 
 ### Learning
-- Database integration tutorial
+- File-based recognition tutorial
 - Encoding loading & matching
 - Error handling
 
 ### Project
 - `recognition_service.py` - Complete service module
 - `test_recognition.py` - Integration tests (8 test cases)
-- Working database connection
+- File-based storage (pickle + JSON)
 
 ## Workflow Integration
 
 **Week 4 → Week 5 Flow:**
-1. Week 4 creates dataset in MySQL database
-2. Week 4 generates & stores face encodings
-3. Week 5 loads encodings from database
+1. Week 4 creates dataset with photos
+2. Week 4 generates & stores face encodings to pickle file
+3. Week 5 loads encodings from pickle file
 4. Week 5 performs real-time matching
 5. Week 5 tracks statistics
 
@@ -212,7 +212,7 @@ Week 2: Face Detector (find faces)
   ↓
 Week 3: Face Recognizer (create encodings)
   ↓
-Week 4: Dataset Manager (store in database)
+Week 4: Dataset Manager (store to files: pickle + JSON)
   ↓
 Week 5: Recognition Service (match & recognize)
 ```
@@ -232,7 +232,7 @@ Week 5: Recognition Service (match & recognize)
 
 
    - Setup DeepFace dengan Facenet512
-   - Generate face encodings dari database
+   - Generate face encodings from captured faces
    - Compare accuracy: Basic vs Hybrid
 
 2. **Lesson 2** - Recognition Service & Optimization
@@ -257,7 +257,7 @@ Production-ready recognition service dengan hybrid approach:
 
 **Core Methods:**
 - `RecognitionService(model='Facenet512')` - Initialize hybrid system
-- `load_database()` - Load encodings dari MySQL database (Week 4)
+- `load_encodings()` - Load encodings from pickle file (Week 4)
 - `encode_face(image, bbox)` - Generate 512-d encoding dengan DeepFace
 - `recognize_face(image, bbox, threshold=0.6)` - Identify person dengan confidence
 - `process_webcam()` - Real-time recognition (6-9 FPS)
@@ -280,7 +280,7 @@ Uses modules from Week 1-4:
 - `image_utils.py` (Week 1) - Image preprocessing
 - `face_detector.py` (Week 2) - Haar Cascade backup
 - `face_recognizer.py` (Week 3-4) - **UPGRADED: Hybrid MediaPipe + DeepFace**
-- `database.py` + `models.py` (Week 4) - Load persons & encodings from MySQL
+- `dataset_manager.py` (Week 4) - Load persons & encodings from pickle files
 
 **NEW Dependencies:**
 - DeepFace 0.0.89 - Face recognition
@@ -331,7 +331,7 @@ Crop Face Regions
 DeepFace Recognition (100-150ms per face)
     🎯 Accurate identification (97%+)
     ↓
-Dataset Manager (match to database)
+Dataset Manager (match to known faces from pickle)
     ↓
 Recognition Result + Confidence
 ```
@@ -356,13 +356,13 @@ Recognition Result + Confidence
 
 ## Next Week Preview
 
-**Minggu 6: Database & Attendance System**
-- MySQL database setup
-- Attendance records
-- CRUD operations
-- Reports generation
+**Minggu 6: Attendance System**
+- Attendance recording
+- Person logging
+- Time tracking
+- Reports
 
 ---
 
-**Time Estimate:** 6-7 hours  
-**Difficulty:** Advanced
+**Time Estimate:** 4-5 hours  
+**Difficulty:** Intermediate

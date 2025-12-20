@@ -1,0 +1,25 @@
+Week 6 Lesson 2 - Reports & Analytics Setup
+============================================
+
+This lesson generates reports from Lesson 1 attendance data.
+
+Prerequisites:
+1. Complete Lesson 1 first (generate attendance.csv)
+2. Have at least 2-3 attendance records
+
+Check Lesson 1 output:
+  Test-Path ..\lesson-1\output\attendance.csv
+
+If no attendance data, run Lesson 1 first:
+  cd ..\lesson-1
+  python main.py
+  # Do some check-ins/check-outs
+  # Press 'q' to quit
+
+Then run this lesson:
+  cd ..\lesson-2
+  python main.py
+
+Reports will be saved to:
+  output/reports/daily_YYYY-MM-DD.json
+  output/reports/monthly_YYYY_MM.json

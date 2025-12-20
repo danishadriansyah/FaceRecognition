@@ -181,4 +181,4 @@ if __name__ == "__main__":
     
     print("\n" + "=" * 50)
     print("All tests completed!")
-    print("\nIntegration ready for Week 7 (Flask REST API)")
+    print("\nIntegration ready for Week 7 (Desktop GUI Application)")

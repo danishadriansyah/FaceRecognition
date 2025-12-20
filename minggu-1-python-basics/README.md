@@ -75,7 +75,7 @@ Module ini akan menjadi foundation untuk:
 - Week 2: Face detection preprocessing
 - Week 3: Face recognition input handling
 - Week 4: Dataset image validation
-- Week 8: API image upload handling
+- Week 7: Desktop GUI image handling
 
 ## Cara Penggunaan
 
@@ -146,8 +146,8 @@ Image = Matrix of Pixels
 ## Next Week Preview
 
 **Minggu 2: Face Detection**
-- Haar Cascade implementation
-- Detection API endpoint
+- MediaPipe Face Detection implementation
+- Real-time detection dari webcam
 - Integration dengan image utilities
 
 ---

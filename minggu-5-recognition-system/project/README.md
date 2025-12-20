@@ -48,18 +48,11 @@ python -c "import pickle; data=pickle.load(open('dataset/encodings.pkl','rb')); 
 # 3. Check dependencies
 pip list | findstr "opencv-python deepface mediapipe"
 ```
-# 3. Check dependencies
-pip list | findstr "opencv-python deepface sqlalchemy pymysql"
-```
 
 ---
 
 ## 🎯 RecognitionService Class - Complete API
 
-### Initialization
-
-```python
-from recognition_service import RecognitionService
 ### Initialization
 
 ```python
@@ -88,26 +81,17 @@ service = RecognitionService(
 3. ✅ Load known encodings from `encodings.pkl`
 4. ✅ Initialize statistics tracking
 
-### 1. generate_encodings_for_all()
-**Purpose:** Generate face encodings untuk semua orang di database
-
-```python
-# Generate encodings using default model (Facenet512)
-count = service.generate_encodings_for_all()
 ### 1. reload_encodings()
 **Purpose:** Reload face encodings from pickle file (useful after adding new persons)
 
 ```python
 # Reload encodings after updating dataset
-service.reload_encodings()ce, SFace
+service.reload_encodings()
+```
 
-**Returns:** `int` - Number of encodings generated
+**Returns:** `bool` - True if successful
 
-**Process:**
-1. Calls DatasetManager.generate_encodings()
-2. Stores encodings to `face_encodings` table
-3. Reloads encodings into memory
-4. Returns count of generated encodings
+**Use case:** After adding new persons to dataset folder
 
 ---
 
@@ -259,39 +243,40 @@ timestamp = service.get_timestamp()
 
 ### Schema Usage
 
-RecognitionService uses these tables from Week 4:
+RecognitionService uses these data files from Week 4:
 
-```sql
--- Read from these tables
-persons (
-    id,
-    name,
-    employee_id,
-    department
-)
-
-face_encodings (
-    id,
-    person_id,
-    encoding_data,  -- BLOB (512 floats)
-    model_name      -- 'Facenet512'
-)
-
--- Optionally used
-face_images (
-    id,
-    person_id,
-    image_path
-)
+**File Structure:**
+```
+dataset/
+├── encodings.pkl          # Pickle file with face encodings
+│   - encodings: List[ndarray]  # 512-d vectors
+│   - names: List[str]          # Person names
+│   - person_ids: List[str]     # Person IDs
+│
+├── metadata.json          # Person metadata
+│   {
+│     "persons": [
+│       {
+│         "id": "PERSON001",
+│         "name": "John Doe",
+│         "department": "IT",
+│         "registered_date": "2024-01-15"
+│       }
+│     ]
+│   }
+│
+└── person_id/             # Person photo folders
+    ├── face_0.jpg
+    ├── face_1.jpg
+    └── ...
 ```
 
-### Database Operations
+### File Operations
 
 **On Initialization:**
-1. Connect to MySQL via DatasetManager
-2. Load all persons from `persons` table
-3. For each person, get encodings from `face_encodings` table
-4. Store encodings in memory for fast matching
+1. Load encodings from `encodings.pkl` file
+2. Load person metadata from `metadata.json`
+3. Store encodings in memory for fast matching
 
 **During Recognition:**
 1. Generate encoding for detected face
@@ -299,17 +284,10 @@ face_images (
 3. Find best match below threshold
 4. Return person_id, name, confidence
 
-**Connection String:**
-```python
-# Default (XAMPP)
-"mysql+pymysql://root:@localhost:3306/face_recognition_db"
-
-# With password
-"mysql+pymysql://root:YOUR_PASSWORD@localhost:3306/face_recognition_db"
-
-# Remote database
-"mysql+pymysql://user:pass@192.168.1.100:3306/face_recognition_db"
-```
+**Storage:**
+- Encodings stored in `dataset/encodings.pkl` (pickle format)
+- Metadata stored in `dataset/metadata.json`
+- Fast loading on startup (no database connection needed)
 
 ---
 
@@ -319,17 +297,17 @@ face_images (
 
 **Learning Lesson 1:**
 - Generate encodings for all persons
-- Store to `face_encodings` table
-- **Output:** Database dengan encodings siap pakai
+- Store to `encodings.pkl` file
+- **Output:** Pickle file dengan encodings siap pakai
 
 **Learning Lesson 2:**
 - Build RecognitionService for real-time
-- Load encodings from database
+- Load encodings from pickle file
 - **Output:** Working real-time recognition
 
 **Project (This):**
 - Production-ready RecognitionService class
-- Same database backend as Learning
+- Same file-based backend as Learning
 - **Output:** Reusable module untuk Week 6-7
 
 ### Code Reuse
@@ -401,8 +379,8 @@ python test_recognition.py
 # test_recognition.py includes:
 
 1. test_service_initialization()
-   ✅ Database connection
-   ✅ DatasetManager initialized
+   ✅ Encodings file loaded
+   ✅ Person metadata loaded
    ✅ FaceDetector auto-loaded (MediaPipe)
    ✅ FaceRecognizer auto-loaded (DeepFace)
 
@@ -440,7 +418,7 @@ WEEK 5 - RECOGNITION SERVICE TESTS (Database Mode)
 Test 1: Service Initialization (Database Mode)
 --------------------------------------------------
 ✅ RecognitionService initialized with database
-   - Connection: MySQL (XAMPP)
+   - Storage: File-based (encodings.pkl)
    - Tolerance: 0.6
    - Known encodings: 0
 
@@ -551,21 +529,22 @@ for threshold in thresholds:
 
 ### Common Issues
 
-**❌ "Failed to connect to database"**
+**❌ "Cannot load encodings.pkl"**
 ```
 Solution:
-1. Check XAMPP MySQL is running (green in XAMPP Control Panel)
-2. Verify connection string is correct
-3. Test connection in HeidiSQL
-4. Check database 'face_recognition_db' exists
+1. Check if dataset/encodings.pkl file exists
+2. Complete Week 5 Learning Lesson 1 to generate encodings
+3. Verify pickle file is not corrupted
+4. Check file permissions
 ```
 
 **❌ "No encodings found"**
 ```
 Solution:
 1. Complete Week 5 Learning Lesson 1 first
-2. Check HeidiSQL: face_encodings table should have data
-3. Verify persons table has records
+2. Check encodings.pkl file size (should not be 0 bytes)
+3. Verify dataset folder has person folders with photos
+4. Regenerate encodings if needed
 ```
 
 **❌ "FaceDetector/FaceRecognizer not initialized"**
@@ -621,7 +600,7 @@ while True:
 
 ### Week 7 Integration
 
-GUI application akan menggunakan RecognitionService sebagai backend.
+Desktop GUI application akan menggunakan RecognitionService sebagai backend.
 
 ---
 
@@ -629,10 +608,10 @@ GUI application akan menggunakan RecognitionService sebagai backend.
 
 Before using in production:
 
-- [ ] Week 4 complete (database setup)
+- [ ] Week 4 complete (dataset with encodings.pkl)
 - [ ] Learning Lesson 1 complete (encodings generated)
-- [ ] XAMPP MySQL running
-- [ ] Database connection tested
+- [ ] encodings.pkl file exists in dataset folder
+- [ ] All dependencies installed (opencv-python, deepface, mediapipe)
 - [ ] Test suite passing (7/7 tests)
 - [ ] MediaPipe & DeepFace installed
 - [ ] Real-time recognition tested

@@ -763,7 +763,7 @@ After mastering AttendanceSystem:
 1. ✅ Complete employee database
 2. ✅ Face recognition working
 3. ✅ Daily operations smooth
-4. ✅ Proceed to **Minggu 7: Desktop GUI & API**
+4. ✅ Proceed to **Minggu 7: Desktop GUI Application**
 
 ---
 

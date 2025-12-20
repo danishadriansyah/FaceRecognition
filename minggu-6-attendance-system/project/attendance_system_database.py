@@ -332,4 +332,4 @@ if __name__ == "__main__":
     print("  1. Use RecognitionService to identify person")
     print("  2. Get person_id and confidence from recognition")
     print("  3. Call record_attendance() with results")
-    print("\nNext: Week 7 (Flask REST API)")
+    print("\nNext: Week 7 (Desktop GUI Application)")
