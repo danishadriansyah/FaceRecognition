@@ -1,0 +1,42 @@
+{
+  "recognition": {
+    "threshold": 0.6,
+    "detection_confidence": 0.5,
+    "model_name": "Facenet512",
+    "distance_metric": "euclidean",
+    "use_teachable_machine": true,
+    "active_model_id": null,
+    "teachable_confidence": 0.7
+  },
+  "performance": {
+    "frame_skip": 2,
+    "max_detection_size": 640,
+    "cache_encodings": true,
+    "max_cache_size": 100
+  },
+  "attendance": {
+    "cooldown_seconds": 5,
+    "auto_checkout_hours": 12,
+    "work_start_hour": 8,
+    "work_end_hour": 17
+  },
+  "dataset": {
+    "min_photos_per_person": 20,
+    "max_photos_per_person": 50,
+    "photo_capture_interval": 0.5,
+    "min_face_size": 80
+  },
+  "backup": {
+    "auto_backup": true,
+    "backup_interval_days": 1,
+    "backup_retention_days": 30,
+    "max_log_size_mb": 50
+  },
+  "gui": {
+    "window_width": 1200,
+    "window_height": 700,
+    "theme": "light",
+    "webcam_width": 640,
+    "webcam_height": 480
+  }
+}
