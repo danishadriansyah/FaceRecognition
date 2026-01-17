@@ -11,7 +11,14 @@
         "Bella"
       ],
       "num_classes": 2
+    },
+    {
+      "id": "test2_20260117_154552",
+      "name": "test2",
+      "created_at": "2026-01-17T15:45:52.580800",
+      "model_path": "c:\\Ngoding\\Kerja\\ExtraQueensya\\minggu-8-final-project\\project\\models\\test2_20260117_154552\\keras_model.h5",
+      "labels_path": "c:\\Ngoding\\Kerja\\ExtraQueensya\\minggu-8-final-project\\project\\models\\test2_20260117_154552\\labels.txt"
     }
   ],
-  "active_model": "default_20251220_125758"
+  "active_model": "test2_20260117_154552"
 }

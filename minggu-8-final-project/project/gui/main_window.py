@@ -313,16 +313,22 @@ class MainWindow:
     
     def update_webcam(self):
         """Update webcam feed"""
+        print("DEBUG: Webcam update thread started")
         while self.webcam_running:
             try:
                 ret, frame = self.cap.read()
                 if not ret:
+                    print("DEBUG: Cannot read frame from camera")
                     break
+                
+                print(f"DEBUG: Frame read successfully, shape: {frame.shape}")
                 
                 # Detect faces using recognition service
                 if self.recognition_service:
                     try:
+                        print("DEBUG: Calling recognize_faces...")
                         results = self.recognition_service.recognize_faces(frame)
+                        print(f"DEBUG: Got {len(results) if results else 0} results")
                         
                         # Draw bounding boxes
                         for result in results:
@@ -340,7 +346,9 @@ class MainWindow:
                                     2
                                 )
                     except Exception as e:
-                        print(f"Webcam error: {e}")
+                        print(f"DEBUG: Recognition error: {e}")
+                        import traceback
+                        traceback.print_exc()
                 
                 # Convert to PhotoImage
                 frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -356,7 +364,9 @@ class MainWindow:
                 
                 time.sleep(0.03)  # ~30 FPS
             except Exception as e:
-                print(f"Webcam error: {e}")
+                print(f"DEBUG: Webcam loop error: {e}")
+                import traceback
+                traceback.print_exc()
                 break
     
     def get_today_stats(self):
