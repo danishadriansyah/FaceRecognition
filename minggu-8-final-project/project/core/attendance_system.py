@@ -153,21 +153,22 @@ class AttendanceSystem:
             photo: Photo of person
             
         Returns:
-            Attendance record or None if already checked in
+            Attendance record, or dict with 'already_checked_in' info
         """
         # Check if already checked in today
         if name in self.today_cache:
             for record in self.today_cache[name]:
                 if record['type'] == 'check_in':
-                    print(f"⚠️  {name} already checked in today at {record['time']}")
-                    return None
+                    existing_time = record['time']
+                    print(f"⚠️  {name} already checked in today at {existing_time}")
+                    return {'already_checked_in': True, 'time': existing_time, 'name': name}
         
         record = self.record_attendance(
             name=name,
             attendance_type='check_in',
             confidence=confidence,
             photo=photo,
-            notes='Auto check-in via face recognition'
+            notes=f'Check-in pada pukul {datetime.now().strftime("%H:%M:%S")}'
         )
         
         print(f"✅ Check-in recorded: {name} at {record['time']}")
@@ -212,6 +213,49 @@ class AttendanceSystem:
         
         print(f"✅ Check-out recorded: {name} at {record['time']}")
         return record
+    
+    def delete_record(self, timestamp: str, person_name: str) -> bool:
+        """
+        Delete a specific attendance record by timestamp and person name.
+        Rewrites the CSV without the deleted record and refreshes cache.
+        
+        Args:
+            timestamp: ISO timestamp of the record to delete
+            person_name: Name of the person
+            
+        Returns:
+            True if deleted successfully
+        """
+        if not self.attendance_file.exists():
+            return False
+        
+        # Read all records
+        all_records = []
+        deleted = False
+        
+        with open(self.attendance_file, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            fieldnames = reader.fieldnames
+            for row in reader:
+                if row['timestamp'] == timestamp and row['person_name'] == person_name:
+                    deleted = True
+                    continue  # Skip this record (delete it)
+                all_records.append(row)
+        
+        if not deleted:
+            return False
+        
+        # Rewrite CSV without deleted record
+        with open(self.attendance_file, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(all_records)
+        
+        # Refresh today's cache
+        self._load_today_attendance()
+        
+        print(f"🗑️ Deleted record: {person_name} at {timestamp}")
+        return True
     
     def process_camera_attendance(self, camera_id: int = 0, mode: str = 'check_in'):
         """

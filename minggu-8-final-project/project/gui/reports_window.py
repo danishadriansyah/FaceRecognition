@@ -108,6 +108,7 @@ class ReportsWindow:
         
         buttons = [
             ("🔄 Refresh", self.load_records, "#2196F3"),
+            ("🗑️ Delete Selected", self.delete_selected_record, "#F44336"),
             ("📥 Export CSV", self.export_csv, "#4CAF50"),
             ("📊 Generate Report", self.generate_report, "#FF9800"),
         ]
@@ -211,8 +212,10 @@ class ReportsWindow:
             for item in self.table.get_children():
                 self.table.delete(item)
             
-            # Load from CSV
-            attendance_file = Path("logs/attendance.csv")
+            # Load from CSV - use correct path inside project folder
+            project_folder = Path(__file__).parent.parent  # gui/ -> project/
+            attendance_file = project_folder / "logs" / "attendance.csv"
+            
             if not attendance_file.exists():
                 self.update_stats([], [])
                 return
@@ -227,8 +230,9 @@ class ReportsWindow:
             filtered = self.filter_by_date(records)
             self.all_records = filtered
             
-            # Display records
-            for record in filtered:
+            # Display records, store raw record for each row
+            self._record_map = {}
+            for i, record in enumerate(filtered):
                 values = (
                     record['date'],
                     record['time'],
@@ -237,7 +241,8 @@ class ReportsWindow:
                     f"{float(record['confidence']):.2%}" if record['confidence'] else "N/A",
                     record.get('notes', '')
                 )
-                self.table.insert('', 'end', values=values)
+                iid = self.table.insert('', 'end', values=values)
+                self._record_map[iid] = record
             
             # Update stats
             self.update_stats(filtered, records)
@@ -310,6 +315,46 @@ class ReportsWindow:
         self.stats_labels["Check-ins"].config(text=str(check_ins))
         self.stats_labels["Check-outs"].config(text=str(check_outs))
     
+    def delete_selected_record(self):
+        """Delete selected record from attendance CSV"""
+        selected = self.table.selection()
+        if not selected:
+            messagebox.showwarning("No Selection", "Pilih record yang mau dihapus")
+            return
+        
+        item = selected[0]
+        record = self._record_map.get(item)
+        if not record:
+            messagebox.showerror("Error", "Record tidak ditemukan")
+            return
+        
+        name = record['person_name']
+        time_str = record['time']
+        confirm = messagebox.askyesno(
+            "Confirm Delete",
+            f"Hapus record {name} pada {time_str}?\n\n"
+            f"Setelah dihapus, {name} bisa absen ulang."
+        )
+        
+        if not confirm:
+            return
+        
+        try:
+            attendance_system = self.main_window.attendance_system
+            success = attendance_system.delete_record(
+                timestamp=record['timestamp'],
+                person_name=record['person_name']
+            )
+            
+            if success:
+                messagebox.showinfo("Success", f"Record {name} berhasil dihapus")
+                self.load_records()
+                self.main_window.refresh_stats()
+            else:
+                messagebox.showerror("Error", "Gagal menghapus record")
+        except Exception as e:
+            messagebox.showerror("Error", f"Error: {str(e)}")
+    
     def export_csv(self):
         """Export to CSV"""
         try:
@@ -348,8 +393,9 @@ class ReportsWindow:
                 messagebox.showwarning("No Data", "No records to generate report")
                 return
             
-            # Generate report
-            report_dir = Path("reports")
+            # Generate report - use correct path inside project folder
+            project_folder = Path(__file__).parent.parent  # gui/ -> project/
+            report_dir = project_folder / "reports"
             report_dir.mkdir(exist_ok=True)
             
             date_str = datetime.now().strftime('%Y-%m-%d')

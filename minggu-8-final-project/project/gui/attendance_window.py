@@ -5,13 +5,14 @@ Week 7 Project Module
 Real-time attendance marking with face recognition
 """
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import messagebox
 import cv2
-from PIL import Image, ImageTk
-import threading
 import time
+from PIL import Image, ImageTk
 from datetime import datetime
+import threading
 import numpy as np
+
 
 
 class AttendanceWindow:
@@ -160,6 +161,18 @@ class AttendanceWindow:
             font=("Arial", 10)
         ).pack(anchor=tk.W, pady=5)
         
+        # Mark Attendance Button
+        tk.Button(
+            type_frame,
+            text="📝 Mark Attendance",
+            command=self.mark_recognized_person,
+            font=("Arial", 10, "bold"),
+            bg="#4CAF50",
+            fg="white",
+            cursor="hand2",
+            height=2
+        ).pack(fill=tk.X, pady=(10, 0))
+        
         # Manual entry
         manual_frame = tk.LabelFrame(
             parent,
@@ -250,14 +263,13 @@ class AttendanceWindow:
                         bbox = result.get('bbox')
                         
                         if name != 'Unknown':
-                            # Check cooldown
-                            current_time = time.time()
-                            if (not self.last_recognition or 
-                                current_time - self.last_recognition > self.recognition_cooldown):
-                                
-                                # Auto mark attendance
-                                self.mark_attendance(name, confidence, frame)
-                                self.last_recognition = current_time
+                            # Store current person for manual marking
+                            self.current_person = name
+                            self.current_confidence = confidence
+                            self.current_frame = frame
+                            
+                            # Update cooldown tracker (but don't auto-mark)
+                            # Auto-attendance disabled - use button instead
                             
                             # Update UI
                             self.window.after(0, lambda: self.update_recognition_ui(result))
@@ -328,14 +340,31 @@ class AttendanceWindow:
         try:
             attendance_type = self.attendance_type.get()
             
-            result = self.main_window.attendance_system.record_attendance(
-                name=name,
-                attendance_type=attendance_type,
-                confidence=confidence,
-                photo=frame
-            )
+            if attendance_type == 'check_in':
+                result = self.main_window.attendance_system.check_in(
+                    name=name,
+                    confidence=confidence,
+                    photo=frame
+                )
+                
+                # Already checked in
+                if isinstance(result, dict) and result.get('already_checked_in'):
+                    existing_time = result['time']
+                    msg = f"⚠️ {name} sudah absen pukul {existing_time}"
+                    self.window.after(0, lambda: self.show_notification(msg, "warning"))
+                    return
+                
+                record = result
+            else:
+                record = self.main_window.attendance_system.record_attendance(
+                    name=name,
+                    attendance_type=attendance_type,
+                    confidence=confidence,
+                    photo=frame
+                )
             
-            if result['success']:
+            # If record is returned (not None/error), it's successful
+            if record:
                 # Show notification
                 msg = f"✅ {name} - {attendance_type.replace('_', ' ').title()}"
                 self.window.after(0, lambda: self.show_notification(msg, "success"))
@@ -346,14 +375,11 @@ class AttendanceWindow:
                 # Update main window
                 self.main_window.refresh_stats()
                 self.main_window.log_message(f"Attendance: {name} ({attendance_type})")
-            else:
-                self.window.after(0, lambda: self.show_notification(
-                    f"⚠️ {result.get('message', 'Already checked in today')}",
-                    "warning"
-                ))
         
         except Exception as e:
             print(f"Attendance error: {e}")
+            import traceback
+            traceback.print_exc()
     
     def manual_checkin(self):
         """Manual check-in"""
@@ -365,28 +391,82 @@ class AttendanceWindow:
         try:
             attendance_type = self.attendance_type.get()
             
-            result = self.main_window.attendance_system.record_attendance(
+            # record_attendance returns record dict, not {'success': True}
+            record = self.main_window.attendance_system.record_attendance(
                 name=name,
                 attendance_type=attendance_type,
                 confidence=1.0,
                 notes="Manual entry"
             )
             
-            if result['success']:
-                messagebox.showinfo("Success", f"{name} - {attendance_type} recorded")
+            # If record exists, it was successful
+            if record:
+                # Use showinfo instead of showerror for success message
+                messagebox.showinfo("✅ Success", f"✅ {name} - {attendance_type.replace('_', ' ').title()} recorded successfully!")
                 self.manual_name.delete(0, tk.END)
                 self.refresh_records()
                 self.main_window.refresh_stats()
-            else:
-                messagebox.showwarning("Failed", result.get('message', 'Failed to record'))
         
         except Exception as e:
-            messagebox.showerror("Error", str(e))
+            messagebox.showerror("❌ Error", f"Failed to record attendance: {str(e)}")
+    
+    def mark_recognized_person(self):
+        """Mark attendance for currently recognized person"""
+        if not hasattr(self, 'current_person') or not self.current_person:
+            messagebox.showwarning("⚠️ Warning", "No person recognized!\n\nPlease face the camera and wait for recognition.")
+            return
+        
+        try:
+            attendance_type = self.attendance_type.get()
+            
+            if attendance_type == 'check_in':
+                result = self.main_window.attendance_system.check_in(
+                    name=self.current_person,
+                    confidence=self.current_confidence,
+                    photo=self.current_frame if hasattr(self, 'current_frame') else None
+                )
+                
+                # Already checked in
+                if isinstance(result, dict) and result.get('already_checked_in'):
+                    existing_time = result['time']
+                    messagebox.showinfo(
+                        "ℹ️ Info",
+                        f"{self.current_person} sudah absen pukul {existing_time}"
+                    )
+                    return
+                
+                record = result
+            else:
+                record = self.main_window.attendance_system.record_attendance(
+                    name=self.current_person,
+                    attendance_type=attendance_type,
+                    confidence=self.current_confidence,
+                    photo=self.current_frame if hasattr(self, 'current_frame') else None
+                )
+            
+            # If record exists, it was successful
+            if record:
+                msg = f"✅ {self.current_person} - {attendance_type.replace('_', ' ').title()}"
+                messagebox.showinfo("✅ Success", f"{msg} recorded successfully!")
+                
+                # Refresh records
+                self.refresh_records()
+                self.main_window.refresh_stats()
+                self.main_window.log_message(f"Attendance: {self.current_person} ({attendance_type})")
+                
+                # Update last recognition time
+                self.last_recognition = time.time()
+        
+        except Exception as e:
+            messagebox.showerror("❌ Error", f"Failed to mark attendance: {str(e)}")
+    
     
     def refresh_records(self):
         """Refresh today's records"""
         try:
-            records = self.main_window.attendance_system.get_today_records()
+            # Use get_records with today's date filter
+            today = datetime.now().strftime('%Y-%m-%d')
+            records = self.main_window.attendance_system.get_records(date_filter=today)
             
             self.records_text.config(state=tk.NORMAL)
             self.records_text.delete(1.0, tk.END)
@@ -403,6 +483,8 @@ class AttendanceWindow:
             self.records_text.config(state=tk.DISABLED)
         except Exception as e:
             print(f"Refresh error: {e}")
+            import traceback
+            traceback.print_exc()
     
     def show_notification(self, message, msg_type="info"):
         """Show notification toast"""

@@ -303,6 +303,6 @@ Setelah Week 7, kamu akan:
 1. ✅ Punya production-ready desktop application
 2. ✅ Menguasai Tkinter GUI development
 3. ✅ Integrate 7 weeks of learning
-4. ✅ Siap build custom attendance systems!
+4. ✅ Siap untuk Week 8: Final capstone project!
 
-**Final Project:** Build your own complete attendance system from scratch!
+**Next:** Week 8 - Final Project Integration (production-ready system)

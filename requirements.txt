@@ -1,58 +1,71 @@
 # =======================================================
-# Face Recognition Attendance System - MediaPipe Edition
-# Python Version: 3.11.9
+# Face Recognition Attendance System - Week 1-8
+# Python Version: 3.9 - 3.11 (recommended)
 # =======================================================
 
-# Computer Vision & Face Recognition
-opencv-python==4.8.1.78
-opencv-contrib-python==4.8.1.78
-mediapipe==0.10.9  # Face detection & recognition (5-10ms, 60+ FPS)
+# =============
+# CORE PACKAGES
+# =============
+
+# Computer Vision & Face Detection
+opencv-python>=4.8.0
+mediapipe>=0.10.0
+
+# Image Processing
+Pillow>=10.0.0
+numpy>=1.24.0
 
 # Data Processing
-numpy==1.26.2  # Compatible with Python 3.11
-Pillow==10.1.0
-pandas==2.1.4
+pandas>=2.0.0
 
-# Excel/CSV Export
-openpyxl==3.1.2
-xlsxwriter==3.1.9
+# =============
+# TEACHABLE MACHINE (Week 8)
+# =============
+# Note: TensorFlow requires Python 3.9-3.11
+tensorflow>=2.13.0,<2.17.0
 
-# Utilities
-imutils==0.5.4
-tqdm==4.66.1
-python-dateutil==2.8.2
-
-# Desktop GUI (Tkinter is built-in for Python 3.11)
-# No additional GUI packages needed
-
-# Desktop Application Distribution
-pyinstaller==6.3.0
-
-# Testing
-pytest==7.4.3
-pytest-cov==4.1.0
-
-# Development Tools
-black==23.12.1
-flake8==6.1.0
+# =============
+# UTILITIES
+# =============
+scikit-learn>=1.3.0
 
 # =======================================================
-# Installation Notes:
+# INSTALLATION GUIDE
 # =======================================================
-# 
-# Windows/Linux/Mac (Simple!):
+#
+# Step 1: Create virtual environment (RECOMMENDED)
+#   python -m venv venv
+#   venv\Scripts\activate     (Windows)
+#   source venv/bin/activate  (Linux/Mac)
+#
+# Step 2: Upgrade pip
+#   pip install --upgrade pip
+#
+# Step 3: Install dependencies
 #   pip install -r requirements.txt
 #
-# MediaPipe Full Integration:
-#   - Detection: MediaPipe Face Detection (~5ms, 60+ FPS)
-#   - Recognition: MediaPipe Face Mesh (1404-dim landmarks)
-#   - NO TensorFlow/DeepFace needed!
-#   - 25x faster encoding (0.01s vs 0.25s per image)
-#   - Lightweight: 6MB vs 100MB model
+# Step 4: Run Week 8 app
+#   cd minggu-8-final-project/project
+#   python main_app.py
 #
-# Performance:
-#   - Real-time: 60+ FPS
-#   - Encoding: 280 images in ~3 seconds
-#   - Detection confidence: 0.3 (more sensitive)
-#   - Face landmarks: 468 points × 3 coords = 1404-dim
+# =======================================================
+# TROUBLESHOOTING
+# =======================================================
+#
+# Error: TensorFlow installation fails
+# Solution: Make sure Python 3.9-3.11, NOT 3.12+
+#   python --version  (check version)
+#
+# Error: MediaPipe fails on Mac M1/M2
+# Solution: Install special build
+#   pip install mediapipe-silicon
+#
+# Error: OpenCV camera not working
+# Solution: Install contrib version
+#   pip install opencv-contrib-python
+#
+# Error: Keras model loading fails
+# Solution: Install tf-keras
+#   pip install tf-keras
+#
 # =======================================================

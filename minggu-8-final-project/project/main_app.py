@@ -13,7 +13,13 @@ import logging
 from datetime import datetime
 
 # Add core modules to path
-project_dir = Path(__file__).parent
+# When running as PyInstaller .exe, use the exe's directory for data folders
+if getattr(sys, 'frozen', False):
+    # Running as bundled .exe
+    project_dir = Path(sys.executable).parent
+else:
+    # Running as normal Python script
+    project_dir = Path(__file__).parent
 sys.path.insert(0, str(project_dir))
 
 # Configure logging
@@ -47,13 +53,16 @@ def check_requirements():
     Returns:
         list: List of missing dependencies (empty if all OK)
     """
+    # Skip check when running as bundled .exe
+    if getattr(sys, 'frozen', False):
+        return []
+    
     missing = []
     required = {
         'cv2': 'opencv-python',
         'mediapipe': 'mediapipe',
         'PIL': 'Pillow',
         'numpy': 'numpy',
-        'deepface': 'deepface',
     }
     
     for module_name, package_name in required.items():
@@ -272,7 +281,6 @@ def main():
             f"An error occurred:\n\n{str(e)}\n\nCheck logs/app.log for details"
         )
         sys.exit(1)
-
 
 if __name__ == "__main__":
     main()

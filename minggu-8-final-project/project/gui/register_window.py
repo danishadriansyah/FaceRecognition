@@ -378,12 +378,15 @@ class RegisterWindow:
             return
         
         try:
-            # Create dataset folder for Teachable Machine export
-            export_path = Path("dataset_export") / name
+            # Get project root path
+            project_root = Path(__file__).parent.parent.parent
+            
+            # Create dataset folder for Teachable Machine export (inside project)
+            export_path = project_root / "dataset_export" / name
             export_path.mkdir(parents=True, exist_ok=True)
             
-            # Also save to standard dataset
-            dataset_path = Path("dataset") / name
+            # Also save to standard dataset (inside project)
+            dataset_path = project_root / "dataset" / name
             dataset_path.mkdir(parents=True, exist_ok=True)
             
             # Save photos to both locations

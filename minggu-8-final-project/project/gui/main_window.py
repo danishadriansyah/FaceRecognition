@@ -43,6 +43,11 @@ class MainWindow:
         self.root.geometry("1200x700")
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
         
+        # Fullscreen state
+        self.is_fullscreen = False
+        self.root.bind("<F11>", self.toggle_fullscreen)
+        self.root.bind("<Escape>", self.exit_fullscreen)
+        
         # Backend services
         self.recognition_service = None
         self.attendance_system = None
@@ -63,7 +68,9 @@ class MainWindow:
     def initialize_services(self):
         """Initialize backend services"""
         try:
-            dataset_path = Path("dataset")
+            # Set paths relative to project folder (not global root)
+            project_root = Path(__file__).parent.parent
+            dataset_path = project_root / "dataset"
             dataset_path.mkdir(exist_ok=True)
             
             # Initialize model manager (ensure correct path)
@@ -110,7 +117,9 @@ class MainWindow:
                 # Use MediaPipe mode
                 self.recognition_service = RecognitionService(dataset_path=str(dataset_path))
             
-            self.attendance_system = AttendanceSystem(dataset_path=str(dataset_path), log_dir="logs")
+            # Set log_dir relative to project folder
+            log_dir = project_root / "logs"
+            self.attendance_system = AttendanceSystem(dataset_path=str(dataset_path), log_dir=str(log_dir))
             
             print("✅ Services initialized")
         except Exception as e:
@@ -249,10 +258,8 @@ class MainWindow:
         btn_frame.pack(pady=20, padx=10, fill=tk.X)
         
         buttons = [
-            ("📝 Register Person", self.open_register, "#4CAF50"),
             ("📸 Mark Attendance", self.open_attendance, "#2196F3"),
             ("📊 View Reports", self.open_reports, "#FF9800"),
-            ("⚙️ Settings", self.open_settings, "#9C27B0"),
         ]
         
         for text, command, color in buttons:
@@ -313,22 +320,16 @@ class MainWindow:
     
     def update_webcam(self):
         """Update webcam feed"""
-        print("DEBUG: Webcam update thread started")
         while self.webcam_running:
             try:
                 ret, frame = self.cap.read()
                 if not ret:
-                    print("DEBUG: Cannot read frame from camera")
                     break
-                
-                print(f"DEBUG: Frame read successfully, shape: {frame.shape}")
                 
                 # Detect faces using recognition service
                 if self.recognition_service:
                     try:
-                        print("DEBUG: Calling recognize_faces...")
                         results = self.recognition_service.recognize_faces(frame)
-                        print(f"DEBUG: Got {len(results) if results else 0} results")
                         
                         # Draw bounding boxes
                         for result in results:
@@ -346,7 +347,7 @@ class MainWindow:
                                     2
                                 )
                     except Exception as e:
-                        print(f"DEBUG: Recognition error: {e}")
+                        print(f"Recognition error: {e}")
                         import traceback
                         traceback.print_exc()
                 
@@ -364,7 +365,7 @@ class MainWindow:
                 
                 time.sleep(0.03)  # ~30 FPS
             except Exception as e:
-                print(f"DEBUG: Webcam loop error: {e}")
+                print(f"Webcam loop error: {e}")
                 import traceback
                 traceback.print_exc()
                 break
@@ -508,6 +509,22 @@ class MainWindow:
             "Week 7 - Desktop GUI\n\n"
             "Developed with Python + Tkinter"
         )
+    
+    def toggle_fullscreen(self, event=None):
+        """Toggle fullscreen mode (F11)"""
+        self.is_fullscreen = not self.is_fullscreen
+        self.root.attributes("-fullscreen", self.is_fullscreen)
+        if self.is_fullscreen:
+            self.log_message("Fullscreen mode (F11 to exit)")
+        else:
+            self.log_message("Windowed mode")
+    
+    def exit_fullscreen(self, event=None):
+        """Exit fullscreen mode (Escape)"""
+        if self.is_fullscreen:
+            self.is_fullscreen = False
+            self.root.attributes("-fullscreen", False)
+            self.log_message("Windowed mode")
     
     def on_closing(self):
         """Handle window closing"""
